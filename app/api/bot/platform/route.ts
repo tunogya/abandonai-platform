@@ -11,7 +11,7 @@ if (!token) throw new Error('TELEGRAM_BOT_TOKEN environment variable not found.'
 const bot = new Bot(token)
 
 bot.command("start", async (ctx) => {
-  await ctx.reply("Hello, world!");
+  await ctx.reply(JSON.stringify(ctx));
 });
 
 export const POST = webhookCallback(bot, 'std/http')
