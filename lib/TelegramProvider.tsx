@@ -10,6 +10,14 @@ export interface ITelegramContext {
 
 export const TelegramContext = createContext<ITelegramContext>({});
 
+declare global {
+  interface Window {
+    Telegram: {
+      WebApp: IWebApp;
+    };
+  }
+}
+
 export const TelegramProvider = ({
                                    children,
                                  }: {
@@ -18,9 +26,13 @@ export const TelegramProvider = ({
   const [webApp, setWebApp] = useState<IWebApp | null>(null);
 
   useEffect(() => {
-    const app = (window as any).Telegram?.WebApp;
+    const app = window?.Telegram?.WebApp;
     if (app) {
-      app.ready();
+      // A method that informs the Telegram app that the Mini App is ready to be displayed.
+      // It is recommended to call this method as early as possible, as soon as all essential interface elements are
+      // loaded. Once this method is called, the loading placeholder is hidden and the Mini App is shown.
+      // If the method is not called, the placeholder will be hidden only when the page is fully loaded.
+      app?.ready();
       setWebApp(app);
     }
   }, []);
@@ -38,7 +50,7 @@ export const TelegramProvider = ({
     <TelegramContext.Provider value={value}>
       <Script
         src="https://telegram.org/js/telegram-web-app.js"
-        strategy="beforeInteractive"
+        strategy="afterInteractive"
       /> {children}
     </TelegramContext.Provider>
   );

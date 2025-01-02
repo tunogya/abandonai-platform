@@ -80,6 +80,7 @@ export interface IWebApp {
   unlockOrientation: () => void;
   addToHomeScreen: () => void;
   sendData: (data: string) => void;
+  ready: () => void;
   expand: () => void;
   close: () => void;
 }
