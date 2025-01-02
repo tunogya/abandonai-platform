@@ -1,17 +1,13 @@
-export const dynamic = 'force-dynamic'
+import {NextRequest} from "next/server";
 
-export const fetchCache = 'force-no-store'
+const POST = async (req: NextRequest) => {
+  const body = await req.json()
 
-import {Bot, webhookCallback} from 'grammy'
+  console.log(body)
 
-const token = process.env.TELEGRAM_BOT_TOKEN
+  return Response.json({
+    ok: true,
+  });
+};
 
-if (!token) throw new Error('TELEGRAM_BOT_TOKEN environment variable not found.')
-
-const bot = new Bot(token)
-
-bot.command("start", async (ctx) => {
-  await ctx.reply("Hello, world!");
-});
-
-export const POST = webhookCallback(bot, 'std/http')
+export {POST}
