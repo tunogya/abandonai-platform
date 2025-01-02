@@ -1,6 +1,6 @@
 import {NextRequest} from "next/server";
 
-const POST = async (req: NextRequest, {params}: { params: { token: string } }) => {
+const POST = async (req: NextRequest, {params}: never) => {
   const {token} = await params;
   const body = await req.json()
 
