@@ -38,7 +38,7 @@ bot.use(async (ctx, next) => {
  */
 bot.command("start", async (ctx) => {
   // const payload = ctx.match
-  await ctx.reply(`I can help you create and manage Agents.
+  await ctx.reply(`I can help you create and manage Agents\.
 
 You can control me by sending these commands:
 
