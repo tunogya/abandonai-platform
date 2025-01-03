@@ -38,8 +38,20 @@ bot.use(async (ctx, next) => {
  */
 bot.command("start", async (ctx) => {
   // const payload = ctx.match
-  await ctx.reply("I can help you create and manage Agents\.\n\nYou can control me by sending these commands:\n/newagent - create a new agent\n/myagents - edit your agents\n\n*Edit Agents*\n/deleteagent - delete a agent\n\n*Agent Settings*\n\n*Knowledge bases*", {
-    parse_mode: "MarkdownV2"
+  await ctx.reply(`I can help you create and manage Agents.
+
+You can control me by sending these commands:
+/newagent - create a new agent
+/myagents - edit your agents
+
+*Edit Agents*
+/deleteagent - delete a agent
+
+*Agent Settings*
+
+*Knowledge bases*
+`, {
+    parse_mode: "Markdown"
   });
 });
 
