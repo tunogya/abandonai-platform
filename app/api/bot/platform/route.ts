@@ -4,6 +4,10 @@ export const fetchCache = 'force-no-store'
 
 import {Bot, Context, webhookCallback} from 'grammy'
 
+import { Redis } from "@upstash/redis";
+
+const redis = Redis.fromEnv();
+
 const BOT_DEVELOPER = 2130493951;
 
 // Define custom context type.
@@ -37,6 +41,7 @@ bot.use(async (ctx, next) => {
  * command - start
  */
 bot.command("start", async (ctx) => {
+  await redis.del(`params:${ctx.from?.id}`);
   // const payload = ctx.match
   await ctx.reply(`I can help you create and manage Agents\\.
 
@@ -60,6 +65,7 @@ You can control me by sending these commands:
  */
 
 bot.command("newagent", async (ctx) => {
+  await redis.set(`params:${ctx.from?.id}`, ["newagent"]);
   if (!ctx.config.isDeveloper) {
     await ctx.reply("You are not authorized to create a new agent.");
     return;
@@ -72,6 +78,7 @@ bot.command("newagent", async (ctx) => {
  */
 
 bot.command("myagents", async (ctx) => {
+  await redis.set(`params:${ctx.from?.id}`, ["myagents"]);
   if (!ctx.config.isDeveloper) {
     await ctx.reply("You are not authorized to create a new agent.");
     return;
