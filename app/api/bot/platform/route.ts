@@ -41,11 +41,11 @@ bot.command("start", async (ctx) => {
   await ctx.reply(`I can help you create and manage Agents\\.
 
 You can control me by sending these commands:
-/newagent - create a new agent
-/myagents - edit your agents
+/newagent \\- create a new agent
+/myagents \\- edit your agents
 
 *Edit Agents*
-/deleteagent - delete a agent
+/deleteagent \\- delete a agent
 
 *Agent Settings*
 
