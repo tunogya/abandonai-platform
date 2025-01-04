@@ -2,7 +2,7 @@
 import {TelegramProvider, useTelegram} from "@/app/TelegramProvider";
 
 const Page = () => {
-  const {webApp} = useTelegram();
+  const {user, webApp} = useTelegram();
 
   return (
     <div
@@ -25,7 +25,11 @@ const Page = () => {
           </div>
         </div>
         <div>
-          {JSON.stringify(webApp)}
+          <h1>Welcome {user?.username}</h1>
+          User data:
+          <pre>{JSON.stringify(user, null, 2)}</pre>
+          Enter Web App data:
+          <pre>{JSON.stringify(webApp, null, 2)}</pre>
         </div>
         <div style={{
           height: (webApp?.contentSafeAreaInset.bottom || 0) + (webApp?.safeAreaInset.bottom || 0),
