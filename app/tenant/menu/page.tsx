@@ -1,5 +1,6 @@
 "use client";
 import {TelegramProvider, useTelegram} from "@/app/TelegramProvider";
+import Link from "next/link";
 
 const Page = () => {
   const {webApp} = useTelegram();
@@ -13,7 +14,10 @@ const Page = () => {
     >
       <div className={"px-6 py-4 h-full"}>
         <div className={"grid grid-cols-4 gap-x-4 justify-items-stretch"}>
-          <div className={"flex flex-col items-center gap-2"}>
+          <Link
+            href={"/tenant/call"}
+            prefetch
+            className={"flex flex-col items-center gap-2"}>
             <div
               className={"w-[66px] h-[66px] rounded-[16px] dark:bg-[#202020] bg-[#FFFFFF] dark:text-[#BCBCBC] items-center justify-center flex"}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
@@ -22,7 +26,7 @@ const Page = () => {
               </svg>
             </div>
             <div className={"text-[12px] select-none"}>Video Call</div>
-          </div>
+          </Link>
         </div>
         <div style={{
           height: (webApp?.contentSafeAreaInset.bottom || 0) + (webApp?.safeAreaInset.bottom || 0),
