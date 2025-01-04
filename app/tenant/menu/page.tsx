@@ -24,6 +24,9 @@ const Page = () => {
             <div className={"text-[12px]"}>Video Call</div>
           </div>
         </div>
+        <div>
+          {JSON.stringify(webApp)}
+        </div>
         <div style={{
           height: (webApp?.contentSafeAreaInset.bottom || 0) + (webApp?.safeAreaInset.bottom || 0),
         }}/>
