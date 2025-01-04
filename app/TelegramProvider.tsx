@@ -50,7 +50,7 @@ export const TelegramProvider = ({
     <TelegramContext.Provider value={value}>
       <Script
         src="https://telegram.org/js/telegram-web-app.js"
-        strategy="afterInteractive"
+        strategy="beforeInteractive"
       /> {children}
     </TelegramContext.Provider>
   );
