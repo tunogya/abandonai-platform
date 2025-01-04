@@ -4,9 +4,6 @@ const Page = () => {
       className={"h-full overflow-scroll"}
       style={{
         paddingTop: "calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top))",
-        paddingBottom: "calc(var(--tg-content-safe-area-inset-bottom) + var(--tg-safe-area-inset-bottom))",
-        paddingLeft: "calc(var(--tg-content-safe-area-inset-left) + var(--tg-safe-area-inset-left))",
-        paddingRight: "calc(var(--tg-content-safe-area-inset-right) + var(--tg-safe-area-inset-right))",
       }}
     >
       <div className={"px-6 py-4 h-full"}>
@@ -22,6 +19,9 @@ const Page = () => {
             <div className={"text-[12px]"}>Video Call</div>
           </div>
         </div>
+        <div style={{
+          height: "calc(var(--tg-content-safe-area-inset-bottom) + var(--tg-safe-area-inset-bottom))",
+        }}/>
       </div>
     </div>
   )
