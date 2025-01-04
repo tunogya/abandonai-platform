@@ -1,5 +1,5 @@
 "use client";
-import {useTelegram} from "@/app/TelegramProvider";
+import {TelegramProvider, useTelegram} from "@/app/TelegramProvider";
 
 const Page = () => {
   const {webApp} = useTelegram();
@@ -35,4 +35,12 @@ const Page = () => {
   )
 }
 
-export default Page;
+const Wrap = () => {
+  return (
+    <TelegramProvider>
+      <Page/>
+    </TelegramProvider>
+  )
+}
+
+export default Wrap;
