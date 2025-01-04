@@ -103,4 +103,5 @@ export interface IWebApp {
   ready: () => void;
   expand: () => void;
   close: () => void;
+  showConfirm: (message: string, callback: any) => void;
 }

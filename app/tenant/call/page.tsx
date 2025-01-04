@@ -23,21 +23,28 @@ const Page = () => {
       </div>
       <div className={"w-full px-10 py-4 h-[98px]"}>
         <div className={"flex justify-between"}>
-          <div
+          <button
             className={"h-[66px] w-[66px] rounded-full flex items-center justify-center dark:bg-[#202020] bg-[#FFFFFF] dark:text-[#BCBCBC]"}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
               <path d="M8.25 4.5a3.75 3.75 0 1 1 7.5 0v8.25a3.75 3.75 0 1 1-7.5 0V4.5Z"/>
               <path
                 d="M6 10.5a.75.75 0 0 1 .75.75v1.5a5.25 5.25 0 1 0 10.5 0v-1.5a.75.75 0 0 1 1.5 0v1.5a6.751 6.751 0 0 1-6 6.709v2.291h3a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1 0-1.5h3v-2.291a6.751 6.751 0 0 1-6-6.709v-1.5A.75.75 0 0 1 6 10.5Z"/>
             </svg>
-          </div>
-          <div
+          </button>
+          <button
+            onClick={() => {
+              webApp?.showConfirm("Do you want to close the app?", (confirmed: boolean) => {
+                if (confirmed) {
+                  webApp?.close()
+                }
+              })
+            }}
             className={"h-[66px] w-[66px] rounded-full flex items-center justify-center dark:bg-[#202020] bg-[#FFFFFF] dark:text-[#BCBCBC]"}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                  stroke="currentColor" className="size-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
             </svg>
-          </div>
+          </button>
         </div>
         <div style={{
           height: (webApp?.contentSafeAreaInset.bottom || 0) + (webApp?.safeAreaInset.bottom || 0),
