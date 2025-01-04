@@ -1,5 +1,5 @@
 "use client";
-import {TelegramProvider} from "@/lib/TelegramProvider";
+import {TelegramProvider} from "@/app/TelegramProvider";
 
 const Page = () => {
   return (

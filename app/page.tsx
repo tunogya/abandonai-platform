@@ -1,5 +1,5 @@
 "use client";
-import { TelegramProvider, useTelegram } from "@/lib/TelegramProvider";
+import { TelegramProvider, useTelegram } from "@/app/TelegramProvider";
 
 const WebApp = () => {
   const { user, webApp } = useTelegram();
