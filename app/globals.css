@@ -9,16 +9,6 @@
   --tg-theme-secondary-bg-color: #E0E0E0;
   --tg-theme-header-bg-color: #E0E0E0;
   --tg-theme-text-color: #4C4C4C;
-
-  --tg-safe-area-inset-top: 0px;
-  --tg-safe-area-inset-bottom: 0px;
-  --tg-safe-area-inset-left: 0px;
-  --tg-safe-area-inset-right: 0px;
-
-  --tg-content-safe-area-inset-top: 0px;
-  --tg-content-safe-area-inset-bottom: 0px;
-  --tg-content-safe-area-inset-left: 0px;
-  --tg-content-safe-area-inset-right: 0px;
 }
 
 @media (prefers-color-scheme: dark) {
