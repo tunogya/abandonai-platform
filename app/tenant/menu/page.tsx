@@ -1,6 +1,6 @@
 const Page = () => {
   return (
-    <div className={"px-6 py-4"}>
+    <div className={"px-6 py-4 h-full overflow-scroll"}>
       <div className={"grid grid-cols-4 gap-x-4 justify-items-stretch"}>
         <div className={"flex flex-col items-center gap-2"}>
           <div
