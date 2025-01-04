@@ -1,11 +1,14 @@
 "use client";
+import {useTelegram} from "@/app/TelegramProvider";
 
 const Page = () => {
+  const {webApp} = useTelegram();
+
   return (
     <div
       className={"h-full overflow-scroll"}
       style={{
-        paddingTop: "calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top))",
+        paddingTop: (webApp?.contentSafeAreaInset.top || 0) + (webApp?.safeAreaInset.top || 0),
       }}
     >
       <div className={"px-6 py-4 h-full"}>
@@ -22,7 +25,7 @@ const Page = () => {
           </div>
         </div>
         <div style={{
-          height: "calc(var(--tg-content-safe-area-inset-bottom) + var(--tg-safe-area-inset-bottom))",
+          height: (webApp?.contentSafeAreaInset.bottom || 0) + (webApp?.safeAreaInset.bottom || 0),
         }}/>
       </div>
     </div>
