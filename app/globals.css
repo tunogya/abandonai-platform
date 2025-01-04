@@ -26,4 +26,9 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+
+  margin-top: var(--tg-content-safe-area-inset-top);
+  margin-bottom: var(--tg-content-safe-area-inset-bottom);
+  margin-left: var(--tg-content-safe-area-inset-left);
+  margin-right: var(--tg-content-safe-area-inset-right);
 }
