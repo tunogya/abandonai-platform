@@ -5,14 +5,20 @@
 :root {
   --background: #E0E0E0;
   --foreground: #4C4C4C;
+  --tg-theme-bg-color: #E0E0E0;
+  --tg-theme-secondary-bg-color: #E0E0E0;
   --tg-theme-header-bg-color: #E0E0E0;
+  --tg-theme-text-color: #4C4C4C;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #1D1D1D;
     --foreground: #8F8F8F;
+    --tg-theme-bg-color: #1D1D1D;
+    --tg-theme-secondary-bg-color: #1D1D1D;
     --tg-theme-header-bg-color: #1D1D1D;
+    --tg-theme-text-color: #8F8F8F;
   }
 }
 
