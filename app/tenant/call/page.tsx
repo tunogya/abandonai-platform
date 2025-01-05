@@ -7,15 +7,14 @@ const Page = () => {
 
   useEffect(() => {
     const resize = () => {
-      if (!webApp?.isExpanded) {
-        webApp?.expand()
-      }
-      if (!webApp?.isFullscreen) {
-        webApp?.requestFullscreen()
+      if (!window?.Telegram?.WebApp?.isFullscreen) {
+        window?.Telegram?.WebApp?.requestFullscreen()
+        window?.Telegram?.WebApp?.expand()
+        window.location.reload()
       }
     }
-    resize()
-  }, [webApp]);
+    resize();
+  }, []);
 
   return (
     <div className={"h-screen overflow-hidden flex flex-col"}>
