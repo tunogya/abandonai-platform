@@ -7,6 +7,9 @@ const Page = () => {
 
   // The page need full screen
   const resize = () => {
+    if (!webApp?.isExpanded) {
+      webApp?.expand()
+    }
     if (!webApp?.isFullscreen) {
       webApp?.requestFullscreen()
     }
