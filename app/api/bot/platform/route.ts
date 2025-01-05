@@ -3,6 +3,9 @@ export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
 import {Bot, Context, webhookCallback} from 'grammy'
+import {Redis} from '@upstash/redis'
+import {BedrockAgentClient, paginateListAgents} from "@aws-sdk/client-bedrock-agent";
+import {InlineKeyboardButton} from "@grammyjs/types";
 
 const BOT_DEVELOPER = 2130493951;
 
@@ -21,6 +24,10 @@ const token = process.env.TELEGRAM_BOT_TOKEN
 if (!token) throw new Error('TELEGRAM_BOT_TOKEN environment variable not found.')
 
 const bot = new Bot<MyContext>(token)
+
+const redis = Redis.fromEnv()
+
+const bedrockAgentClient = new BedrockAgentClient({region: "us-east-1"});
 
 /**
  * Middleware to add bot config to context.
@@ -61,12 +68,12 @@ You can control me by sending these commands:
  */
 
 bot.command("newagent", async (ctx) => {
-  // await redis.set(`params:${ctx.from?.id}`, ["newagent"]);
   if (!ctx.config.isDeveloper) {
     await ctx.reply("You are not authorized to create a new agent.");
     return;
   }
-  await ctx.reply("Creating new agent...");
+  await redis.set(`params:${ctx.from?.id}`, ["newagent"]);
+  await ctx.reply("Alright, a new agent. How are we going to call it? Please choose a name for your agent.");
 })
 
 /**
@@ -74,21 +81,75 @@ bot.command("newagent", async (ctx) => {
  */
 
 bot.command("myagents", async (ctx) => {
-  // await redis.set(`params:${ctx.from?.id}`, ["myagents"]);
   if (!ctx.config.isDeveloper) {
     await ctx.reply("You are not authorized to create a new agent.");
     return;
   }
-  await ctx.reply("Fetching your agents...");
+  await redis.set(`params:${ctx.from?.id}`, ["myagents"]);
+  const pages = paginateListAgents({
+    client: bedrockAgentClient,
+    pageSize: 10,
+  }, {});
+  const agents = [];
+  for await (const page of pages) {
+    agents.push(...(page.agentSummaries || []));
+  }
+  // 准备 inline_keyboard
+  const inlineKeyboard = agents.map((agent) => {
+    return {
+      text: agent.agentName,
+      callback_data: `agent:${agent.agentId}`,
+    } as InlineKeyboardButton;
+  })
+  // 每行 2 个
+  const inlineKeyboardRows = [] as InlineKeyboardButton[][];
+  for (let i = 0; i < inlineKeyboard.length; i += 2) {
+    inlineKeyboardRows.push(inlineKeyboard.slice(i, i + 2));
+  }
+  await ctx.reply("Choose an agent from the list below:", {
+    reply_markup: {
+      inline_keyboard: inlineKeyboardRows,
+    }
+  });
 })
 
 /**
  * Edit Agent
- *
- * ...
- *
+ */
+
+/**
  * command - deleteagent
  */
+
+bot.command("deleteagent", async (ctx) => {
+  if (!ctx.config.isDeveloper) {
+    await ctx.reply("You are not authorized to create a new agent.");
+    return;
+  }
+  await redis.set(`params:${ctx.from?.id}`, ["deleteagent"]);
+  const pages = paginateListAgents({
+    client: bedrockAgentClient,
+    pageSize: 10,
+  }, {});
+  const agents = [];
+  for await (const page of pages) {
+    agents.push(...(page.agentSummaries || []));
+  }
+  // 准备 inline_keyboard
+  const inlineKeyboard = agents.map((agent) => {
+    return {
+      text: agent.agentName,
+      callback_data: `deleteagent:${agent.agentId}`,
+    } as InlineKeyboardButton;
+  })
+  // 每行 2 个
+  const inlineKeyboardRows = [] as InlineKeyboardButton[][];
+  for (let i = 0; i < inlineKeyboard.length; i += 2) {
+    inlineKeyboardRows.push(inlineKeyboard.slice(i, i + 2));
+  }
+  await ctx.reply("Choose a bot to delete.");
+})
+
 
 /**
  * Agent Settings
