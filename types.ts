@@ -104,4 +104,6 @@ export interface IWebApp {
   expand: () => void;
   close: () => void;
   showConfirm: (message: string, callback: any) => void;
+  onEvent: (eventType: string, eventHandler: any) => void;
+  offEvent: (eventType: string, eventHandler: any) => void;
 }

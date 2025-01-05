@@ -25,6 +25,7 @@ export const TelegramProvider = ({
 }) => {
   const [webApp, setWebApp] = useState<IWebApp | null>(null);
 
+  // 首次初始化 webApp
   useEffect(() => {
     const app = window?.Telegram?.WebApp;
     if (app) {
@@ -41,6 +42,7 @@ export const TelegramProvider = ({
       setWebApp(app);
     }
   }, []);
+
   const value = useMemo(() => {
     return webApp
       ? {
@@ -50,6 +52,17 @@ export const TelegramProvider = ({
       }
       : {};
   }, [webApp]);
+
+  // onEvent, 当 fullscreenChanged 变化时，调用setWebApp
+  useEffect(() => {
+    const handler = () => {
+      setWebApp(window?.Telegram?.WebApp);
+    };
+    window?.Telegram?.WebApp?.onEvent("fullscreenChanged", handler);
+    return () => {
+      window?.Telegram?.WebApp?.offEvent("fullscreenChanged", handler);
+    };
+  }, []);
 
   return (
     <TelegramContext.Provider value={value}>
