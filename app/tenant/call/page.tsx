@@ -21,7 +21,7 @@ const Page = () => {
       <div className={"flex items-center justify-center flex-1"}>
         <div className={"h-[180px] w-[180px] rounded-full bg-blue-200"}></div>
       </div>
-      <div className={"w-full px-10 py-4 h-[98px]"}>
+      <div className={"w-full px-10 py-4"}>
         <div className={"flex justify-between"}>
           <button
             className={"h-[66px] w-[66px] rounded-full flex items-center justify-center dark:bg-[#202020] bg-[#FFFFFF] dark:text-[#BCBCBC]"}>
