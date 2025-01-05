@@ -8,6 +8,7 @@
   --tg-theme-bg-color: #E0E0E0;
   --tg-theme-header-bg-color: #E0E0E0;
   --tg-theme-text-color: #4C4C4C;
+  --tg-color-scheme: "light";
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,6 +18,7 @@
     --tg-theme-bg-color: #1D1D1D;
     --tg-theme-header-bg-color: #1D1D1D;
     --tg-theme-text-color: #8F8F8F;
+    --tg-color-scheme: "dark";
   }
 }
 
