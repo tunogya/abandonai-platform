@@ -150,6 +150,10 @@ bot.command("deleteagent", async (ctx) => {
   await ctx.reply("Choose a bot to delete.");
 })
 
+bot.on("callback_query:data", async (ctx) => {
+  console.log("Unknown button event with payload", ctx.callbackQuery.data);
+  await ctx.answerCallbackQuery(); // remove loading animation
+});
 
 /**
  * Agent Settings
