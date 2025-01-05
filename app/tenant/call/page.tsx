@@ -5,18 +5,16 @@ import {useEffect} from "react";
 const Page = () => {
   const {webApp} = useTelegram();
 
-  // The page need full screen
-  const resize = () => {
-    if (!webApp?.isExpanded) {
-      webApp?.expand()
-    }
-    if (!webApp?.isFullscreen) {
-      webApp?.requestFullscreen()
-      window.location.reload();
-    }
-  }
-
   useEffect(() => {
+    const resize = () => {
+      if (!webApp?.isExpanded) {
+        webApp?.expand()
+      }
+      if (!webApp?.isFullscreen) {
+        webApp?.requestFullscreen()
+        window.location.reload();
+      }
+    }
     resize()
   }, [webApp]);
 

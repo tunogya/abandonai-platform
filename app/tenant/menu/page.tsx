@@ -6,14 +6,13 @@ import {useEffect} from "react";
 const Page = () => {
   const {webApp} = useTelegram();
 
-  // The menu do not need full screen
-  const resize = () => {
-    if (webApp?.isFullscreen) {
-      webApp.exitFullscreen()
-    }
-  }
-
   useEffect(() => {
+    // The menu do not need full screen
+    const resize = () => {
+      if (webApp?.isFullscreen) {
+        webApp.exitFullscreen()
+      }
+    }
     resize()
   }, [webApp]);
 
