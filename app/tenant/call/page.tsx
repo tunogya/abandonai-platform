@@ -16,6 +16,11 @@ const Page = () => {
     resize();
   }, []);
 
+  // 只能在全屏状态下显示
+  if (!webApp?.isFullscreen) {
+    return null
+  }
+
   return (
     <div className={"h-screen overflow-hidden flex flex-col"}>
       <div style={{
