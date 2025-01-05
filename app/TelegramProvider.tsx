@@ -35,9 +35,11 @@ export const TelegramProvider = ({
       // If the method is not called, the placeholder will be hidden only when the page is fully loaded.
       app?.ready();
       if (app.colorScheme === "light") {
-        app.setHeaderColor("#E0E0E0")
+        app.setHeaderColor("#E0E0E0");
+        app.setBackgroundColor("#E0E0E0")
       } else {
         app.setHeaderColor("#1D1D1D")
+        app.setBackgroundColor("#1D1D1D")
       }
       setWebApp(app);
     }
