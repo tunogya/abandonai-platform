@@ -1,8 +1,20 @@
 "use client";
 import {TelegramProvider, useTelegram} from "@/app/TelegramProvider";
+import {useEffect} from "react";
 
 const Page = () => {
   const {webApp} = useTelegram();
+
+  // The page need full screen
+  const resize = () => {
+    if (!webApp?.isFullscreen) {
+      webApp?.requestFullscreen()
+    }
+  }
+
+  useEffect(() => {
+    resize()
+  }, [webApp]);
 
   return (
     <div className={"h-screen overflow-hidden flex flex-col"}>
@@ -33,7 +45,7 @@ const Page = () => {
           </button>
           <button
             onClick={() => {
-              webApp?.showConfirm("Do you want to close the app?", (confirmed: boolean) => {
+              webApp?.showConfirm("Do you want to end the call?", (confirmed: boolean) => {
                 if (confirmed) {
                   webApp?.close()
                 }

@@ -1,9 +1,21 @@
 "use client";
 import {TelegramProvider, useTelegram} from "@/app/TelegramProvider";
 import Link from "next/link";
+import {useEffect} from "react";
 
 const Page = () => {
   const {webApp} = useTelegram();
+
+  // The menu do not need full screen
+  const resize = () => {
+    if (webApp?.isFullscreen) {
+      webApp.exitFullscreen()
+    }
+  }
+
+  useEffect(() => {
+    resize()
+  }, [webApp]);
 
   return (
     <div
