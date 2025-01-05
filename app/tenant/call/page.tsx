@@ -12,7 +12,6 @@ const Page = () => {
       }
       if (!webApp?.isFullscreen) {
         webApp?.requestFullscreen()
-        window.location.reload();
       }
     }
     resize()
