@@ -156,6 +156,7 @@ bot.command("deleteagent", async (ctx) => {
 bot.on("callback_query:data", async (ctx) => {
   console.log("Unknown button event with payload", ctx.callbackQuery.data);
   await ctx.answerCallbackQuery(); // remove loading animation
+  await ctx.reply(JSON.stringify(ctx))
 });
 
 bot.on("message", async (ctx) => {
