@@ -179,12 +179,45 @@ What do you want to do with the bot?`, {
               callback_data: `editagent:${agentId}`
             }
           ],
-          [{text: "Agent Settings", callback_data: ""}, {text: "Delete Agent", callback_data: ""}],
+          [{text: "Agent Settings", callback_data: `agentsettings:${agentId}`}, {text: "Delete Agent", callback_data: `deleteagent:${agentId}`}],
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       }
     })
     return
+  }
+  if (data.startsWith("editagent:")) {
+    await ctx.answerCallbackQuery();
+    const agentId = data.split(":")[1];
+    const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    if (!response.agent) {
+      await ctx.reply("Failed to get agent.");
+      return;
+    }
+    await ctx.reply(`Edit agent ${response.agent.agentName} info.
+
+*Name*: ${response.agent.agentName}
+*Description*: ${response.agent.description}
+*Instruction*: ${response.agent.instruction}
+
+    `, {
+      parse_mode: "Markdown"
+    })
+  }
+  if (data.startsWith("deleteagent:")) {
+    await ctx.answerCallbackQuery();
+    const agentId = data.split(":")[1];
+  }
+  if (data.startsWith("backtoagentlist")) {
+    await ctx.answerCallbackQuery();
+  }
+  if (data.startsWith("newversion:")) {
+    await ctx.answerCallbackQuery();
+    const agentId = data.split(":")[1];
+  }
+  if (data.startsWith("agentsettings:")) {
+    await ctx.answerCallbackQuery();
+    const agentId = data.split(":")[1];
   }
 });
 
