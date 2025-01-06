@@ -4,7 +4,7 @@ export const fetchCache = 'force-no-store'
 
 import {Bot, Context, webhookCallback} from 'grammy'
 import {Redis} from '@upstash/redis'
-import {BedrockAgentClient, paginateListAgents} from "@aws-sdk/client-bedrock-agent";
+import {BedrockAgentClient, CreateAgentCommand, paginateListAgents} from "@aws-sdk/client-bedrock-agent";
 import {InlineKeyboardButton} from "@grammyjs/types";
 
 const BOT_DEVELOPER = 2130493951;
@@ -154,6 +154,50 @@ bot.on("callback_query:data", async (ctx) => {
   console.log("Unknown button event with payload", ctx.callbackQuery.data);
   await ctx.answerCallbackQuery(); // remove loading animation
 });
+
+bot.on("message", async (ctx) => {
+  const params = await redis.get(`params:${ctx.from?.id}`) as string[] | undefined;
+  if (!params) return;
+  try {
+    if (params[0] === "newagent") {
+      if (params.length === 1) {
+        // 首次输入参数，第一个参数为name
+        const agentName = ctx.message.text;
+        if (!agentName) {
+          await ctx.reply("Please choose a name for your agent.");
+          return;
+        }
+        // Your AWS account id.
+        const accountId = "913870644571";
+        // The name of the agent's execution role. It must be prefixed by `AmazonBedrockExecutionRoleForAgents_`.
+        const roleName = "AmazonBedrockExecutionRoleForAgents_IM37FNC9G4";
+        // The ARN for the agent's execution role.
+        // Follow the ARN format: 'arn:aws:iam::account-id:role/role-name'
+        const roleArn = `arn:aws:iam::${accountId}:role/${roleName}`;
+        const response = await bedrockAgentClient.send(new CreateAgentCommand({
+          agentName: agentName,
+          // TODO: pick model
+          foundationModel: "anthropic.claude-3-5-sonnet-20240620-v1:0",
+          agentResourceRoleArn: roleArn,
+        }));
+        if (!response.agent) {
+          await ctx.reply("Failed to create agent.");
+          return;
+        } else {
+          await redis.del(`params:${ctx.from?.id}`);
+          await ctx.reply(`Agent created successfully.
+AgentId: ${response.agent.agentId}
+AgentName: ${response.agent.agentName}
+AgentStatus: ${response.agent.agentStatus}
+FoundationModel: ${response.agent.foundationModel}
+`)
+        }
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+})
 
 /**
  * Agent Settings
