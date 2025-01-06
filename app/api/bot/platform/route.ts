@@ -4,7 +4,12 @@ export const fetchCache = 'force-no-store'
 
 import {Bot, Context, webhookCallback} from 'grammy'
 import {Redis} from '@upstash/redis'
-import {BedrockAgentClient, CreateAgentCommand, paginateListAgents} from "@aws-sdk/client-bedrock-agent";
+import {
+  BedrockAgentClient,
+  CreateAgentCommand,
+  DeleteAgentCommand,
+  paginateListAgents
+} from "@aws-sdk/client-bedrock-agent";
 import {InlineKeyboardButton, KeyboardButton} from "@grammyjs/types";
 
 const BOT_DEVELOPER = 2130493951;
@@ -184,12 +189,25 @@ bot.on("message", async (ctx) => {
         } else {
           await redis.del(`params:${ctx.from?.id}`);
           await ctx.reply(`Agent created successfully.
+
 AgentId: ${response.agent.agentId}
 AgentName: ${response.agent.agentName}
 AgentStatus: ${response.agent.agentStatus}
 FoundationModel: ${response.agent.foundationModel}
 `)
         }
+      }
+    }
+    if (params[0] === "deleteagent") {
+      if (params.length === 1) {
+        const agentId = ctx.message.text;
+        const response = await bedrockAgentClient.send(new DeleteAgentCommand({ agentId }));
+        await redis.del(`params:${ctx.from?.id}`);
+        await ctx.reply(`Agent deleted successfully.
+
+AgentId: ${response.agentId}
+AgentStatus: ${response.agentStatus}
+`)
       }
     }
   } catch (e) {
