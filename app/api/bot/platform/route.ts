@@ -7,7 +7,7 @@ import {Redis} from '@upstash/redis'
 import {
   BedrockAgentClient,
   CreateAgentCommand,
-  DeleteAgentCommand,
+  DeleteAgentCommand, GetAgentCommand,
   paginateListAgents
 } from "@aws-sdk/client-bedrock-agent";
 import {InlineKeyboardButton, KeyboardButton} from "@grammyjs/types";
@@ -154,9 +154,38 @@ bot.command("deleteagent", async (ctx) => {
 })
 
 bot.on("callback_query:data", async (ctx) => {
-  console.log("Unknown button event with payload", ctx.callbackQuery.data);
-  await ctx.answerCallbackQuery(); // remove loading animation
-  await ctx.reply(JSON.stringify(ctx))
+  const data = ctx.callbackQuery.data;
+  if (data.startsWith("agent:")) {
+    await ctx.answerCallbackQuery();
+    const agentId = data.split(":")[1];
+    const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    if (!response.agent) {
+      await ctx.reply("Failed to get agent.");
+      return;
+    }
+    await ctx.reply(`Here it is: ${response.agent.agentName}
+AgentId: ${response.agent.agentId}
+AgentStatus: ${response.agent.agentStatus}
+FoundationModel: ${response.agent.foundationModel}
+AgentVersion: ${response.agent.agentVersion}
+
+What do you want to do with the bot?`, {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {text: "New Version", callback_data: `newversion:${agentId}`},
+            {
+              text: "Edit Agent",
+              callback_data: `editagent:${agentId}`
+            }
+          ],
+          [{text: "Agent Settings", callback_data: ""}, {text: "Delete Agent", callback_data: ""}],
+          [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+        ]
+      }
+    })
+    return
+  }
 });
 
 bot.on("message", async (ctx) => {
@@ -202,7 +231,7 @@ FoundationModel: ${response.agent.foundationModel}
     if (params[0] === "deleteagent") {
       if (params.length === 1) {
         const agentId = ctx.message.text;
-        const response = await bedrockAgentClient.send(new DeleteAgentCommand({ agentId }));
+        const response = await bedrockAgentClient.send(new DeleteAgentCommand({agentId}));
         await redis.del(`params:${ctx.from?.id}`);
         await ctx.reply(`Agent deleted successfully.
 
