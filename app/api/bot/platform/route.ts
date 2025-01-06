@@ -5,7 +5,7 @@ export const fetchCache = 'force-no-store'
 import {Bot, Context, webhookCallback} from 'grammy'
 import {Redis} from '@upstash/redis'
 import {BedrockAgentClient, CreateAgentCommand, paginateListAgents} from "@aws-sdk/client-bedrock-agent";
-import {InlineKeyboardButton} from "@grammyjs/types";
+import {InlineKeyboardButton, KeyboardButton} from "@grammyjs/types";
 
 const BOT_DEVELOPER = 2130493951;
 
@@ -135,19 +135,17 @@ bot.command("deleteagent", async (ctx) => {
   for await (const page of pages) {
     agents.push(...(page.agentSummaries || []));
   }
-  // 准备 inline_keyboard
-  const inlineKeyboard = agents.map((agent) => {
-    return {
-      text: agent.agentName,
-      callback_data: `deleteagent:${agent.agentId}`,
-    } as InlineKeyboardButton;
-  })
-  // 每行 2 个
-  const inlineKeyboardRows = [] as InlineKeyboardButton[][];
-  for (let i = 0; i < inlineKeyboard.length; i += 2) {
-    inlineKeyboardRows.push(inlineKeyboard.slice(i, i + 2));
-  }
-  await ctx.reply("Choose a bot to delete.");
+  // Prepare keyboard buttons
+  const keyboard = agents.map((agent) => {
+    return [agent.agentName] as KeyboardButton[];
+  });
+  await ctx.reply("Choose a agent to delete.", {
+    reply_markup: {
+      keyboard: keyboard,
+      resize_keyboard: true,
+      one_time_keyboard: true
+    }
+  });
 })
 
 bot.on("callback_query:data", async (ctx) => {
