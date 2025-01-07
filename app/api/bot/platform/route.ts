@@ -293,7 +293,7 @@ What do you want to do with the bot?`, {
       await ctx.answerCallbackQuery();
       return;
     }
-    await ctx.reply(`Agent has been prepared successfully.
+    await ctx.editMessageText(`Agent has been prepared successfully.
 
 <b>AgentId:</b> ${response.agentId}
 <b>AgentStatus:</b> ${response.agentStatus}
