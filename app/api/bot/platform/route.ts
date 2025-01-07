@@ -206,18 +206,18 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("deleteagent:")) {
     await ctx.answerCallbackQuery();
-    const agentId = data.split(":")[1];
+    // const agentId = data.split(":")[1];
   }
   if (data.startsWith("backtoagentlist")) {
     await ctx.answerCallbackQuery();
   }
   if (data.startsWith("newversion:")) {
     await ctx.answerCallbackQuery();
-    const agentId = data.split(":")[1];
+    // const agentId = data.split(":")[1];
   }
   if (data.startsWith("agentsettings:")) {
     await ctx.answerCallbackQuery();
-    const agentId = data.split(":")[1];
+    // const agentId = data.split(":")[1];
   }
 });
 
