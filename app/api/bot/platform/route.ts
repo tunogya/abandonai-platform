@@ -343,6 +343,13 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Please choose a name for your agent.");
           return;
         }
+      } else if (params.length === 2) {
+        const agentName = params[1];
+        const instruction = ctx.message.text;
+        if (!instruction) {
+          await ctx.reply("Please enter the instruction for your agent.");
+          return;
+        }
         // Your AWS account id.
         const accountId = "913870644571";
         // The name of the agent's execution role. It must be prefixed by `AmazonBedrockExecutionRoleForAgents_`.
@@ -352,7 +359,7 @@ bot.on("message", async (ctx) => {
         const roleArn = `arn:aws:iam::${accountId}:role/${roleName}`;
         const response = await bedrockAgentClient.send(new CreateAgentCommand({
           agentName: agentName,
-          // TODO: pick model
+          instruction: instruction,
           foundationModel: "anthropic.claude-3-5-sonnet-20240620-v1:0",
           agentResourceRoleArn: roleArn,
         }));
