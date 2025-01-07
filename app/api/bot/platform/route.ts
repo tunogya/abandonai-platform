@@ -171,24 +171,24 @@ bot.on("callback_query:data", async (ctx) => {
     }
     await ctx.editMessageText(`Here it is: ${response.agent.agentName}
 
-*AgentId*: ${response.agent.agentId}
-*AgentStatus*: ${response.agent.agentStatus}
-*FoundationModel*: ${response.agent.foundationModel}
-*AgentVersion*: ${response.agent.agentVersion}
+*AgentId:* ${response.agent.agentId}
+*AgentStatus:* ${response.agent.agentStatus}
+*FoundationModel:* ${response.agent.foundationModel}
+*AgentVersion:* ${response.agent.agentVersion}
 
 What do you want to do with the bot?`, {
       reply_markup: {
         inline_keyboard: [
           [
-            {text: "Prepare Agent", callback_data: `prepareagent:${agentId}`},
+            {text: "Prepare Agent", callback_data: `prepareagent:${response.agent.agentId}`},
             {
               text: "Edit Agent",
-              callback_data: `editagent:${agentId}`
+              callback_data: `editagent:${response.agent.agentId}`
             }
           ],
-          [{text: "Agent Settings", callback_data: `agentsettings:${agentId}`}, {
+          [{text: "Agent Settings", callback_data: `agentsettings:${response.agent.agentId}`}, {
             text: "Delete Agent",
-            callback_data: `deleteagent:${agentId}`
+            callback_data: `deleteagent:${response.agent.agentId}`
           }],
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
@@ -214,9 +214,9 @@ What do you want to do with the bot?`, {
     }
     await ctx.editMessageText(`Edit agent ${response.agent.agentName} info.
 
-*Name*: ${response.agent.agentName}
-*Description*: ${response.agent.description}
-*Instruction*: ${response.agent.instruction}
+*Name:* ${response.agent.agentName}
+*Description:* ${response.agent.description}
+*Instruction:* ${response.agent.instruction}
 `, {
       parse_mode: "Markdown"
     })
