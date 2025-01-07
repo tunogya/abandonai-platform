@@ -51,20 +51,20 @@ bot.use(async (ctx, next) => {
 bot.command("start", async (ctx) => {
   // await redis.del(`params:${ctx.from?.id}`);
   // const payload = ctx.match
-  await ctx.reply(`I can help you create and manage Agents\\.
+  await ctx.reply(`I can help you create and manage Agents.
 
 You can control me by sending these commands:
-/newagent \\- create a new agent
-/myagents \\- edit your agents
+/newagent - create a new agent
+/myagents - edit your agents
 
-*Edit Agents*
-/deleteagent \\- delete a agent
+<b>Edit Agents</b>
+/deleteagent - delete a agent
 
-*Agent Settings*
+<b>Agent Settings</b>
 
-*Knowledge bases*
+<b>Knowledge bases</b>
 `, {
-    parse_mode: "MarkdownV2"
+    parse_mode: "HTML"
   });
 });
 
@@ -171,10 +171,10 @@ bot.on("callback_query:data", async (ctx) => {
     }
     await ctx.editMessageText(`Here it is: ${response.agent.agentName}
 
-*AgentId:* ${response.agent.agentId}
-*AgentStatus:* ${response.agent.agentStatus}
-*FoundationModel:* ${response.agent.foundationModel}
-*AgentVersion:* ${response.agent.agentVersion}
+<b>AgentId:</b> ${response.agent.agentId}
+<b>AgentStatus:</b> ${response.agent.agentStatus}
+<b>FoundationModel:</b> ${response.agent.foundationModel}
+<b>AgentVersion:</b> ${response.agent.agentVersion}
 
 What do you want to do with the bot?`, {
       reply_markup: {
@@ -193,7 +193,7 @@ What do you want to do with the bot?`, {
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       },
-      parse_mode: "Markdown"
+      parse_mode: "HTML"
     })
     await ctx.answerCallbackQuery();
     return
@@ -214,11 +214,11 @@ What do you want to do with the bot?`, {
     }
     await ctx.editMessageText(`Edit agent ${response.agent.agentName} info.
 
-*Name:* ${response.agent.agentName}
-*Description:* ${response.agent.description}
-*Instruction:* ${response.agent.instruction}
+<b>Name:</b> ${response.agent.agentName}
+<b>Description:</b> ${response.agent.description}
+<b>Instruction:</b> ${response.agent.instruction}
 `, {
-      parse_mode: "Markdown"
+      parse_mode: "HTML"
     })
     await ctx.answerCallbackQuery();
     return
@@ -295,10 +295,10 @@ What do you want to do with the bot?`, {
     }
     await ctx.reply(`Agent has been prepared successfully.
 
-*AgentId:* ${response.agentId}
-*AgentStatus:* ${response.agentStatus}
+<b>AgentId:</b> ${response.agentId}
+<b>AgentStatus:</b> ${response.agentStatus}
 `, {
-      parse_mode: "Markdown",
+      parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
           [{text: "« Back to Agent", callback_data: `agent:${response.agentId}`}],
@@ -315,15 +315,15 @@ What do you want to do with the bot?`, {
     const response = await bedrockAgentClient.send(new DeleteAgentCommand({agentId}));
     await ctx.editMessageText(`Agent deleted successfully.
 
-*AgentId:* ${response.agentId}
-*AgentStatus:* ${response.agentStatus}
+<b>AgentId:</b> ${response.agentId}
+<b>AgentStatus:</b> ${response.agentStatus}
 `, {
       reply_markup: {
         inline_keyboard: [
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       },
-      parse_mode: "Markdown"
+      parse_mode: "HTML"
     })
     await ctx.answerCallbackQuery();
     return;
@@ -363,12 +363,12 @@ bot.on("message", async (ctx) => {
           await redis.del(`params:${ctx.from?.id}`);
           await ctx.reply(`Agent created successfully.
 
-*AgentId:* ${response.agent.agentId}
-*AgentName:* ${response.agent.agentName}
-*AgentStatus:* ${response.agent.agentStatus}
-*FoundationModel:* ${response.agent.foundationModel}
+<b>AgentId:</b> ${response.agent.agentId}
+<b>AgentName:</b> ${response.agent.agentName}
+<b>AgentStatus:</b> ${response.agent.agentStatus}
+<b>FoundationModel:</b> ${response.agent.foundationModel}
 `, {
-            parse_mode: "Markdown",
+            parse_mode: "HTML",
           })
         }
       }
@@ -380,10 +380,10 @@ bot.on("message", async (ctx) => {
         await redis.del(`params:${ctx.from?.id}`);
         await ctx.reply(`Agent deleted successfully.
 
-*AgentId:* ${response.agentId}
-*AgentStatus:* ${response.agentStatus}
+<b>AgentId:</b> ${response.agentId}
+<b>AgentStatus:</b> ${response.agentStatus}
 `, {
-          parse_mode: "Markdown",
+          parse_mode: "HTML",
         })
       }
     }
