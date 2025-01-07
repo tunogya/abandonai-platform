@@ -156,14 +156,20 @@ bot.command("deleteagent", async (ctx) => {
 bot.on("callback_query:data", async (ctx) => {
   const data = ctx.callbackQuery.data;
   if (data.startsWith("agent:")) {
-    await ctx.answerCallbackQuery();
     const agentId = data.split(":")[1];
     const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
     if (!response.agent) {
-      await ctx.reply("Failed to get agent.");
+      await ctx.editMessageText("Failed to get agent.", {
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+          ]
+        }
+      });
+      await ctx.answerCallbackQuery();
       return;
     }
-    await ctx.reply(`Here it is: ${response.agent.agentName}
+    await ctx.editMessageText(`Here it is: ${response.agent.agentName}
 AgentId: ${response.agent.agentId}
 AgentStatus: ${response.agent.agentStatus}
 FoundationModel: ${response.agent.foundationModel}
@@ -179,22 +185,32 @@ What do you want to do with the bot?`, {
               callback_data: `editagent:${agentId}`
             }
           ],
-          [{text: "Agent Settings", callback_data: `agentsettings:${agentId}`}, {text: "Delete Agent", callback_data: `deleteagent:${agentId}`}],
+          [{text: "Agent Settings", callback_data: `agentsettings:${agentId}`}, {
+            text: "Delete Agent",
+            callback_data: `deleteagent:${agentId}`
+          }],
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       }
     })
+    await ctx.answerCallbackQuery();
     return
   }
   if (data.startsWith("editagent:")) {
-    await ctx.answerCallbackQuery();
     const agentId = data.split(":")[1];
     const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
     if (!response.agent) {
-      await ctx.reply("Failed to get agent.");
+      await ctx.editMessageText("Failed to get agent.", {
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+          ]
+        }
+      });
+      await ctx.answerCallbackQuery();
       return;
     }
-    await ctx.reply(`Edit agent ${response.agent.agentName} info.
+    await ctx.editMessageText(`Edit agent ${response.agent.agentName} info.
 
 *Name*: ${response.agent.agentName}
 *Description*: ${response.agent.description}
@@ -203,22 +219,89 @@ What do you want to do with the bot?`, {
     `, {
       parse_mode: "Markdown"
     })
+    await ctx.answerCallbackQuery();
+    return
   }
   if (data.startsWith("deleteagent:")) {
+    const agentId = data.split(":")[1];
+    const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    if (!response.agent) {
+      await ctx.editMessageText("Failed to get agent.", {
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+          ]
+        }
+      });
+      await ctx.answerCallbackQuery();
+      return;
+    }
+    await ctx.editMessageText(`You are about to delete your agent ${response.agent.agentName}.Is that correct?`, {
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "Nope, Never mind", callback_data: `agent:${agentId}`}],
+          [{text: "Yes, delete the agent", callback_data: `deleteagent_yes:${agentId}`}],
+          [{text: "No", callback_data: `agent:${agentId}`}],
+          [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+        ]
+      }
+    })
     await ctx.answerCallbackQuery();
-    // const agentId = data.split(":")[1];
+    return
   }
   if (data.startsWith("backtoagentlist")) {
+    const pages = paginateListAgents({
+      client: bedrockAgentClient,
+      pageSize: 10,
+    }, {});
+    const agents = [];
+    for await (const page of pages) {
+      agents.push(...(page.agentSummaries || []));
+    }
+    // 准备 inline_keyboard
+    const inlineKeyboard = agents.map((agent) => {
+      return {
+        text: agent.agentName,
+        callback_data: `agent:${agent.agentId}`,
+      } as InlineKeyboardButton;
+    })
+    // 每行 2 个
+    const inlineKeyboardRows = [] as InlineKeyboardButton[][];
+    for (let i = 0; i < inlineKeyboard.length; i += 2) {
+      inlineKeyboardRows.push(inlineKeyboard.slice(i, i + 2));
+    }
+    await ctx.editMessageText("Choose an agent from the list below:", {
+      reply_markup: {
+        inline_keyboard: inlineKeyboardRows,
+      }
+    });
     await ctx.answerCallbackQuery();
+    return;
   }
   if (data.startsWith("newversion:")) {
-    await ctx.answerCallbackQuery();
     // const agentId = data.split(":")[1];
   }
   if (data.startsWith("agentsettings:")) {
-    await ctx.answerCallbackQuery();
     // const agentId = data.split(":")[1];
   }
+  if (data.startsWith("deleteagent_yes:")) {
+    const agentId = data.split(":")[1];
+    const response = await bedrockAgentClient.send(new DeleteAgentCommand({agentId}));
+    await ctx.editMessageText(`Agent deleted successfully.
+
+AgentId: ${response.agentId}
+AgentStatus: ${response.agentStatus}
+`, {
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+        ]
+      }
+    })
+    await ctx.answerCallbackQuery();
+    return;
+  }
+  await ctx.answerCallbackQuery();
 });
 
 bot.on("message", async (ctx) => {
