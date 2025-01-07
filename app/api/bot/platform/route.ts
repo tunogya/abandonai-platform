@@ -170,10 +170,11 @@ bot.on("callback_query:data", async (ctx) => {
       return;
     }
     await ctx.editMessageText(`Here it is: ${response.agent.agentName}
-AgentId: ${response.agent.agentId}
-AgentStatus: ${response.agent.agentStatus}
-FoundationModel: ${response.agent.foundationModel}
-AgentVersion: ${response.agent.agentVersion}
+
+*AgentId*: ${response.agent.agentId}
+*AgentStatus*: ${response.agent.agentStatus}
+*FoundationModel*: ${response.agent.foundationModel}
+*AgentVersion*: ${response.agent.agentVersion}
 
 What do you want to do with the bot?`, {
       reply_markup: {
@@ -191,7 +192,8 @@ What do you want to do with the bot?`, {
           }],
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
-      }
+      },
+      parse_mode: "Markdown"
     })
     await ctx.answerCallbackQuery();
     return
@@ -215,8 +217,7 @@ What do you want to do with the bot?`, {
 *Name*: ${response.agent.agentName}
 *Description*: ${response.agent.description}
 *Instruction*: ${response.agent.instruction}
-
-    `, {
+`, {
       parse_mode: "Markdown"
     })
     await ctx.answerCallbackQuery();
@@ -289,14 +290,15 @@ What do you want to do with the bot?`, {
     const response = await bedrockAgentClient.send(new DeleteAgentCommand({agentId}));
     await ctx.editMessageText(`Agent deleted successfully.
 
-AgentId: ${response.agentId}
-AgentStatus: ${response.agentStatus}
+*AgentId:* ${response.agentId}
+*AgentStatus:* ${response.agentStatus}
 `, {
       reply_markup: {
         inline_keyboard: [
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
-      }
+      },
+      parse_mode: "Markdown"
     })
     await ctx.answerCallbackQuery();
     return;
@@ -336,11 +338,13 @@ bot.on("message", async (ctx) => {
           await redis.del(`params:${ctx.from?.id}`);
           await ctx.reply(`Agent created successfully.
 
-AgentId: ${response.agent.agentId}
-AgentName: ${response.agent.agentName}
-AgentStatus: ${response.agent.agentStatus}
-FoundationModel: ${response.agent.foundationModel}
-`)
+*AgentId:* ${response.agent.agentId}
+*AgentName:* ${response.agent.agentName}
+*AgentStatus:* ${response.agent.agentStatus}
+*FoundationModel:* ${response.agent.foundationModel}
+`, {
+            parse_mode: "Markdown",
+          })
         }
       }
     }
@@ -351,9 +355,11 @@ FoundationModel: ${response.agent.foundationModel}
         await redis.del(`params:${ctx.from?.id}`);
         await ctx.reply(`Agent deleted successfully.
 
-AgentId: ${response.agentId}
-AgentStatus: ${response.agentStatus}
-`)
+*AgentId:* ${response.agentId}
+*AgentStatus:* ${response.agentStatus}
+`, {
+          parse_mode: "Markdown",
+        })
       }
     }
   } catch (e) {
