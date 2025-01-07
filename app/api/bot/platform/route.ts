@@ -8,7 +8,7 @@ import {
   BedrockAgentClient,
   CreateAgentCommand,
   DeleteAgentCommand, GetAgentCommand,
-  paginateListAgents
+  paginateListAgents, PrepareAgentCommand
 } from "@aws-sdk/client-bedrock-agent";
 import {InlineKeyboardButton, KeyboardButton} from "@grammyjs/types";
 
@@ -180,7 +180,7 @@ What do you want to do with the bot?`, {
       reply_markup: {
         inline_keyboard: [
           [
-            {text: "New Version", callback_data: `newversion:${agentId}`},
+            {text: "Prepare Agent", callback_data: `prepareagent:${agentId}`},
             {
               text: "Edit Agent",
               callback_data: `editagent:${agentId}`
@@ -279,8 +279,33 @@ What do you want to do with the bot?`, {
     await ctx.answerCallbackQuery();
     return;
   }
-  if (data.startsWith("newversion:")) {
-    // const agentId = data.split(":")[1];
+  if (data.startsWith("prepareagent:")) {
+    const agentId = data.split(":")[1];
+    const response = await bedrockAgentClient.send(new PrepareAgentCommand({agentId}));
+    if (!response.agentId) {
+      await ctx.editMessageText("Failed to prepare agent.", {
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+          ]
+        }
+      });
+      await ctx.answerCallbackQuery();
+      return;
+    }
+    await ctx.reply(`Agent has been prepared successfully.
+
+*AgentId:* ${response.agentId}
+*AgentStatus:* ${response.agentStatus}
+`, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "« Back to Agent", callback_data: `agent:${response.agentId}`}],
+          [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+        ]
+      }
+    })
   }
   if (data.startsWith("agentsettings:")) {
     // const agentId = data.split(":")[1];
