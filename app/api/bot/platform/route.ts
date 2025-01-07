@@ -8,7 +8,7 @@ import {
   BedrockAgentClient,
   CreateAgentCommand,
   DeleteAgentCommand, GetAgentCommand,
-  paginateListAgents, PrepareAgentCommand
+  paginateListAgents, PrepareAgentCommand, UpdateAgentCommand
 } from "@aws-sdk/client-bedrock-agent";
 import {InlineKeyboardButton, KeyboardButton} from "@grammyjs/types";
 
@@ -218,7 +218,15 @@ What do you want to do with the bot?`, {
 <b>Description:</b> ${response.agent.description}
 <b>Instruction:</b> ${response.agent.instruction}
 `, {
-      parse_mode: "HTML"
+      parse_mode: "HTML",
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "Edit Name", callback_data: `editname:${response.agent.agentId}`}, {text: "Edit Description", callback_data: `editdescription:${response.agent.agentId}`}],
+          [{text: "Edit Instruction", callback_data: `editinstruction:${response.agent.agentId}`}, {text: "Edit Actions", callback_data: `editactions:${response.agent.agentId}`}],
+          [{text: "Edit Memory", callback_data: `editmemory:${response.agent.agentId}`}],
+          [{text: "« Back to Agent", callback_data: `agent:${response.agent.agentId}`}],
+        ]
+      }
     })
     await ctx.answerCallbackQuery();
     return
@@ -328,6 +336,27 @@ What do you want to do with the bot?`, {
     await ctx.answerCallbackQuery();
     return;
   }
+  if (data.startsWith("editname:")) {
+    const agentId = data.split(":")[1];
+    await redis.set(`params:${ctx.from?.id}`, ["editname", agentId]);
+    await ctx.editMessageText("Please enter the new name for the agent.");
+    await ctx.answerCallbackQuery();
+    return;
+  }
+  if (data.startsWith("editdescription:")) {
+    const agentId = data.split(":")[1];
+    await redis.set(`params:${ctx.from?.id}`, ["editdescription", agentId]);
+    await ctx.editMessageText("Please enter the new description for the agent.");
+    await ctx.answerCallbackQuery();
+    return;
+  }
+  if (data.startsWith("editinstruction:")) {
+    const agentId = data.split(":")[1];
+    await redis.set(`params:${ctx.from?.id}`, ["editinstruction", agentId]);
+    await ctx.editMessageText("Please enter the new instruction for the agent.");
+    await ctx.answerCallbackQuery();
+    return;
+  }
   await ctx.answerCallbackQuery();
 });
 
@@ -389,6 +418,98 @@ bot.on("message", async (ctx) => {
 
 <b>AgentId:</b> ${response.agentId}
 <b>AgentStatus:</b> ${response.agentStatus}
+`, {
+          parse_mode: "HTML",
+        })
+      }
+    }
+    if (params[0] === "editname") {
+      if (params.length === 1) {
+        const agentId = params[1];
+        const agentName = ctx.message.text;
+        if (!agentName) {
+          await ctx.reply("Please enter the new name for the agent.");
+          return;
+        }
+        const {agent} = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+        if (!agent) {
+          await ctx.reply("Failed to get agent.");
+          return;
+        }
+        // @ts-expect-error no error
+        const response = await bedrockAgentClient.send(new UpdateAgentCommand({...agent, agentName: agentName}));
+        if (!response.agent) {
+          await ctx.reply("Failed to update agent.");
+          return;
+        }
+        await redis.del(`params:${ctx.from?.id}`);
+        await ctx.reply(`Agent name updated successfully.
+
+<b>AgentId:</b> ${response.agent.agentId}
+<b>AgentName:</b> ${response.agent.agentName}
+<b>AgentStatus:</b> ${response.agent.agentStatus}
+`, {
+          parse_mode: "HTML",
+        })
+      }
+    }
+    if (params[0] === "editdescription") {
+      if (params.length === 1) {
+        const agentId = params[1];
+        const description = ctx.message.text;
+        if (!description) {
+          await ctx.reply("Please enter the new description for the agent.");
+          return;
+        }
+        const {agent} = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+        if (!agent) {
+          await ctx.reply("Failed to get agent.");
+          return;
+        }
+        // @ts-expect-error no error
+        const response = await bedrockAgentClient.send(new UpdateAgentCommand({...agent, description: description}));
+        if (!response.agent) {
+          await ctx.reply("Failed to update agent.");
+          return;
+        }
+        await redis.del(`params:${ctx.from?.id}`);
+        await ctx.reply(`Agent description updated successfully.
+
+<b>AgentId:</b> ${response.agent.agentId}
+<b>AgentName:</b> ${response.agent.agentName}
+<b>AgentStatus:</b> ${response.agent.agentStatus}
+<b>Description:</b> ${response.agent.description}
+`, {
+          parse_mode: "HTML",
+        })
+      }
+    }
+    if (params[0] === "editinstruction") {
+      if (params.length === 1) {
+        const agentId = params[1];
+        const instruction = ctx.message.text;
+        if (!instruction) {
+          await ctx.reply("Please enter the new instruction for the agent.");
+          return;
+        }
+        const {agent} = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+        if (!agent) {
+          await ctx.reply("Failed to get agent.");
+          return;
+        }
+        // @ts-expect-error no error
+        const response = await bedrockAgentClient.send(new UpdateAgentCommand({...agent, instruction: instruction}));
+        if (!response.agent) {
+          await ctx.reply("Failed to update agent.");
+          return;
+        }
+        await redis.del(`params:${ctx.from?.id}`);
+        await ctx.reply(`Agent instruction updated successfully.
+
+<b>AgentId:</b> ${response.agent.agentId}
+<b>AgentName:</b> ${response.agent.agentName}
+<b>AgentStatus:</b> ${response.agent.agentStatus}
+<b>Instruction:</b> ${response.agent.instruction}
 `, {
           parse_mode: "HTML",
         })
