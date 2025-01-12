@@ -372,6 +372,7 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Please choose a name for your agent.");
           return;
         }
+        await redis.set(`params:${ctx.from?.id}`, ["newagent", agentName]);
       } else if (params.length === 2) {
         const agentName = params[1];
         const instruction = ctx.message.text;
@@ -379,6 +380,7 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Please enter the instruction for your agent.");
           return;
         }
+        await redis.set(`params:${ctx.from?.id}`, ["newagent", agentName, instruction]);
         // Your AWS account id.
         const accountId = "913870644571";
         // The name of the agent's execution role. It must be prefixed by `AmazonBedrockExecutionRoleForAgents_`.
