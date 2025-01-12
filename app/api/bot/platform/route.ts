@@ -1,9 +1,4 @@
 import {TwitterApi} from 'twitter-api-v2';
-
-export const dynamic = 'force-dynamic'
-
-export const fetchCache = 'force-no-store'
-
 import {Bot, Context, webhookCallback} from 'grammy'
 import {Redis} from '@upstash/redis'
 import {
@@ -13,6 +8,9 @@ import {
   paginateListAgents, PrepareAgentCommand, UpdateAgentCommand
 } from "@aws-sdk/client-bedrock-agent";
 import {InlineKeyboardButton, KeyboardButton} from "@grammyjs/types";
+
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
 const BOT_DEVELOPER = 2130493951;
 
