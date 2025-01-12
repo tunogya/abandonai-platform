@@ -13,7 +13,7 @@ const GET = async (req: NextRequest) => {
     return Response.json({message: 'error'});
   }
   const response = await twitterClient.loginWithOAuth2({
-    code: `${code}`, codeVerifier: "challenge", redirectUri: "https://t.me/abandonaibot",
+    code: `${code}`, codeVerifier: "challenge", redirectUri: "https://open.abandon.ai/api/callback/twitter",
   })
   const {client: loggedClient, accessToken, refreshToken, expiresIn} = response;
   const { data: userObject } = await loggedClient.v2.me();
