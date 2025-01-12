@@ -388,7 +388,10 @@ What do you want to do with the bot?`, {
   if (data.startsWith("twitterbot")) {
     const agentId = data.split(":")[1];
     await redis.set(`params:${ctx.from?.id}`, ["twitterbot", agentId]);
-    const { url } = twitterClient.generateOAuth2AuthLink("https://open.abandon.ai/api/callback/twitter", { scope: ['tweet.read', 'tweet.write', 'users.read', 'like.write', 'like.read', 'offline.access'], state: agentId });
+    const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink("https://open.abandon.ai/api/callback/twitter", { scope: ['tweet.read', 'tweet.write', 'users.read', 'like.write', 'like.read', 'offline.access'], state: agentId });
+    await redis.set(`oauth2:${agentId}`, {codeVerifier, state}, {
+      ex: 30
+    });
     await ctx.editMessageText("Please login with your Twitter account.", {
       reply_markup: {
         inline_keyboard: [

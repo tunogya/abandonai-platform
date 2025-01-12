@@ -9,11 +9,12 @@ const GET = async (req: NextRequest) => {
   const searchParams = req.nextUrl.searchParams
   const code = searchParams.get('code');
   const state = searchParams.get('state');
-  if (!code || !state) {
+  const { codeVerifier, state: stateVerifier } = await redis.get(`oauth2:${state}`) as { codeVerifier: string, state: string };
+  if (!code || !state || state !== stateVerifier) {
     return Response.json({message: 'error'});
   }
   const response = await twitterClient.loginWithOAuth2({
-    code: `${code}`, codeVerifier: "challenge", redirectUri: "https://open.abandon.ai/api/callback/twitter",
+    code: `${code}`, codeVerifier, redirectUri: "https://open.abandon.ai/api/callback/twitter",
   })
   const {client: loggedClient, accessToken, refreshToken, expiresIn} = response;
   const { data: userObject } = await loggedClient.v2.me();
