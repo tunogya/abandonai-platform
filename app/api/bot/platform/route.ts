@@ -316,7 +316,28 @@ What do you want to do with the bot?`, {
     })
   }
   if (data.startsWith("agentsettings:")) {
-    // const agentId = data.split(":")[1];
+    const agentId = data.split(":")[1];
+    const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    if (!response.agent) {
+      await ctx.editMessageText("Failed to get agent.", {
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+          ]
+        }
+      });
+      await ctx.answerCallbackQuery();
+      return;
+    }
+    await ctx.editMessageText(`Settings for ${response.agent.agentName}.`, {
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "Telegram Bot", callback_data: `telegrambot:${response.agent.agentId}`}],
+          [{text: "Twitter Bot", callback_data: `twitterbot:${response.agent.agentId}`}],
+          [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+        ]
+      }
+    });
   }
   if (data.startsWith("deleteagent_yes:")) {
     const agentId = data.split(":")[1];
@@ -354,6 +375,20 @@ What do you want to do with the bot?`, {
     const agentId = data.split(":")[1];
     await redis.set(`params:${ctx.from?.id}`, ["editinstruction", agentId]);
     await ctx.editMessageText("Please enter the new instruction for the agent.");
+    await ctx.answerCallbackQuery();
+    return;
+  }
+  if (data.startsWith("twitterbot")) {
+    const agentId = data.split(":")[1];
+    await redis.set(`params:${ctx.from?.id}`, ["twitterbot", agentId]);
+    await ctx.editMessageText("Please login with your Twitter account.");
+    await ctx.answerCallbackQuery();
+    return;
+  }
+  if (data.startsWith("telegrambot")) {
+    const agentId = data.split(":")[1];
+    await redis.set(`params:${ctx.from?.id}`, ["telegrambot", agentId]);
+    await ctx.editMessageText("Please enter the telegram bot Token for the agent.");
     await ctx.answerCallbackQuery();
     return;
   }
