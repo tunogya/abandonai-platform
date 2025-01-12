@@ -373,6 +373,7 @@ bot.on("message", async (ctx) => {
           return;
         }
         await redis.set(`params:${ctx.from?.id}`, ["newagent", agentName]);
+        await ctx.reply("Please enter the instruction for your agent.");
       } else if (params.length === 2) {
         const agentName = params[1];
         const instruction = ctx.message.text;
