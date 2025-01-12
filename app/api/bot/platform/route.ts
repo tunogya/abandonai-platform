@@ -1,3 +1,5 @@
+import { TwitterApi } from 'twitter-api-v2';
+
 export const dynamic = 'force-dynamic'
 
 export const fetchCache = 'force-no-store'
@@ -33,6 +35,11 @@ const bot = new Bot<MyContext>(token)
 const redis = Redis.fromEnv()
 
 const bedrockAgentClient = new BedrockAgentClient({region: "us-east-1"});
+
+const twitterClient = new TwitterApi({
+  clientId: process.env.X_CLIENT_ID || "",
+  clientSecret: process.env.X_CLIENT_SECRET || "",
+});
 
 /**
  * Middleware to add bot config to context.
@@ -381,7 +388,16 @@ What do you want to do with the bot?`, {
   if (data.startsWith("twitterbot")) {
     const agentId = data.split(":")[1];
     await redis.set(`params:${ctx.from?.id}`, ["twitterbot", agentId]);
-    await ctx.editMessageText("Please login with your Twitter account.");
+    const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink("https://t.me/abandonaibot", { scope: ['tweet.read', 'tweet.write', 'users.read', 'like.write', 'like.read', 'offline.access'], state: agentId });
+    await redis.set(`twitterbotauth2:${agentId}`, JSON.stringify({ codeVerifier, state }));
+    await ctx.editMessageText("Please login with your Twitter account.", {
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "Login with Twitter", url: url}],
+          [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+        ]
+      }
+    });
     await ctx.answerCallbackQuery();
     return;
   }
