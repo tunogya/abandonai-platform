@@ -29,16 +29,22 @@ const GET = async (req: NextRequest) => {
   })
   const {client: loggedClient, accessToken, refreshToken, expiresIn} = response;
   const {data: userObject} = await loggedClient.v2.me();
-  await redis.set(`twitterbotauth2:${state}`, {accessToken, refreshToken, expiresIn, userObject});
-  await bot.api.editMessageText(chatId, messageId, `This agent have login with <a href="https://x.com/${userObject.username}">${userObject.name}</a>`, {
-    parse_mode: "HTML",
-    reply_markup: {
-      inline_keyboard: [
-        [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
-      ]
-    }
-  })
-
+  await Promise.all([
+    redis.pipeline()
+      .set(`twitterbotauth2:${state}`, {accessToken, refreshToken, expiresIn, userObject})
+      .del(`oauth2:${state}`)
+      .exec(),
+    bot.api.editMessageText(chatId, messageId, `This agent have login with <a href="https://x.com/${userObject.username}">${userObject.name}</a>`, {
+      parse_mode: "HTML",
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
+        ]
+      }
+    }).catch((e) => {
+      console.error(e);
+    })
+  ])
   return Response.redirect("https://t.me/abandonaibot", 302);
 }
 
