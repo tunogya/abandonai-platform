@@ -388,18 +388,32 @@ What do you want to do with the bot?`, {
   if (data.startsWith("twitterbot")) {
     const agentId = data.split(":")[1];
     await redis.set(`params:${ctx.from?.id}`, ["twitterbot", agentId]);
-    const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink("https://open.abandon.ai/api/callback/twitter", { scope: ['tweet.read', 'tweet.write', 'users.read', 'like.write', 'like.read', 'offline.access'], state: agentId });
-    await redis.set(`oauth2:${agentId}`, {codeVerifier, state}, {
-      ex: 30
-    });
-    await ctx.editMessageText("Please login with your Twitter account.", {
-      reply_markup: {
-        inline_keyboard: [
-          [{text: "Login with Twitter", url: url}],
-          [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
-        ]
-      }
-    });
+    const { userObject } = await redis.get(`twitterbotauth2:${agentId}`) as { userObject: { id: string, username: string, name: string }}
+    if (!userObject) {
+      const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink("https://open.abandon.ai/api/callback/twitter", { scope: ['tweet.read', 'tweet.write', 'users.read', 'like.write', 'like.read', 'offline.access'], state: agentId });
+      await redis.set(`oauth2:${agentId}`, {codeVerifier, state}, {
+        ex: 30
+      });
+      await ctx.editMessageText("Please login with your Twitter account.", {
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "Login with Twitter", url: url}],
+            [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+          ]
+        }
+      });
+      await redis.set(``, ctx.message)
+    } else {
+      await ctx.editMessageText(`This agent have login with <a href="https://x.com/${userObject.username}">${userObject.name}</a>`, {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "Logout", callback_data: `logouttwitter:${agentId}`}],
+            [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+          ]
+        }
+      })
+    }
     await ctx.answerCallbackQuery();
     return;
   }
@@ -409,6 +423,17 @@ What do you want to do with the bot?`, {
     await ctx.editMessageText("Please enter the telegram bot Token for the agent.");
     await ctx.answerCallbackQuery();
     return;
+  }
+  if (data.startsWith("logouttwitter")) {
+    const agentId = data.split(":")[1];
+    await redis.del(`twitterbotauth2:${agentId}`);
+    await ctx.editMessageText("Twitter logout successfully.", {
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+        ]
+      }
+    })
   }
   await ctx.answerCallbackQuery();
 });
