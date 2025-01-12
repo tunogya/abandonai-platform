@@ -18,7 +18,8 @@ const GET = async (req: NextRequest) => {
   const {client: loggedClient, accessToken, refreshToken, expiresIn} = response;
   const { data: userObject } = await loggedClient.v2.me();
   await redis.set(`twitterbotauth2:${state}`, {accessToken, refreshToken, expiresIn, userObject});
-  return Response.json({message: 'success', userObject, accessToken, refreshToken, expiresIn});
+
+  return Response.redirect("https://t.me/abandonaibot", 302);
 }
 
 export {GET}
