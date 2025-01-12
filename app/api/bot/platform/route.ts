@@ -391,9 +391,7 @@ What do you want to do with the bot?`, {
     const { userObject } = await redis.get(`twitterbotauth2:${agentId}`) as { userObject: { id: string, username: string, name: string }}
     if (!userObject) {
       const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink("https://open.abandon.ai/api/callback/twitter", { scope: ['tweet.read', 'tweet.write', 'users.read', 'like.write', 'like.read', 'offline.access'], state: agentId });
-      await redis.set(`oauth2:${agentId}`, {codeVerifier, state, chatId: ctx.chat?.id, messageId: ctx.update.message?.message_id}, {
-        ex: 30
-      });
+      await redis.set(`oauth2:${agentId}`, {codeVerifier, state, chatId: ctx.chat?.id, messageId: ctx.update.message?.message_id});
       await ctx.editMessageText("Please login with your Twitter account.", {
         reply_markup: {
           inline_keyboard: [
