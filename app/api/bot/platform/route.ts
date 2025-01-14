@@ -401,14 +401,16 @@ What do you want to do with the bot?`, {
     await Promise.all([
       redis.set(`params:${ctx.from?.id}`, ["editname", agentId]),
       ctx.editMessageText("Please enter the new name for the agent."),
-    ]);
+    ])
+      .catch((e) => console.log(e));
   }
   if (data.startsWith("editdescription:")) {
     const agentId = data.split(":")[1];
     await Promise.all([
       redis.set(`params:${ctx.from?.id}`, ["editdescription", agentId]),
       ctx.editMessageText("Please enter the new description for the agent."),
-    ]);
+    ])
+      .catch((e) => console.log(e));
   }
   if (data.startsWith("editinstruction:")) {
     const agentId = data.split(":")[1];
@@ -416,6 +418,7 @@ What do you want to do with the bot?`, {
       redis.set(`params:${ctx.from?.id}`, ["editinstruction", agentId]),
       ctx.editMessageText("Please enter the new instruction for the agent."),
     ])
+      .catch((e) => console.log(e));
   }
   if (data.startsWith("twitterbot")) {
     const agentId = data.split(":")[1];
@@ -449,6 +452,7 @@ What do you want to do with the bot?`, {
           }
         })
       ])
+        .catch((e) => console.log(e));
     } else {
       await ctx.editMessageText(`This agent have login with <a href="https://x.com/${userObject.username}">${userObject.name}</a>`, {
         parse_mode: "HTML",
@@ -463,10 +467,29 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("telegrambot")) {
     const agentId = data.split(":")[1];
-    await Promise.all([
-      redis.set(`params:${ctx.from?.id}`, ["telegrambot", agentId]),
-      ctx.editMessageText("Please enter the telegram bot Token for the agent.")
-    ]);
+    const token = await redis.get(`telegrambottoken:${agentId}`)
+    if (!token) {
+      await Promise.all([
+        redis.set(`params:${ctx.from?.id}`, ["telegrambot", agentId]),
+        ctx.editMessageText("Please enter the telegram bot token for the agent.")
+      ])
+        .catch((e) => console.log(e));
+      return;
+    }
+    const me = await fetch(`https://api.telegram.org/bot${token}/getMe`).then((res) => res.json())
+    await ctx.editMessageText(`Here it is @${me.result.username}:
+
+id: ${me.result.id}
+first_name: ${me.result.first_name}
+last_name: ${me.result.last_name ? me.result.last_name : ""}
+`, {
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "Logout", callback_data: `logouttelegram:${agentId}`}],
+          [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+        ]
+      }
+    })
   }
   if (data.startsWith("logouttwitter")) {
     const agentId = data.split(":")[1];
@@ -479,7 +502,24 @@ What do you want to do with the bot?`, {
           ]
         }
       })
-    ]);
+    ])
+      .catch((e) => console.log(e));
+  }
+  if (data.startsWith("logouttelegram")) {
+    const agentId = data.split(":")[1];
+    const token = await redis.get(`telegrambottoken:${agentId}`);
+    await Promise.all([
+      fetch(`https://api.telegram.org/bot${token}/deleteWebhook`),
+      redis.del(`telegrambottoken:${agentId}`),
+      ctx.editMessageText("Telegram bot logout successfully.", {
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+          ]
+        }
+      })
+    ])
+      .catch((e) => console.log(e));
   }
   await ctx.answerCallbackQuery();
 });
@@ -551,7 +591,7 @@ bot.on("message", async (ctx) => {
       }
     }
     if (params[0] === "editname") {
-      if (params.length === 1) {
+      if (params.length === 2) {
         const agentId = params[1];
         const agentName = ctx.message.text;
         if (!agentName) {
@@ -589,7 +629,7 @@ bot.on("message", async (ctx) => {
       }
     }
     if (params[0] === "editdescription") {
-      if (params.length === 1) {
+      if (params.length === 2) {
         const agentId = params[1];
         const description = ctx.message.text;
         if (!description) {
@@ -628,7 +668,7 @@ bot.on("message", async (ctx) => {
       }
     }
     if (params[0] === "editinstruction") {
-      if (params.length === 1) {
+      if (params.length === 2) {
         const agentId = params[1];
         const instruction = ctx.message.text;
         if (!instruction) {
@@ -661,6 +701,31 @@ bot.on("message", async (ctx) => {
 <b>AgentName:</b> ${response.agent.agentName}
 <b>AgentStatus:</b> ${response.agent.agentStatus}
 <b>Instruction:</b> ${response.agent.instruction}
+`, {
+          parse_mode: "HTML",
+        })
+      }
+    }
+    if (params[0] === "telegrambot") {
+      if (params.length === 2) {
+        const agentId = params[1];
+        const token = ctx.message.text;
+        // 存储 token，便于 agent 后续获取到 token 来发送信息
+        await redis.set(`telegrambottoken:${agentId}`, token);
+        await fetch(`https://api.telegram.org/bot${token}/setWebhook`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            url: `https://open.abandon.ai/api/bot/tenant/${agentId}`
+          })
+        })
+        await redis.del(`params:${ctx.from?.id}`);
+        await ctx.reply(`Telegram bot token updated successfully.
+
+<b>AgentId:</b> ${agentId}
+<b>Token:</b> ${token}
 `, {
           parse_mode: "HTML",
         })
