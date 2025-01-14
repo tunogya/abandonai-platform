@@ -69,8 +69,8 @@ export async function POST(request: Request) {
     });
   }
 
-  const checkAndUploadToS3 = async (x_id: string, post: POST_TYPE) => {
-    const key = `datasets/x.com/${x_id}/${post.post_id}`;
+  const checkAndUploadToS3 = async (id: string, post: POST_TYPE) => {
+    const key = `datasets/x.com/${id}/${post.post_id}`;
 
     try {
       // 检查文件是否存在
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
         .catch(() => false);
 
       if (exists) {
-        console.log("Exist:", x_id, post.post_id);
+        console.log("Exist:", id, post.post_id);
         return false;
       }
 
@@ -93,18 +93,18 @@ export async function POST(request: Request) {
         ContentType: "application/json",
         Body: JSON.stringify(post),
       }));
-      console.log("Uploaded:", x_id, post.post_id);
+      console.log("Uploaded:", id, post.post_id);
       return true;
     } catch (error) {
-      console.error("Error processing:", x_id, post.post_id, error);
+      console.error("Error processing:", id, post.post_id, error);
     }
   };
 
-  const processBatch = async (batch: {x_id: string, post: POST_TYPE}[]) => {
-    const tasks = batch.map(async ({ x_id, post }) => {
+  const processBatch = async (batch: {id: string, post: POST_TYPE}[]) => {
+    const tasks = batch.map(async ({ id, post }) => {
       const [, release] = await semaphore.acquire();
       try {
-        await checkAndUploadToS3(x_id, post)
+        await checkAndUploadToS3(id, post)
       } finally {
         release();
       }
@@ -121,7 +121,7 @@ export async function POST(request: Request) {
     if (posts?.length > 0) {
       const sort_posts = posts.sort((a: POST_TYPE, b: POST_TYPE) => Number(a.post_id) - Number(b.post_id))
       for (const post of sort_posts) {
-        batch.push({ x_id: profile.x_id, post });
+        batch.push({ id: profile.id, post });
 
         // 如果达到了批量大小，处理当前批量
         if (batch.length >= BATCH_SIZE) {
