@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
       },
       body: JSON.stringify([{
         url: `https://x.com/${username}`,
+        max_number_of_posts: 100,
       }]),
     }).then((res) => res.json())
     return Response.json({
