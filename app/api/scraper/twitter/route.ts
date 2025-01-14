@@ -83,8 +83,7 @@ export async function POST(request: Request) {
         .catch(() => false);
 
       if (exists) {
-        console.log("Exist:", id, post.post_id);
-        return false;
+        return;
       }
 
       // 文件不存在，上传
@@ -94,8 +93,6 @@ export async function POST(request: Request) {
         ContentType: "application/json",
         Body: JSON.stringify(post),
       }));
-      console.log("Uploaded:", id, post.post_id);
-      return true;
     } catch (error) {
       console.error("Error processing:", id, post.post_id, error);
     }
@@ -116,6 +113,7 @@ export async function POST(request: Request) {
 
   const data = await request.json();
   console.log(data);
+
   for (const profile of data) {
     const posts = profile.posts || []
     const batch = [];
