@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import {
     BedrockAgentClient,
     paginateListAgentActionGroups,
-    GetAgentActionGroupCommand, UpdateAgentActionGroupCommand,
+    GetAgentActionGroupCommand, UpdateAgentActionGroupCommand, CreateAgentActionGroupCommand,
 } from "@aws-sdk/client-bedrock-agent";
 
 const FUNCTION_SCHEMA = {
@@ -209,6 +209,13 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         console.log("=".repeat(68));
     } else {
         console.log("TelegramAction not found");
+        const client = new BedrockAgentClient({ region: "us-east-1" });
         // 新建一个TelegramAction 的 actionGroup
+        const response = await client.send(new CreateAgentActionGroupCommand({
+            agentId,
+            agentVersion,
+            actionGroupName: "TelegramAction",
+            functionSchema: FUNCTION_SCHEMA,
+        }));
     }
 }
