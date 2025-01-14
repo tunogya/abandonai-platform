@@ -164,7 +164,14 @@ bot.on("callback_query:data", async (ctx) => {
   const data = ctx.callbackQuery.data;
   if (data.startsWith("agent:")) {
     const agentId = data.split(":")[1];
-    const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    let response;
+    try {
+      response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    } catch {
+      response = {
+        agent: null
+      }
+    }
     if (!response.agent) {
       await ctx.editMessageText("Failed to get agent.", {
         reply_markup: {
@@ -207,7 +214,14 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("editagent:")) {
     const agentId = data.split(":")[1];
-    const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    let response;
+    try {
+      response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    } catch {
+      response = {
+        agent: null
+      }
+    }
     if (!response.agent) {
       await ctx.editMessageText("Failed to get agent.", {
         reply_markup: {
@@ -246,7 +260,14 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("deleteagent:")) {
     const agentId = data.split(":")[1];
-    const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    let response;
+    try {
+      response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    } catch {
+      response = {
+        agent: null
+      }
+    }
     if (!response.agent) {
       await ctx.editMessageText("Failed to get agent.", {
         reply_markup: {
@@ -330,7 +351,14 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("agentsettings:")) {
     const agentId = data.split(":")[1];
-    const response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    let response;
+    try {
+      response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+    } catch {
+      response = {
+        agent: null
+      }
+    }
     if (!response.agent) {
       await ctx.editMessageText("Failed to get agent.", {
         reply_markup: {
@@ -530,11 +558,19 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Please enter the new name for the agent.");
           return;
         }
-        const {agent} = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
-        if (!agent) {
+        let _response;
+        try {
+          _response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+        } catch {
+          _response = {
+            agent: null
+          }
+        }
+        if (!_response.agent) {
           await ctx.reply("Failed to get agent.");
           return;
         }
+        const {agent} = _response;
         // @ts-expect-error no error
         const response = await bedrockAgentClient.send(new UpdateAgentCommand({...agent, agentName: agentName}));
         if (!response.agent) {
@@ -560,11 +596,19 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Please enter the new description for the agent.");
           return;
         }
-        const {agent} = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
-        if (!agent) {
+        let _response;
+        try {
+          _response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+        } catch {
+          _response = {
+            agent: null
+          }
+        }
+        if (!_response.agent) {
           await ctx.reply("Failed to get agent.");
           return;
         }
+        const {agent} = _response;
         // @ts-expect-error no error
         const response = await bedrockAgentClient.send(new UpdateAgentCommand({...agent, description: description}));
         if (!response.agent) {
@@ -591,11 +635,19 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Please enter the new instruction for the agent.");
           return;
         }
-        const {agent} = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
-        if (!agent) {
+        let _response;
+        try {
+          _response = await bedrockAgentClient.send(new GetAgentCommand({agentId}));
+        } catch {
+          _response = {
+            agent: null
+          }
+        }
+        if (!_response.agent) {
           await ctx.reply("Failed to get agent.");
           return;
         }
+        const {agent} = _response;
         // @ts-expect-error no error
         const response = await bedrockAgentClient.send(new UpdateAgentCommand({...agent, instruction: instruction}));
         if (!response.agent) {
