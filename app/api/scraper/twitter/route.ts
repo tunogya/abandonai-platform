@@ -9,8 +9,8 @@ const s3Client = new S3Client({
   region: "us-east-1",
 });
 
-const BATCH_SIZE = 100; // 每次批量处理的任务数量
-const MAX_CONCURRENT = 100; // 最大并行任务数
+const BATCH_SIZE = 50; // 每次批量处理的任务数量
+const MAX_CONCURRENT = 5; // 最大并行任务数
 const semaphore = new Semaphore(MAX_CONCURRENT);
 
 type POST_TYPE = {
