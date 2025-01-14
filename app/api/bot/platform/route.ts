@@ -481,10 +481,11 @@ What do you want to do with the bot?`, {
     const me = await fetch(`https://api.telegram.org/bot${token}/getMe`).then((res) => res.json())
     await ctx.editMessageText(`Here it is @${me.result.username}:
 
-id: ${me.result.id}
-first_name: ${me.result.first_name}
-last_name: ${me.result.last_name ? me.result.last_name : ""}
+<b>id:</b> ${me.result.id}
+<b>first_name:</b> ${me.result.first_name}
+<b>last_name:</b> ${me.result.last_name ? me.result.last_name : ""}
 `, {
+      parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
           [{text: "Logout", callback_data: `logouttelegram:${agentId}`}],
@@ -778,7 +779,7 @@ bot.on("message", async (ctx) => {
         await ctx.reply(`Telegram bot token updated successfully.
 
 <b>AgentId:</b> ${agentId}
-<b>Token:</b> ${token}
+<b>Token:</b> <code>${token}</code>
 `, {
           parse_mode: "HTML",
         })
