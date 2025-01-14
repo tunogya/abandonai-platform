@@ -720,7 +720,9 @@ bot.on("message", async (ctx) => {
           body: JSON.stringify({
             url: `https://open.abandon.ai/api/bot/tenant/${agentId}`
           })
-        })
+        });
+        // TODO
+        // 设置 agent 的 Telegram Action
         await redis.del(`params:${ctx.from?.id}`);
         await ctx.reply(`Telegram bot token updated successfully.
 
