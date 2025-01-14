@@ -115,10 +115,10 @@ export async function POST(request: Request) {
   };
 
   const data = await request.json();
+  console.log(data);
   for (const profile of data) {
     const posts = profile.posts || []
     const batch = [];
-    // 100 个 POST，写入 aws S3
     if (posts?.length > 0) {
       const sort_posts = posts.sort((a: POST_TYPE, b: POST_TYPE) => Number(a.post_id) - Number(b.post_id))
       for (const post of sort_posts) {
