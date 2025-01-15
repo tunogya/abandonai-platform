@@ -788,6 +788,9 @@ bot.on("message", async (ctx) => {
             actionGroupName: "TelegramAction",
             description: "Bots are small applications that run entirely within the Telegram app. Users interact with bots through flexible interfaces that can support any kind of task or service.",
             functionSchema: TELEGRAM_FUNCTION_SCHEMA,
+            actionGroupExecutor: {
+              lambda: 'arn:aws:lambda:us-east-1:913870644571:function:TelegramAction-sva3u'
+            }
           }));
         }
         // 存储 token，便于 agent 后续获取到 token 来发送信息
