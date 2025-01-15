@@ -33,7 +33,7 @@ const bot = new Bot<MyContext>(token)
 
 const redis = Redis.fromEnv()
 
-const bedrockAgentClient = new BedrockAgentClient({region: "us-east-1"});
+const bedrockAgentClient = new BedrockAgentClient({region: "us-west-2"});
 
 const twitterClient = new TwitterApi({
   clientId: process.env.X_CLIENT_ID || "",

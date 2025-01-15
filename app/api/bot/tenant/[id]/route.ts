@@ -5,7 +5,7 @@ import {
 } from "@aws-sdk/client-bedrock-agent-runtime";
 import {Redis} from "@upstash/redis";
 
-const client = new BedrockAgentRuntimeClient({ region: "us-east-1" });
+const client = new BedrockAgentRuntimeClient({ region: "us-west-2" });
 
 const redis = Redis.fromEnv()
 
