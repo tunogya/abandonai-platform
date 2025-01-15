@@ -586,7 +586,7 @@ bot.on("message", async (ctx) => {
         const response = await bedrockAgentClient.send(new CreateAgentCommand({
           agentName: agentName,
           instruction: instruction,
-          foundationModel: "anthropic.claude-3-sonnet-20240229-v1:0",
+          foundationModel: "anthropic.claude-3-5-sonnet-20241022-v2:0",
           agentResourceRoleArn: roleArn,
         }));
         if (!response.agent) {
