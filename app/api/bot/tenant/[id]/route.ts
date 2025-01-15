@@ -15,7 +15,7 @@ const POST = async (req: NextRequest, {params}: never) => {
       agentId,
       agentAliasId: "DRAFT",
       sessionId: body.message.chat.id,
-      inputText: `${JSON.stringify({
+      inputText: `You received a message from Telegram, if you think it is necessary to reply, you can reply to the user: ${JSON.stringify({
         ...body,
         agent: {
           agent_id: id,
