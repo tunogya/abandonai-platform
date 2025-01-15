@@ -633,8 +633,19 @@ bot.on("message", async (ctx) => {
           return;
         }
         const {agent} = _response;
-        // @ts-expect-error no error
-        const response = await bedrockAgentClient.send(new UpdateAgentCommand({...agent, agentName: agentName}));
+        const response = await bedrockAgentClient.send(new UpdateAgentCommand({
+          agentId: agent.agentId,
+          agentName: agentName,
+          instruction: agent.instruction,
+          foundationModel: agent.foundationModel,
+          description: agent.description,
+          agentResourceRoleArn: agent.agentResourceRoleArn,
+          customerEncryptionKeyArn: agent.customerEncryptionKeyArn,
+          promptOverrideConfiguration: agent.promptOverrideConfiguration,
+          guardrailConfiguration: agent.guardrailConfiguration,
+          memoryConfiguration: agent.memoryConfiguration,
+          agentCollaboration: agent.agentCollaboration,
+        }));
         if (!response.agent) {
           await ctx.reply("Failed to update agent.");
           return;
@@ -671,8 +682,19 @@ bot.on("message", async (ctx) => {
           return;
         }
         const {agent} = _response;
-        // @ts-expect-error no error
-        const response = await bedrockAgentClient.send(new UpdateAgentCommand({...agent, description: description}));
+        const response = await bedrockAgentClient.send(new UpdateAgentCommand({
+          agentId: agent.agentId,
+          agentName: agent.agentName,
+          instruction: agent.instruction,
+          foundationModel: agent.foundationModel,
+          description: description,
+          agentResourceRoleArn: agent.agentResourceRoleArn,
+          customerEncryptionKeyArn: agent.customerEncryptionKeyArn,
+          promptOverrideConfiguration: agent.promptOverrideConfiguration,
+          guardrailConfiguration: agent.guardrailConfiguration,
+          memoryConfiguration: agent.memoryConfiguration,
+          agentCollaboration: agent.agentCollaboration,
+        }));
         if (!response.agent) {
           await ctx.reply("Failed to update agent.");
           return;
@@ -710,8 +732,19 @@ bot.on("message", async (ctx) => {
           return;
         }
         const {agent} = _response;
-        // @ts-expect-error no error
-        const response = await bedrockAgentClient.send(new UpdateAgentCommand({...agent, instruction: instruction}));
+        const response = await bedrockAgentClient.send(new UpdateAgentCommand({
+          agentId: agent.agentId,
+          agentName: agent.agentName,
+          instruction: instruction,
+          foundationModel: agent.foundationModel,
+          description: agent.description,
+          agentResourceRoleArn: agent.agentResourceRoleArn,
+          customerEncryptionKeyArn: agent.customerEncryptionKeyArn,
+          promptOverrideConfiguration: agent.promptOverrideConfiguration,
+          guardrailConfiguration: agent.guardrailConfiguration,
+          memoryConfiguration: agent.memoryConfiguration,
+          agentCollaboration: agent.agentCollaboration,
+        }));
         if (!response.agent) {
           await ctx.reply("Failed to update agent.");
           return;
