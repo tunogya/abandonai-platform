@@ -1,11 +1,35 @@
-import {listAgentActionGroupsWithPaginator} from "@/libs/set_telegram_action";
 import {
   BedrockAgentClient,
   CreateAgentActionGroupCommand, DeleteAgentActionGroupCommand,
-  GetAgentActionGroupCommand,
+  GetAgentActionGroupCommand, paginateListAgentActionGroups,
   UpdateAgentActionGroupCommand
 } from "@aws-sdk/client-bedrock-agent";
 import {TELEGRAM_FUNCTION_SCHEMA} from "@/app/api/bot/platform/function_schema/telegram";
+
+export const listAgentActionGroupsWithPaginator = async (
+  agentId: string,
+  agentVersion: string,
+  client: BedrockAgentClient,
+) => {
+  // Create a paginator configuration
+  const paginatorConfig = {
+    client,
+    pageSize: 10, // optional, added for demonstration purposes
+  };
+
+  const params = { agentId, agentVersion };
+
+  const pages = paginateListAgentActionGroups(paginatorConfig, params);
+
+  // Paginate until there are no more results
+  const actionGroupSummaries = [];
+  for await (const page of pages) {
+    if (page.actionGroupSummaries) {
+      actionGroupSummaries.push(...page.actionGroupSummaries)
+    }
+  }
+  return actionGroupSummaries;
+};
 
 export const updateTelegramAction = async (agentId: string, bedrockAgentClient: BedrockAgentClient) => {
   // 设置 agent 的 Telegram Action
@@ -13,7 +37,7 @@ export const updateTelegramAction = async (agentId: string, bedrockAgentClient: 
   for (const actionGroup of await listAgentActionGroupsWithPaginator(
     agentId,
     "DRAFT",
-    "us-west-2",
+    bedrockAgentClient,
   )) {
     actionGroups.push(actionGroup);
   }
@@ -51,7 +75,7 @@ export const deleteTelegramAction = async (agentId: string, bedrockAgentClient: 
   for (const actionGroup of await listAgentActionGroupsWithPaginator(
     agentId,
     "DRAFT",
-    "us-west-2",
+    bedrockAgentClient,
   )) {
     actionGroups.push(actionGroup);
   }
