@@ -204,6 +204,7 @@ What do you want to do with the bot?`, {
             text: "Delete Agent",
             callback_data: `deleteagent:${response.agent.agentId}`
           }],
+          [{text: "New Version", callback_data: `newversion:${response.agent.agentId}`}],
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       },
@@ -362,7 +363,6 @@ What do you want to do with the bot?`, {
     await ctx.editMessageText(`Settings for ${response.agent.agentName}.`, {
       reply_markup: {
         inline_keyboard: [
-          [{text: "New Version", callback_data: `newversion:${response.agent.agentId}`}],
           [{text: "Telegram Bot", callback_data: `telegrambot:${response.agent.agentId}`}, {text: "Twitter Bot", callback_data: `twitterbot:${response.agent.agentId}`}],
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
