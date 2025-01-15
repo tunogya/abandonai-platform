@@ -538,7 +538,7 @@ What do you want to do with the bot?`, {
     const response = await bedrockAgentClient.send(new CreateAgentAliasCommand({
       agentId: agentId,
       agentAliasName: Date.now().toString(),
-    }))
+    })).catch((e) => console.log(e))
     if (response?.agentAlias?.agentAliasId) {
       await redis.set(`agentAliasId:${agentId}`, response?.agentAlias?.agentAliasId)
       await ctx.editMessageText(`New version created successfully.`, {
