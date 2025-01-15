@@ -786,7 +786,7 @@ bot.on("message", async (ctx) => {
             agentId,
             agentVersion: "DRAFT",
             actionGroupName: "TelegramAction",
-            description: "",
+            description: "Bots are small applications that run entirely within the Telegram app. Users interact with bots through flexible interfaces that can support any kind of task or service.",
             functionSchema: TELEGRAM_FUNCTION_SCHEMA,
           }));
         }
