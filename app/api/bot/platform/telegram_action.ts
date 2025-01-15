@@ -36,7 +36,7 @@ export const updateTelegramAction = async (agentId: string, bedrockAgentClient: 
       agentId,
       agentVersion: "DRAFT",
       actionGroupName: "TelegramAction",
-      description: "Bots are small applications that run entirely within the Telegram app. Users interact with bots through flexible interfaces that can support any kind of task or service.",
+      description: "Only when you want send message to Telegram users, you can use this API.",
       functionSchema: TELEGRAM_FUNCTION_SCHEMA,
       actionGroupExecutor: {
         lambda: 'arn:aws:lambda:us-east-1:913870644571:function:TelegramAction-sva3u'
