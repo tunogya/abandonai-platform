@@ -180,7 +180,7 @@ bot.on("callback_query:data", async (ctx) => {
             [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
           ]
         }
-      });
+      }).catch((e) => console.log(e));
       await ctx.answerCallbackQuery();
       return;
     }
@@ -208,7 +208,7 @@ What do you want to do with the bot?`, {
         ]
       },
       parse_mode: "HTML"
-    })
+    }).catch((e) => console.log(e));
     await ctx.answerCallbackQuery();
     return
   }
@@ -229,7 +229,7 @@ What do you want to do with the bot?`, {
             [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
           ]
         }
-      });
+      }).catch((e) => console.log(e));
       await ctx.answerCallbackQuery();
       return;
     }
@@ -254,7 +254,7 @@ What do you want to do with the bot?`, {
           [{text: "« Back to Agent", callback_data: `agent:${response.agent.agentId}`}],
         ]
       }
-    })
+    }).catch((e) => console.log(e));
     await ctx.answerCallbackQuery();
     return
   }
@@ -275,7 +275,7 @@ What do you want to do with the bot?`, {
             [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
           ]
         }
-      });
+      }).catch((e) => console.log(e));
       await ctx.answerCallbackQuery();
       return;
     }
@@ -288,7 +288,7 @@ What do you want to do with the bot?`, {
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       }
-    })
+    }).catch((e) => console.log(e));
     await ctx.answerCallbackQuery();
     return
   }
@@ -317,7 +317,7 @@ What do you want to do with the bot?`, {
       reply_markup: {
         inline_keyboard: inlineKeyboardRows,
       }
-    });
+    }).catch((e) => console.log(e));
     await ctx.answerCallbackQuery();
     return;
   }
@@ -336,7 +336,7 @@ What do you want to do with the bot?`, {
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       }
-    })
+    }).catch((e) => console.log(e));
   }
   if (data.startsWith("agentsettings:")) {
     const agentId = data.split(":")[1];
@@ -355,7 +355,7 @@ What do you want to do with the bot?`, {
             [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
           ]
         }
-      });
+      }).catch((e) => console.log(e));
       await ctx.answerCallbackQuery();
       return;
     }
@@ -367,7 +367,7 @@ What do you want to do with the bot?`, {
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       }
-    });
+    }).catch((e) => console.log(e));
   }
   if (data.startsWith("deleteagent_yes:")) {
     const agentId = data.split(":")[1];
@@ -383,7 +383,7 @@ What do you want to do with the bot?`, {
         ]
       },
       parse_mode: "HTML"
-    })
+    }).catch((e) => console.log(e));
   }
   if (data.startsWith("editname:")) {
     const agentId = data.split(":")[1];
@@ -451,7 +451,7 @@ What do you want to do with the bot?`, {
             [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
           ]
         }
-      })
+      }).catch((e) => console.log(e));
     }
   }
   if (data.startsWith("telegrambot")) {
@@ -517,7 +517,7 @@ What do you want to do with the bot?`, {
           [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
         ]
       }
-    })
+    }).catch((e) => console.log(e));
   }
   if (data.startsWith("newversion")) {
     const agentId = data.split(":")[1];
@@ -534,7 +534,7 @@ What do you want to do with the bot?`, {
             [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
           ]
         }
-      })
+      }).catch((e) => console.log(e));
     } else {
       await ctx.editMessageText(`Failed to create new version.`, {
         parse_mode: "HTML",
@@ -543,7 +543,7 @@ What do you want to do with the bot?`, {
             [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
           ]
         }
-      })
+      }).catch((e) => console.log(e));
     }
   }
   await ctx.answerCallbackQuery();
