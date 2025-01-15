@@ -39,7 +39,7 @@ export const updateTelegramAction = async (agentId: string, bedrockAgentClient: 
       description: "Only when you want send message to Telegram users, you can use this API.",
       functionSchema: TELEGRAM_FUNCTION_SCHEMA,
       actionGroupExecutor: {
-        lambda: 'arn:aws:lambda:us-east-1:913870644571:function:TelegramAction-sva3u'
+        lambda: 'arn:aws:lambda:us-west-2:913870644571:function:TelegramAction-otlfn'
       }
     }));
   }
