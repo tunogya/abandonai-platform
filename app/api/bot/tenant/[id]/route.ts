@@ -13,7 +13,7 @@ const POST = async (req: NextRequest, {params}: never) => {
     const agentId = id;
     const command = new InvokeAgentCommand({
       agentId,
-      agentAliasId: "DRAFT",
+      agentAliasId: "LNHNOEUNXM",
       sessionId: body.message.chat.id,
       inputText: `You received a message from Telegram, if you think it is necessary to reply, you can reply to the user: ${JSON.stringify({
         ...body,
@@ -22,8 +22,8 @@ const POST = async (req: NextRequest, {params}: never) => {
         }
       })}`,
     });
-    await client.send(command);
-
+    const response = await client.send(command);
+    console.log(response);
     return Response.json({
       ok: true,
     });
