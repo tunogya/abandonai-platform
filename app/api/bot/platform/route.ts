@@ -579,7 +579,7 @@ bot.on("message", async (ctx) => {
         // Your AWS account id.
         const accountId = "913870644571";
         // The name of the agent's execution role. It must be prefixed by `AmazonBedrockExecutionRoleForAgents_`.
-        const roleName = "AmazonBedrockExecutionRoleForAgents_2QZX5Z09TCC";
+        const roleName = "AmazonBedrockExecutionRoleForAgents_KLJG1LIW5GM";
         // The ARN for the agent's execution role.
         // Follow the ARN format: 'arn:aws:iam::account-id:role/role-name'
         const roleArn = `arn:aws:iam::${accountId}:role/${roleName}`;
