@@ -181,7 +181,6 @@ bot.on("callback_query:data", async (ctx) => {
           ]
         }
       }).catch((e) => console.log(e));
-      await ctx.answerCallbackQuery();
       return;
     }
     await ctx.editMessageText(`Here it is: ${response.agent.agentName}
@@ -210,7 +209,6 @@ What do you want to do with the bot?`, {
       },
       parse_mode: "HTML"
     }).catch((e) => console.log(e));
-    await ctx.answerCallbackQuery();
     return
   }
   if (data.startsWith("editagent:")) {
@@ -231,7 +229,6 @@ What do you want to do with the bot?`, {
           ]
         }
       }).catch((e) => console.log(e));
-      await ctx.answerCallbackQuery();
       return;
     }
     await ctx.editMessageText(`Edit agent ${response.agent.agentName} info.
@@ -256,7 +253,6 @@ What do you want to do with the bot?`, {
         ]
       }
     }).catch((e) => console.log(e));
-    await ctx.answerCallbackQuery();
     return
   }
   if (data.startsWith("deleteagent:")) {
@@ -277,7 +273,6 @@ What do you want to do with the bot?`, {
           ]
         }
       }).catch((e) => console.log(e));
-      await ctx.answerCallbackQuery();
       return;
     }
     await ctx.editMessageText(`You are about to delete your agent ${response.agent.agentName}.Is that correct?`, {
@@ -290,7 +285,6 @@ What do you want to do with the bot?`, {
         ]
       }
     }).catch((e) => console.log(e));
-    await ctx.answerCallbackQuery();
     return
   }
   if (data.startsWith("backtoagentlist")) {
@@ -319,7 +313,6 @@ What do you want to do with the bot?`, {
         inline_keyboard: inlineKeyboardRows,
       }
     }).catch((e) => console.log(e));
-    await ctx.answerCallbackQuery();
     return;
   }
   if (data.startsWith("prepareagent:")) {
@@ -357,7 +350,6 @@ What do you want to do with the bot?`, {
           ]
         }
       }).catch((e) => console.log(e));
-      await ctx.answerCallbackQuery();
       return;
     }
     await ctx.editMessageText(`Settings for ${response.agent.agentName}.`, {
@@ -560,7 +552,6 @@ What do you want to do with the bot?`, {
       }).catch((e) => console.log(e));
     }
   }
-  await ctx.answerCallbackQuery();
 });
 
 bot.on("message", async (ctx) => {
