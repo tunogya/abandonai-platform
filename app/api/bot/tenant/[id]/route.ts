@@ -10,11 +10,13 @@ const POST = async (req: NextRequest, {params}: never) => {
   const {id} = await params;
   const body = await req.json();
 
+  console.log(body);
+
   const agentId = id;
   const command = new InvokeAgentCommand({
     agentId,
-    agentAliasId: undefined,
-    sessionId: undefined,
+    agentAliasId: "DRAFT",
+    sessionId: "default",
     inputText: `${JSON.stringify(body)}`,
   });
   await client.send(command);
