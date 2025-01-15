@@ -362,8 +362,8 @@ What do you want to do with the bot?`, {
     await ctx.editMessageText(`Settings for ${response.agent.agentName}.`, {
       reply_markup: {
         inline_keyboard: [
-          [{text: "Telegram Bot", callback_data: `telegrambot:${response.agent.agentId}`}],
-          [{text: "Twitter Bot", callback_data: `twitterbot:${response.agent.agentId}`}],
+          [{text: "New Version", callback_data: `newversion:${response.agent.agentId}`}],
+          [{text: "Telegram Bot", callback_data: `telegrambot:${response.agent.agentId}`}, {text: "Twitter Bot", callback_data: `twitterbot:${response.agent.agentId}`}],
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       }
@@ -518,6 +518,33 @@ What do you want to do with the bot?`, {
         ]
       }
     })
+  }
+  if (data.startsWith("newversion")) {
+    const agentId = data.split(":")[1];
+    const response = await bedrockAgentClient.send(new CreateAgentAliasCommand({
+      agentId: agentId,
+      agentAliasName: Date.now().toString(),
+    }))
+    if (response?.agentAlias?.agentAliasId) {
+      await redis.set(`agentAliasId:${agentId}`, response?.agentAlias?.agentAliasId)
+      await ctx.editMessageText(`New version created successfully.`, {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+          ]
+        }
+      })
+    } else {
+      await ctx.editMessageText(`Failed to create new version.`, {
+        parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+          ]
+        }
+      })
+    }
   }
   await ctx.answerCallbackQuery();
 });
