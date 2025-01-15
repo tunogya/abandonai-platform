@@ -2,14 +2,13 @@ import {TwitterApi} from 'twitter-api-v2';
 import {Bot, Context, webhookCallback} from 'grammy'
 import {Redis} from '@upstash/redis'
 import {
-  BedrockAgentClient, CreateAgentActionGroupCommand,
-  CreateAgentCommand, DeleteAgentActionGroupCommand,
-  DeleteAgentCommand, GetAgentActionGroupCommand, GetAgentCommand,
-  paginateListAgents, PrepareAgentCommand, UpdateAgentActionGroupCommand, UpdateAgentCommand
+  BedrockAgentClient,
+  CreateAgentCommand,
+  DeleteAgentCommand, GetAgentCommand,
+  paginateListAgents, PrepareAgentCommand, UpdateAgentCommand
 } from "@aws-sdk/client-bedrock-agent";
 import {InlineKeyboardButton, KeyboardButton} from "@grammyjs/types";
-import {listAgentActionGroupsWithPaginator} from "@/libs/set_telegram_action";
-import {TELEGRAM_FUNCTION_SCHEMA} from "@/app/api/bot/platform/function_schema/telegram";
+import {deleteTelegramAction, updateTelegramAction} from "@/app/api/bot/platform/telegram_action";
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
@@ -478,15 +477,11 @@ What do you want to do with the bot?`, {
       return;
     }
     const me = await fetch(`https://api.telegram.org/bot${token}/getMe`).then((res) => res.json())
-    await ctx.editMessageText(`Here it is @${me.result.username}:
-
-<b>id:</b> ${me.result.id}
-<b>first_name:</b> ${me.result.first_name}
-<b>last_name:</b> ${me.result.last_name ? me.result.last_name : ""}
-`, {
+    await ctx.editMessageText(`Here it is @${me.result.username}`, {
       parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [
+          [{text: "Update Action", callback_data: `updatetelegramaction:${agentId}`}],
           [{text: "Logout", callback_data: `logouttelegram:${agentId}`}],
           [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
         ]
@@ -510,25 +505,7 @@ What do you want to do with the bot?`, {
   if (data.startsWith("logouttelegram")) {
     const agentId = data.split(":")[1];
     const token = await redis.get(`telegrambottoken:${agentId}`);
-    // delete telegram action
-    const actionGroups = [];
-    for (const actionGroup of await listAgentActionGroupsWithPaginator(
-      agentId,
-      "DRAFT",
-    )) {
-      actionGroups.push(actionGroup);
-    }
-    const telegramAction = actionGroups.find(
-      (actionGroup) => actionGroup.actionGroupName === "TelegramAction",
-    )
-    if (telegramAction) {
-      await bedrockAgentClient.send(new DeleteAgentActionGroupCommand({
-        agentId,
-        agentVersion: "DRAFT",
-        actionGroupId: telegramAction.actionGroupId,
-        skipResourceInUseCheck: true,
-      }))
-    }
+    await deleteTelegramAction(agentId, bedrockAgentClient);
     await Promise.all([
       fetch(`https://api.telegram.org/bot${token}/deleteWebhook`),
       redis.del(`telegrambottoken:${agentId}`),
@@ -541,6 +518,17 @@ What do you want to do with the bot?`, {
       })
     ])
       .catch((e) => console.log(e));
+  }
+  if (data.startsWith("updatetelegramaction")) {
+    const agentId = data.split(":")[1];
+    await updateTelegramAction(agentId, bedrockAgentClient);
+    await ctx.editMessageText("Telegram action updated successfully.", {
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+        ]
+      }
+    })
   }
   await ctx.answerCallbackQuery();
 });
@@ -758,41 +746,7 @@ bot.on("message", async (ctx) => {
       if (params.length === 2) {
         const agentId = params[1];
         const token = ctx.message.text;
-        // 设置 agent 的 Telegram Action
-        const actionGroups = [];
-        for (const actionGroup of await listAgentActionGroupsWithPaginator(
-          agentId,
-          "DRAFT",
-        )) {
-          actionGroups.push(actionGroup);
-        }
-        const telegramAction = actionGroups.find(
-          (actionGroup) => actionGroup.actionGroupName === "TelegramAction",
-        )
-        if (telegramAction) {
-          const { agentActionGroup } = await bedrockAgentClient.send(new GetAgentActionGroupCommand({
-            agentId,
-            agentVersion: "DRAFT",
-            actionGroupId: telegramAction.actionGroupId,
-          }));
-          if (agentActionGroup) {
-            await bedrockAgentClient.send(new UpdateAgentActionGroupCommand({
-              ...agentActionGroup,
-              functionSchema: TELEGRAM_FUNCTION_SCHEMA,
-            }));
-          }
-        } else {
-          await bedrockAgentClient.send(new CreateAgentActionGroupCommand({
-            agentId,
-            agentVersion: "DRAFT",
-            actionGroupName: "TelegramAction",
-            description: "Bots are small applications that run entirely within the Telegram app. Users interact with bots through flexible interfaces that can support any kind of task or service.",
-            functionSchema: TELEGRAM_FUNCTION_SCHEMA,
-            actionGroupExecutor: {
-              lambda: 'arn:aws:lambda:us-east-1:913870644571:function:TelegramAction-sva3u'
-            }
-          }));
-        }
+        await updateTelegramAction(agentId, bedrockAgentClient);
         // 存储 token，便于 agent 后续获取到 token 来发送信息
         await redis.set(`telegrambottoken:${agentId}`, token);
         await fetch(`https://api.telegram.org/bot${token}/setWebhook`, {
