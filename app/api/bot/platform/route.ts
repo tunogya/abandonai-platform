@@ -3,7 +3,7 @@ import {Bot, Context, webhookCallback} from 'grammy'
 import {Redis} from '@upstash/redis'
 import {
   BedrockAgentClient, CreateAgentAliasCommand,
-  CreateAgentCommand,
+  CreateAgentCommand, DeleteAgentAliasCommand,
   DeleteAgentCommand, GetAgentCommand,
   paginateListAgents, PrepareAgentCommand, UpdateAgentCommand
 } from "@aws-sdk/client-bedrock-agent";
@@ -371,6 +371,13 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("deleteagent_yes:")) {
     const agentId = data.split(":")[1];
+    const agentAliasId = await redis.get(`agentAliasId:${agentId}`) as string | undefined
+    if (agentAliasId) {
+      await bedrockAgentClient.send(new DeleteAgentAliasCommand({
+        agentId: agentId,
+        agentAliasId: agentAliasId,
+      }))
+    }
     const response = await bedrockAgentClient.send(new DeleteAgentCommand({agentId}));
     await ctx.editMessageText(`Agent deleted successfully.
 
@@ -521,6 +528,13 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("newversion")) {
     const agentId = data.split(":")[1];
+    const oldAgentAliasId = await redis.get(`agentAliasId:${agentId}`) as string | undefined
+    if (oldAgentAliasId) {
+      await bedrockAgentClient.send(new DeleteAgentAliasCommand({
+        agentId: agentId,
+        agentAliasId: oldAgentAliasId,
+      })).catch((e) => console.log(e))
+    }
     const response = await bedrockAgentClient.send(new CreateAgentAliasCommand({
       agentId: agentId,
       agentAliasName: Date.now().toString(),
