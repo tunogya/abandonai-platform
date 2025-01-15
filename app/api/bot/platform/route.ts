@@ -324,12 +324,6 @@ What do you want to do with the bot?`, {
   if (data.startsWith("prepareagent:")) {
     const agentId = data.split(":")[1];
     const response = await bedrockAgentClient.send(new PrepareAgentCommand({agentId}));
-    // 创建别名，并关联到最新的版本
-    const {agentAlias} = await bedrockAgentClient.send(new CreateAgentAliasCommand({
-      agentId: agentId,
-      agentAliasName: new Date().getTime().toString(),
-    }))
-    await redis.set(`agentAliasId:${agentId}`, agentAlias?.agentAliasId);
     await ctx.editMessageText(`Agent has been prepared successfully.
 
 <b>AgentId:</b> ${response.agentId}
