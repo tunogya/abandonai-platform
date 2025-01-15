@@ -1,9 +1,9 @@
 import json
 import os
 import requests
-import redis
+from upstash_redis import Redis
 
-# pip3 install --target ./package requests redis --upgrade
+# pip3 install --target ./package requests upstash_redis --upgrade
 # cd package
 # zip -r ../my_deployment_package.zip .
 # cd ..
@@ -47,14 +47,9 @@ def lambda_handler(event, context):
         elif parameter['name'] == 'agent_id':
             agent_id = parameter['value']
 
-    r = redis.Redis(
-        host=os.environ['UPSTASH_REDIS_REST_URL'],
-        port=6379,
-        password=os.environ['UPSTASH_REDIS_REST_TOKEN'],
-        ssl=True
-    )
+    redis = Redis(url=os.environ['UPSTASH_REDIS_REST_URL'], token=os.environ['UPSTASH_REDIS_REST_TOKEN'])
 
-    bot_token = r.get('telegrambottoken:{}'.format(agent_id))
+    bot_token = redis.get('telegrambottoken:{}'.format(agent_id))
     if not bot_token:
         return {
             'actionGroup': actionGroup,

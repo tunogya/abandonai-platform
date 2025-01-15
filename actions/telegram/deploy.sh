@@ -1,4 +1,4 @@
-pip3 install --target ./package requests redis --upgrade
+pip3 install --target ./package requests upstash_redis --upgrade
 cd package
 zip -r ../my_deployment_package.zip .
 cd ..
