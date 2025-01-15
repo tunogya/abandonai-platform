@@ -190,7 +190,6 @@ bot.on("callback_query:data", async (ctx) => {
 <b>AgentId:</b> ${response.agent.agentId}
 <b>AgentStatus:</b> ${response.agent.agentStatus}
 <b>FoundationModel:</b> ${response.agent.foundationModel}
-<b>AgentVersion:</b> ${response.agent.agentVersion}
 
 What do you want to do with the bot?`, {
       reply_markup: {
