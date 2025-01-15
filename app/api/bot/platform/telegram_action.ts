@@ -13,6 +13,7 @@ export const updateTelegramAction = async (agentId: string, bedrockAgentClient: 
   for (const actionGroup of await listAgentActionGroupsWithPaginator(
     agentId,
     "DRAFT",
+    "us-west-2",
   )) {
     actionGroups.push(actionGroup);
   }
@@ -50,6 +51,7 @@ export const deleteTelegramAction = async (agentId: string, bedrockAgentClient: 
   for (const actionGroup of await listAgentActionGroupsWithPaginator(
     agentId,
     "DRAFT",
+    "us-west-2",
   )) {
     actionGroups.push(actionGroup);
   }

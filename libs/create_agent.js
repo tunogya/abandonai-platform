@@ -12,14 +12,14 @@ import {
  * @param {string} agentName - A name for the agent that you create.
  * @param {string} foundationModel - The foundation model to be used by the agent you create.
  * @param {string} agentResourceRoleArn - The ARN of the IAM role with permissions required by the agent.
- * @param {string} [region='us-east-1'] - The AWS region in use.
+ * @param {string} [region='us-west-2'] - The AWS region in use.
  * @returns {Promise<import("@aws-sdk/client-bedrock-agent").Agent>} An object containing details of the created agent.
  */
 export const createAgent = async (
     agentName,
     foundationModel,
     agentResourceRoleArn,
-    region = "us-east-1",
+    region = "us-west-2",
 ) => {
     const client = new BedrockAgentClient({ region });
 

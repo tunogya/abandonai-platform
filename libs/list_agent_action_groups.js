@@ -14,13 +14,13 @@ import {
  *
  * @param {string} agentId - The unique identifier of the agent.
  * @param {string} agentVersion - The version of the agent.
- * @param {string} [region='us-east-1'] - The AWS region in use.
+ * @param {string} [region='us-west-2'] - The AWS region in use.
  * @returns {Promise<ActionGroupSummary[]>} An array of action group summaries.
  */
 export const listAgentActionGroupsWithPaginator = async (
     agentId,
     agentVersion,
-    region = "us-east-1",
+    region = "us-west-2",
 ) => {
     const client = new BedrockAgentClient({ region });
 

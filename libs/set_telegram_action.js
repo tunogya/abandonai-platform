@@ -135,13 +135,13 @@ const FUNCTION_SCHEMA = {
  *
  * @param {string} agentId - The unique identifier of the agent.
  * @param {string} agentVersion - The version of the agent.
- * @param {string} [region='us-east-1'] - The AWS region in use.
+ * @param {string} [region='us-west-2'] - The AWS region in use.
  * @returns {Promise<ActionGroupSummary[]>} An array of action group summaries.
  */
 export const listAgentActionGroupsWithPaginator = async (
     agentId,
     agentVersion,
-    region = "us-east-1",
+    region,
 ) => {
     const client = new BedrockAgentClient({ region });
 
@@ -195,7 +195,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         (actionGroup) => actionGroup.actionGroupName === "TelegramAction",
     )
     if (telegramAction) {
-        const client = new BedrockAgentClient({ region: "us-east-1" });
+        const client = new BedrockAgentClient({ region: "us-west-2" });
         const { agentActionGroup } = await client.send(new GetAgentActionGroupCommand({
             agentId,
             agentVersion,
@@ -209,9 +209,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         console.log("=".repeat(68));
     } else {
         console.log("TelegramAction not found");
-        const client = new BedrockAgentClient({ region: "us-east-1" });
+        const client = new BedrockAgentClient({ region: "us-west-2" });
         // 新建一个TelegramAction 的 actionGroup
-        const response = await client.send(new CreateAgentActionGroupCommand({
+        await client.send(new CreateAgentActionGroupCommand({
             agentId,
             agentVersion,
             actionGroupName: "TelegramAction",

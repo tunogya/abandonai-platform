@@ -9,22 +9,6 @@ from upstash_redis import Redis
 # cd ..
 # zip my_deployment_package.zip dummy_lambda.py
 
-# {
-#   "Version": "2012-10-17",
-#   "Id": "default",
-#   "Statement": [
-#     {
-#       "Sid": "agentsInvokeFunction",
-#       "Effect": "Allow",
-#       "Principal": {
-#         "Service": "bedrock.amazonaws.com"
-#       },
-#       "Action": "lambda:invokeFunction",
-#       "Resource": "arn:aws:lambda:us-east-1:913870644571:function:TelegramAction-hwwal"
-#     }
-#   ]
-# }
-
 def lambda_handler(event, context):
     actionGroup = event['actionGroup']
     function = event['function']

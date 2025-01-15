@@ -10,10 +10,10 @@ import {
  * Deletes an Amazon Bedrock Agent.
  *
  * @param {string} agentId - The unique identifier of the agent to delete.
- * @param {string} [region='us-east-1'] - The AWS region in use.
+ * @param {string} [region='us-west-2'] - The AWS region in use.
  * @returns {Promise<import("@aws-sdk/client-bedrock-agent").DeleteAgentCommandOutput>} An object containing the agent id, the status, and some additional metadata.
  */
-export const deleteAgent = (agentId, region = "us-east-1") => {
+export const deleteAgent = (agentId, region = "us-west-2") => {
     const client = new BedrockAgentClient({ region });
     const command = new DeleteAgentCommand({ agentId });
     return client.send(command);

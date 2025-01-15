@@ -10,10 +10,10 @@ import {
  * Retrieves the details of an Amazon Bedrock Agent.
  *
  * @param {string} agentId - The unique identifier of the agent.
- * @param {string} [region='us-east-1'] - The AWS region in use.
+ * @param {string} [region='us-west-2'] - The AWS region in use.
  * @returns {Promise<import("@aws-sdk/client-bedrock-agent").Agent>} An object containing the agent details.
  */
-export const getAgent = async (agentId, region = "us-east-1") => {
+export const getAgent = async (agentId, region = "us-west-2") => {
     const client = new BedrockAgentClient({ region });
 
     const command = new GetAgentCommand({ agentId });
