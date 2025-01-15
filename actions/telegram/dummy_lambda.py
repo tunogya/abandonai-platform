@@ -45,7 +45,7 @@ def lambda_handler(event, context):
         elif parameter['name'] == 'parse_mode':
             parse_mode = parameter['value']
         elif parameter['name'] == 'agent_id':
-            agent_id = parameter['agentId']
+            agent_id = parameter['value']
 
     r = redis.Redis(
         host=os.environ['UPSTASH_REDIS_REST_URL'],
