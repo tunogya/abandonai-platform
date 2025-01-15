@@ -2,7 +2,7 @@ import {TwitterApi} from 'twitter-api-v2';
 import {Bot, Context, webhookCallback} from 'grammy'
 import {Redis} from '@upstash/redis'
 import {
-  BedrockAgentClient,
+  BedrockAgentClient, CreateAgentAliasCommand,
   CreateAgentCommand,
   DeleteAgentCommand, GetAgentCommand,
   paginateListAgents, PrepareAgentCommand, UpdateAgentCommand
@@ -324,17 +324,12 @@ What do you want to do with the bot?`, {
   if (data.startsWith("prepareagent:")) {
     const agentId = data.split(":")[1];
     const response = await bedrockAgentClient.send(new PrepareAgentCommand({agentId}));
-    if (!response.agentId) {
-      await ctx.editMessageText("Failed to prepare agent.", {
-        reply_markup: {
-          inline_keyboard: [
-            [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
-          ]
-        }
-      });
-      await ctx.answerCallbackQuery();
-      return;
-    }
+    // 创建别名，并关联到最新的版本
+    const {agentAlias} = await bedrockAgentClient.send(new CreateAgentAliasCommand({
+      agentId: agentId,
+      agentAliasName: new Date().getTime().toString(),
+    }))
+    await redis.set(`agentAliasId:${agentId}`, agentAlias?.agentAliasId);
     await ctx.editMessageText(`Agent has been prepared successfully.
 
 <b>AgentId:</b> ${response.agentId}
