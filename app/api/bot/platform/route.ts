@@ -652,6 +652,7 @@ bot.on("message", async (ctx) => {
           memoryConfiguration: agent.memoryConfiguration,
           agentCollaboration: agent.agentCollaboration,
         }));
+        await bedrockAgentClient.send(new PrepareAgentCommand({agentId})).catch((e) => console.log(e));
         if (!response.agent) {
           await ctx.reply("Failed to update agent.");
           return;
@@ -699,6 +700,7 @@ bot.on("message", async (ctx) => {
           memoryConfiguration: agent.memoryConfiguration,
           agentCollaboration: agent.agentCollaboration,
         }));
+        await bedrockAgentClient.send(new PrepareAgentCommand({agentId})).catch((e) => console.log(e));
         if (!response.agent) {
           await ctx.reply("Failed to update agent.");
           return;
@@ -747,6 +749,7 @@ bot.on("message", async (ctx) => {
           memoryConfiguration: agent.memoryConfiguration,
           agentCollaboration: agent.agentCollaboration,
         }));
+        await bedrockAgentClient.send(new PrepareAgentCommand({agentId})).catch((e) => console.log(e));
         if (!response.agent) {
           await ctx.reply("Failed to update agent.");
           return;
@@ -768,6 +771,7 @@ bot.on("message", async (ctx) => {
         const agentId = params[1];
         const token = ctx.message.text;
         await updateTelegramAction(agentId, bedrockAgentClient);
+        await bedrockAgentClient.send(new PrepareAgentCommand({agentId})).catch((e) => console.log(e));
         // 存储 token，便于 agent 后续获取到 token 来发送信息
         await redis.set(`telegrambottoken:${agentId}`, token);
         await fetch(`https://api.telegram.org/bot${token}/setWebhook`, {
