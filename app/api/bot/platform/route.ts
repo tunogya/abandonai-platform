@@ -356,6 +356,7 @@ What do you want to do with the bot?`, {
       reply_markup: {
         inline_keyboard: [
           [{text: "Telegram Bot", callback_data: `telegrambot:${response.agent.agentId}`}, {text: "Twitter Bot", callback_data: `twitterbot:${response.agent.agentId}`}],
+          [{text: "« Back to Agent", callback_data: `agent:${response.agent.agentId}`}],
           [{text: "« Back to Agent List", callback_data: "backtoagentlist"}],
         ]
       }
