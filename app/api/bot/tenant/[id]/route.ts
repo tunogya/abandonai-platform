@@ -9,9 +9,18 @@ const client = new BedrockAgentRuntimeClient({ region: "us-west-2" });
 
 const redis = Redis.fromEnv()
 
+const BOT_DEVELOPER = 2130493951;
+
 const POST = async (req: NextRequest, {params}: never) => {
   const {id} = await params;
   const body = await req.json();
+  if (body.message.chat.id !== BOT_DEVELOPER) {
+    return Response.json({
+      ok: false,
+      msg: "Not Auth"
+    })
+  }
+
   try {
     const agentId = id;
     const agentAliasId = await redis.get(`agentAliasId:${agentId}`) as string | undefined;
