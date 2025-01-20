@@ -46,6 +46,12 @@ const POST = async (req: NextRequest, {params}: never) => {
     if (body.message?.voice) {
       const file_id = body.message.voice.file_id;
       const file_content = await getFile(file_id, botToken);
+      if (!file_content) {
+        return Response.json({
+          ok: true,
+          msg: "file not found."
+        });
+      }
       const readableStream = Readable.from(new Uint8Array(file_content));
       try {
         const data = await transcribeStreamingClient.send(new StartStreamTranscriptionCommand({
@@ -102,6 +108,12 @@ const POST = async (req: NextRequest, {params}: never) => {
       }
       const file_id = photo.file_id;
       const buffer =  await getFile(file_id, botToken)
+      if (!buffer) {
+        return Response.json({
+          ok: true,
+          msg: "file not found."
+        });
+      }
       const file_content_base64 = Buffer.from(buffer).toString('base64');
       body = {
         ...body,
