@@ -32,6 +32,10 @@ echo "Deploying to AWS Lambda... 🎯"
 # AWS Lambda Update - Function: TelegramAction-otlfn 🌩️
 aws lambda update-function-code --function-name TelegramAction-otlfn --zip-file fileb://my_deployment_package.zip --region us-west-2 --no-cli-pager
 
+# Delete my_deployment_package.zip
+rm -rf my_deployment_package.zip
+rm -rf package
+
 # Deployment success message ✨
 echo "Lambda function 'TelegramAction-otlfn' successfully updated! 🎉"
 echo "============================================================="
