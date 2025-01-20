@@ -2,9 +2,9 @@ import os
 from upstash_redis import Redis
 import boto3
 import telebot
-from datetime import datetime
+from io import BytesIO
 
-# pip3 install --target ./package upstash_redis boto3 telebot --upgrade
+# pip3 install --target ./package upstash_redis boto3 telebot io --upgrade
 # cd package
 # zip -r ../my_deployment_package.zip .
 # cd ..
@@ -62,13 +62,12 @@ def lambda_handler(event, context):
             if "AudioStream" not in response or response['AudioStream'] is None:
                 raise ValueError("Polly synthesis failed: No AudioStream in response")
 
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            temp_dir = "/tmp"
-            file_name = os.path.join(temp_dir, f"output_{timestamp}.ogg")
-            with open(file_name, 'wb') as file:
-                file.write(response['AudioStream'].read())
-            with open(file_name, 'rb') as voice_file:
-                bot.send_voice(chat_id=chat_id, voice=voice_file)
+            # 将音频流存储到内存
+            audio_stream = BytesIO(response['AudioStream'].read())
+            audio_stream.seek(0)  # 重置流的位置
+            # 使用 Telegram Bot API 发送语音
+            bot.send_voice(chat_id=chat_id, voice=audio_stream)
+            print("Voice message sent successfully.")
         except boto3.exceptions.Boto3Error as e:
             print(f"Error with AWS Polly: {e}")
         except Exception as e:
