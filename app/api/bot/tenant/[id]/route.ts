@@ -53,7 +53,7 @@ const POST = async (req: NextRequest, {params}: never) => {
       }
       try {
         const data = await transcribeStreamingClient.send(new StartStreamTranscriptionCommand({
-          MediaEncoding: "ogg-opus",
+          MediaEncoding: "pcm",
           MediaSampleRateHertz: 16000,
           IdentifyMultipleLanguages: true,
           LanguageOptions: "en-US,zh-CN,id-ID",
