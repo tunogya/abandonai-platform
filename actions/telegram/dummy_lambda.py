@@ -1,10 +1,9 @@
-import json
 import os
-import requests
 from upstash_redis import Redis
 import boto3
+import telebot
 
-# pip3 install --target ./package requests upstash_redis boto3 --upgrade
+# pip3 install --target ./package upstash_redis boto3 telebot --upgrade
 # cd package
 # zip -r ../my_deployment_package.zip .
 # cd ..
@@ -47,102 +46,32 @@ def lambda_handler(event, context):
                 }
             }
         }
+    bot = telebot.TeleBot(bot_token)
 
     if function == "sendMessage":
         try:
-            url = "https://api.telegram.org/bot{}/sendMessage".format(bot_token)
-            if parse_mode:
-                data = {
-                    "chat_id": chat_id,
-                    "text": text,
-                    "parse_mode": parse_mode
-                }
-            else:
-                data = {
-                    "chat_id": chat_id,
-                    "text": text,
-                }
-            headers = {
-                "Content-Type": "application/json"
-            }
-            response = requests.post(url, data=json.dumps(data), headers=headers)
-            print("Response: {}".format(response.text))
+            bot.send_message(chat_id=chat_id, text=text, parse_mode=parse_mode)
         except:
-            raise Exception("Error: {}".format(response.text))
+            raise Exception("Error: Fail to send message")
     elif function == "sendVoice":
         try:
             polly_client = boto3.Session().client('polly')
-            print("Polly text: {}".format(text))
             response = polly_client.synthesize_speech(VoiceId='Ruth',
                                                       OutputFormat='ogg',
                                                       Text = text,
-                                                      Engine = 'generative')
+                                                      Engine = 'neural')
+            if "AudioStream" not in response or response['AudioStream'] is None:
+                raise ValueError("Polly synthesis failed: No AudioStream in response")
+
             file_name = "output.ogg"
             with open(file_name, 'wb') as file:
                 file.write(response['AudioStream'].read())
-            url = "https://api.telegram.org/bot{}/sendVoice".format(bot_token)
             with open(file_name, 'rb') as voice_file:
-                data = {
-                    "chat_id": chat_id,
-                }
-                files = {
-                    "voice": voice_file
-                }
-                response = requests.post(url, data=json.dumps(data), files=files)
-                print("Response: {}".format(response))
-        except:
-            raise Exception("Error: {}".format(response.text))
-    # elif function == "sendPhoto":
-    #     try:
-    #         url = "https://api.telegram.org/bot{}/sendPhoto".format(bot_token)
-    #         data = {
-    #             "chat_id": chat_id,
-    #             "photo": text
-    #         }
-    #         headers = {
-    #             "Content-Type": "application/json"
-    #         }
-    #         response = requests.post(url, data=json.dumps(data), headers=headers)
-    #     except:
-    #         raise Exception("Error: {}".format(response.text))
-    # elif function == "sendVideo":
-    #     try:
-    #         url = "https://api.telegram.org/bot{}/sendVideo".format(bot_token)
-    #         data = {
-    #             "chat_id": chat_id,
-    #             "audio": text
-    #         }
-    #         headers = {
-    #             "Content-Type": "application/json"
-    #         }
-    #         response = requests.post(url, data=json.dumps(data), headers=headers)
-    #     except:
-    #         raise Exception("Error: {}".format(response.text))
-    # elif function == "sendDocument":
-    #     try:
-    #         url = "https://api.telegram.org/bot{}/sendDocument".format(bot_token)
-    #         data = {
-    #             "chat_id": chat_id,
-    #             "document": text
-    #         }
-    #         headers = {
-    #             "Content-Type": "application/json"
-    #         }
-    #         response = requests.post(url, data=json.dumps(data), headers=headers)
-    #     except:
-    #         raise Exception("Error: {}".format(response.text))
-    # elif function == "getFile":
-    #     try:
-    #         url = "https://api.telegram.org/bot{}/getFile".format(bot_token)
-    #         data = {
-    #             "file_id": text
-    #         }
-    #         headers = {
-    #             "Content-Type": "application/json"
-    #         }
-    #         response = requests.post(url, data=json.dumps(data), headers=headers)
-    #     except:
-    #         raise Exception("Error: {}".format(response.text))
+                bot.send_voice(chat_id=chat_id, voice=voice_file)
+        except boto3.exceptions.Boto3Error as e:
+            print(f"Error with AWS Polly: {e}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
 
     action_response = {
         'actionGroup': actionGroup,
