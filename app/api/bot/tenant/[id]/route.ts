@@ -43,57 +43,57 @@ const POST = async (req: NextRequest, {params}: never) => {
 
     // 判断是否是 voice message
     // 如果是 voice message，则需要先转成文字，再拼接到原来的 body 数据结构中
-    if (body.message?.voice) {
-      const file_id = body.message.voice.file_id;
-      const file_content = await getFile(file_id, botToken);
-      const readableStream = new Readable({
-        read() {
-          this.push(new Uint8Array(file_content));
-          this.push(null); // 表示数据流结束
-        },
-      });
-      try {
-        console.log("start to call StartStreamTranscriptionCommand")
-        const data = await transcribeStreamingClient.send(new StartStreamTranscriptionCommand({
-          MediaEncoding: "ogg-opus",
-          MediaSampleRateHertz: 16000,
-          IdentifyMultipleLanguages: true,
-          LanguageOptions: "en-US,zh-CN,id-ID",
-          AudioStream: readableStream,
-        }));
-        console.log("end call StartStreamTranscriptionCommand")
-        if (!data?.TranscriptResultStream) {
-          return Response.json({
-            ok: true,
-            msg: "TranscriptResultStream not found."
-          });
-        }
-        let content = ""
-        for await (const event of data.TranscriptResultStream) {
-          for (const result of event.TranscriptEvent?.Transcript?.Results || []) {
-            if (result.IsPartial === false) {
-              if (result?.Alternatives && result?.Alternatives[0].Items) {
-                const noOfResults = result?.Alternatives[0].Items.length;
-                for (let i = 0; i < noOfResults; i++) {
-                  content += result?.Alternatives[0].Items[i].Content || "";
-                  console.log(content);
-                }
-              }
-            }
-          }
-        }
-        console.log(content)
-        body = {
-          ...body,
-          message: {
-            ...body.message,
-            text: content,
-          },
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    }
+    // if (body.message?.voice) {
+    //   const file_id = body.message.voice.file_id;
+    //   const file_content = await getFile(file_id, botToken);
+    //   const readableStream = new Readable({
+    //     read() {
+    //       this.push(new Uint8Array(file_content));
+    //       this.push(null); // 表示数据流结束
+    //     },
+    //   });
+    //   try {
+    //     console.log("start to call StartStreamTranscriptionCommand")
+    //     const data = await transcribeStreamingClient.send(new StartStreamTranscriptionCommand({
+    //       MediaEncoding: "ogg-opus",
+    //       MediaSampleRateHertz: 16000,
+    //       IdentifyMultipleLanguages: true,
+    //       LanguageOptions: "en-US,zh-CN,id-ID",
+    //       AudioStream: readableStream,
+    //     }));
+    //     console.log("end call StartStreamTranscriptionCommand")
+    //     if (!data?.TranscriptResultStream) {
+    //       return Response.json({
+    //         ok: true,
+    //         msg: "TranscriptResultStream not found."
+    //       });
+    //     }
+    //     let content = ""
+    //     for await (const event of data.TranscriptResultStream) {
+    //       for (const result of event.TranscriptEvent?.Transcript?.Results || []) {
+    //         if (result.IsPartial === false) {
+    //           if (result?.Alternatives && result?.Alternatives[0].Items) {
+    //             const noOfResults = result?.Alternatives[0].Items.length;
+    //             for (let i = 0; i < noOfResults; i++) {
+    //               content += result?.Alternatives[0].Items[i].Content || "";
+    //               console.log(content);
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //     console.log(content)
+    //     body = {
+    //       ...body,
+    //       message: {
+    //         ...body.message,
+    //         text: content,
+    //       },
+    //     }
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // }
 
     if (body.message?.photo) {
       // https://aws.amazon.com/cn/blogs/china/amazon-bedrock-claude-3-multimodal-usage-guide/
