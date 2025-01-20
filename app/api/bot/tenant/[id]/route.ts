@@ -31,8 +31,6 @@ const POST = async (req: NextRequest, {params}: never) => {
       return Response.json({
         ok: false,
         msg: "agentAliasId or botToken not found."
-      }, {
-        status: 404,
       });
     }
 
@@ -80,6 +78,7 @@ const POST = async (req: NextRequest, {params}: never) => {
           }
         }
       }
+      console.log(content)
       body = {
         ...body,
         message: {
@@ -119,12 +118,11 @@ const POST = async (req: NextRequest, {params}: never) => {
     return Response.json({
       ok: true,
     });
-  } catch {
+  } catch (error) {
+    console.log("error", error);
     return Response.json({
       ok: false,
       msg: "Something went wrong."
-    }, {
-      status: 500,
     })
   }
 };
