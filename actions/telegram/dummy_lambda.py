@@ -48,7 +48,7 @@ def lambda_handler(event, context):
             raise Exception("Error: Fail to send message")
     elif function == "sendVoice":
         try:
-            polly_client = boto3.Session(region="us-west-2").client('polly')
+            polly_client = boto3.Session().client('polly')
             response = polly_client.synthesize_speech(VoiceId='Ruth',
                                                       OutputFormat='ogg_vorbis',
                                                       Text = text,
