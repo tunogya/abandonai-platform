@@ -66,6 +66,7 @@ def lambda_handler(event, context):
                 "Content-Type": "application/json"
             }
             response = requests.post(url, data=json.dumps(data), headers=headers)
+            print("Response: {}".format(response.text))
         except:
             raise Exception("Error: {}".format(response.text))
     elif function == "sendVoice":
@@ -87,6 +88,7 @@ def lambda_handler(event, context):
                     "voice": voice_file
                 }
                 response = requests.post(url, data=json.dumps(data), files=files)
+                print("Response: {}".format(response.text))
         except:
             raise Exception("Error: {}".format(response.text))
     # elif function == "sendPhoto":
