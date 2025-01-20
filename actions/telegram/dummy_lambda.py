@@ -4,12 +4,6 @@ import boto3
 import telebot
 from io import BytesIO
 
-# pip3 install --target ./package upstash_redis boto3 telebot pydub --upgrade
-# cd package
-# zip -r ../my_deployment_package.zip .
-# cd ..
-# zip my_deployment_package.zip dummy_lambda.py
-
 def lambda_handler(event, context):
     actionGroup = event['actionGroup']
     function = event['function']
