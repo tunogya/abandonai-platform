@@ -2,7 +2,6 @@ import {Readable} from "node:stream";
 
 export const getFile = async (file_id: string, bot_token: string) => {
   try {
-    console.log(`https://api.telegram.org/bot${bot_token}/getFile?file_id=${file_id}`)
     const fileResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getFile?file_id=${file_id}`)
     const file = await fileResponse.json();
 
@@ -11,7 +10,6 @@ export const getFile = async (file_id: string, bot_token: string) => {
     }
 
     const file_path = file.result.file_path;
-    console.log(`https://api.telegram.org/file/bot${bot_token}/${file_path}`)
     const response = await fetch(`https://api.telegram.org/file/bot${bot_token}/${file_path}`);
 
     if (!response.ok) {
