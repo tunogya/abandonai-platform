@@ -1,13 +1,10 @@
 import {NextRequest} from "next/server";
 import {
   PutObjectCommand,
-  S3Client, HeadObjectCommand,
+  HeadObjectCommand,
 } from "@aws-sdk/client-s3";
 import { Semaphore } from "async-mutex";
-
-const s3Client = new S3Client({
-  region: "us-east-1",
-});
+import {s3Client} from "@/app/libs/s3Client";
 
 const BATCH_SIZE = 20; // 每次批量处理的任务数量
 const MAX_CONCURRENT = 5; // 最大并行任务数

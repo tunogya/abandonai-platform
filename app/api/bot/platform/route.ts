@@ -1,14 +1,15 @@
-import {TwitterApi} from 'twitter-api-v2';
 import {Bot, Context, webhookCallback} from 'grammy'
-import {Redis} from '@upstash/redis'
 import {
-  BedrockAgentClient, CreateAgentAliasCommand,
+  CreateAgentAliasCommand,
   CreateAgentCommand, DeleteAgentAliasCommand,
   DeleteAgentCommand, GetAgentCommand,
   paginateListAgents, PrepareAgentCommand, UpdateAgentCommand
 } from "@aws-sdk/client-bedrock-agent";
 import {InlineKeyboardButton, KeyboardButton} from "@grammyjs/types";
 import {deleteTelegramAction, updateTelegramAction} from "@/app/api/bot/platform/telegram_action";
+import {bedrockAgentClient} from "@/app/libs/bedrockAgentClient";
+import {redisClient} from "@/app/libs/redisClient";
+import {twitterClient} from "@/app/libs/twitterClient";
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
@@ -30,15 +31,6 @@ const token = process.env.TELEGRAM_BOT_TOKEN
 if (!token) throw new Error('TELEGRAM_BOT_TOKEN environment variable not found.')
 
 const bot = new Bot<MyContext>(token)
-
-const redis = Redis.fromEnv()
-
-const bedrockAgentClient = new BedrockAgentClient({region: "us-west-2"});
-
-const twitterClient = new TwitterApi({
-  clientId: process.env.X_CLIENT_ID || "",
-  clientSecret: process.env.X_CLIENT_SECRET || "",
-});
 
 /**
  * Middleware to add bot config to context.
@@ -84,7 +76,7 @@ bot.command("newagent", async (ctx) => {
     return;
   }
   await Promise.all([
-    redis.set(`params:${ctx.from?.id}`, ["newagent"]),
+    redisClient.set(`params:${ctx.from?.id}`, ["newagent"]),
     ctx.reply("Alright, a new agent. How are we going to call it? Please choose a name for your agent.")
   ])
 })
@@ -98,7 +90,7 @@ bot.command("myagents", async (ctx) => {
     await ctx.reply("You are not authorized to create a new agent.");
     return;
   }
-  await redis.set(`params:${ctx.from?.id}`, ["myagents"]);
+  await redisClient.set(`params:${ctx.from?.id}`, ["myagents"]);
   const pages = paginateListAgents({
     client: bedrockAgentClient,
     pageSize: 10,
@@ -139,7 +131,7 @@ bot.command("deleteagent", async (ctx) => {
     await ctx.reply("You are not authorized to create a new agent.");
     return;
   }
-  await redis.set(`params:${ctx.from?.id}`, ["deleteagent"]);
+  await redisClient.set(`params:${ctx.from?.id}`, ["deleteagent"]);
   const pages = paginateListAgents({
     client: bedrockAgentClient,
     pageSize: 10,
@@ -364,7 +356,7 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("deleteagent_yes:")) {
     const agentId = data.split(":")[1];
-    const agentAliasId = await redis.get(`agentAliasId:${agentId}`) as string | undefined
+    const agentAliasId = await redisClient.get(`agentAliasId:${agentId}`) as string | undefined
     if (agentAliasId) {
       await bedrockAgentClient.send(new DeleteAgentAliasCommand({
         agentId: agentId,
@@ -388,7 +380,7 @@ What do you want to do with the bot?`, {
   if (data.startsWith("editname:")) {
     const agentId = data.split(":")[1];
     await Promise.all([
-      redis.set(`params:${ctx.from?.id}`, ["editname", agentId]),
+      redisClient.set(`params:${ctx.from?.id}`, ["editname", agentId]),
       ctx.editMessageText("Please enter the new name for the agent."),
     ])
       .catch((e) => console.log(e));
@@ -396,7 +388,7 @@ What do you want to do with the bot?`, {
   if (data.startsWith("editdescription:")) {
     const agentId = data.split(":")[1];
     await Promise.all([
-      redis.set(`params:${ctx.from?.id}`, ["editdescription", agentId]),
+      redisClient.set(`params:${ctx.from?.id}`, ["editdescription", agentId]),
       ctx.editMessageText("Please enter the new description for the agent."),
     ])
       .catch((e) => console.log(e));
@@ -404,14 +396,14 @@ What do you want to do with the bot?`, {
   if (data.startsWith("editinstruction:")) {
     const agentId = data.split(":")[1];
     await Promise.all([
-      redis.set(`params:${ctx.from?.id}`, ["editinstruction", agentId]),
+      redisClient.set(`params:${ctx.from?.id}`, ["editinstruction", agentId]),
       ctx.editMessageText("Please enter the new instruction for the agent."),
     ])
       .catch((e) => console.log(e));
   }
   if (data.startsWith("twitterbot")) {
     const agentId = data.split(":")[1];
-    const {userObject} = await redis.get(`twitterbotauth2:${agentId}`) as {
+    const {userObject} = await redisClient.get(`twitterbotauth2:${agentId}`) as {
       userObject: { id: string, username: string, name: string }
     }
     if (!userObject) {
@@ -424,7 +416,7 @@ What do you want to do with the bot?`, {
         state: agentId
       });
       await Promise.all([
-        redis.pipeline()
+        redisClient.pipeline()
           .set(`params:${ctx.from?.id}`, ["twitterbot", agentId])
           .set(`oauth2:${agentId}`, {
             codeVerifier,
@@ -456,10 +448,10 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("telegrambot")) {
     const agentId = data.split(":")[1];
-    const token = await redis.get(`telegrambottoken:${agentId}`)
+    const token = await redisClient.get(`telegrambottoken:${agentId}`)
     if (!token) {
       await Promise.all([
-        redis.set(`params:${ctx.from?.id}`, ["telegrambot", agentId]),
+        redisClient.set(`params:${ctx.from?.id}`, ["telegrambot", agentId]),
         ctx.editMessageText("Please enter the telegram bot token for the agent.")
       ])
         .catch((e) => console.log(e));
@@ -480,7 +472,7 @@ What do you want to do with the bot?`, {
   if (data.startsWith("logouttwitter")) {
     const agentId = data.split(":")[1];
     await Promise.all([
-      redis.del(`twitterbotauth2:${agentId}`),
+      redisClient.del(`twitterbotauth2:${agentId}`),
       ctx.editMessageText("Twitter logout successfully.", {
         reply_markup: {
           inline_keyboard: [
@@ -493,11 +485,11 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("logouttelegram")) {
     const agentId = data.split(":")[1];
-    const token = await redis.get(`telegrambottoken:${agentId}`);
+    const token = await redisClient.get(`telegrambottoken:${agentId}`);
     await deleteTelegramAction(agentId, bedrockAgentClient);
     await Promise.all([
       fetch(`https://api.telegram.org/bot${token}/deleteWebhook`),
-      redis.del(`telegrambottoken:${agentId}`),
+      redisClient.del(`telegrambottoken:${agentId}`),
       ctx.editMessageText("Telegram bot logout successfully.", {
         reply_markup: {
           inline_keyboard: [
@@ -521,7 +513,7 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("newversion")) {
     const agentId = data.split(":")[1];
-    const oldAgentAliasId = await redis.get(`agentAliasId:${agentId}`) as string | undefined
+    const oldAgentAliasId = await redisClient.get(`agentAliasId:${agentId}`) as string | undefined
     if (oldAgentAliasId) {
       await bedrockAgentClient.send(new DeleteAgentAliasCommand({
         agentId: agentId,
@@ -533,7 +525,7 @@ What do you want to do with the bot?`, {
       agentAliasName: Date.now().toString(),
     })).catch((e) => console.log(e))
     if (response?.agentAlias?.agentAliasId) {
-      await redis.set(`agentAliasId:${agentId}`, response?.agentAlias?.agentAliasId)
+      await redisClient.set(`agentAliasId:${agentId}`, response?.agentAlias?.agentAliasId)
       await ctx.editMessageText(`New version created successfully.`, {
         parse_mode: "HTML",
         reply_markup: {
@@ -556,7 +548,7 @@ What do you want to do with the bot?`, {
 });
 
 bot.on("message", async (ctx) => {
-  const params = await redis.get(`params:${ctx.from?.id}`) as string[] | undefined;
+  const params = await redisClient.get(`params:${ctx.from?.id}`) as string[] | undefined;
   if (!params) return;
   try {
     if (params[0] === "newagent") {
@@ -567,7 +559,7 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Please choose a name for your agent.");
           return;
         }
-        await redis.set(`params:${ctx.from?.id}`, ["newagent", agentName]);
+        await redisClient.set(`params:${ctx.from?.id}`, ["newagent", agentName]);
         await ctx.reply("Please enter the instruction for your agent.");
       } else if (params.length === 2) {
         const agentName = params[1];
@@ -576,7 +568,7 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Please enter the instruction for your agent.");
           return;
         }
-        await redis.set(`params:${ctx.from?.id}`, ["newagent", agentName, instruction]);
+        await redisClient.set(`params:${ctx.from?.id}`, ["newagent", agentName, instruction]);
         // Your AWS account id.
         const accountId = "913870644571";
         // The name of the agent's execution role. It must be prefixed by `AmazonBedrockExecutionRoleForAgents_`.
@@ -594,7 +586,7 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Failed to create agent.");
           return;
         } else {
-          await redis.del(`params:${ctx.from?.id}`);
+          await redisClient.del(`params:${ctx.from?.id}`);
           await ctx.reply(`Agent created successfully.
 
 <b>AgentId:</b> ${response.agent.agentId}
@@ -611,7 +603,7 @@ bot.on("message", async (ctx) => {
       if (params.length === 1) {
         const agentId = ctx.message.text;
         const response = await bedrockAgentClient.send(new DeleteAgentCommand({agentId}));
-        await redis.del(`params:${ctx.from?.id}`);
+        await redisClient.del(`params:${ctx.from?.id}`);
         await ctx.reply(`Agent deleted successfully.
 
 <b>AgentId:</b> ${response.agentId}
@@ -658,7 +650,7 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Failed to update agent.");
           return;
         }
-        await redis.del(`params:${ctx.from?.id}`);
+        await redisClient.del(`params:${ctx.from?.id}`);
         await ctx.reply(`Agent name updated successfully.
 
 <b>AgentId:</b> ${response.agent.agentId}
@@ -706,7 +698,7 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Failed to update agent.");
           return;
         }
-        await redis.del(`params:${ctx.from?.id}`);
+        await redisClient.del(`params:${ctx.from?.id}`);
         await ctx.reply(`Agent description updated successfully.
 
 <b>AgentId:</b> ${response.agent.agentId}
@@ -755,7 +747,7 @@ bot.on("message", async (ctx) => {
           await ctx.reply("Failed to update agent.");
           return;
         }
-        await redis.del(`params:${ctx.from?.id}`);
+        await redisClient.del(`params:${ctx.from?.id}`);
         await ctx.reply(`Agent instruction updated successfully.
 
 <b>AgentId:</b> ${response.agent.agentId}
@@ -774,7 +766,7 @@ bot.on("message", async (ctx) => {
         await updateTelegramAction(agentId, bedrockAgentClient);
         await bedrockAgentClient.send(new PrepareAgentCommand({agentId})).catch((e) => console.log(e));
         // 存储 token，便于 agent 后续获取到 token 来发送信息
-        await redis.set(`telegrambottoken:${agentId}`, token);
+        await redisClient.set(`telegrambottoken:${agentId}`, token);
         await fetch(`https://api.telegram.org/bot${token}/setWebhook`, {
           method: "POST",
           headers: {
@@ -784,7 +776,7 @@ bot.on("message", async (ctx) => {
             url: `https://open.abandon.ai/api/bot/tenant/${agentId}`
           })
         });
-        await redis.del(`params:${ctx.from?.id}`);
+        await redisClient.del(`params:${ctx.from?.id}`);
         await ctx.reply(`Telegram bot token updated successfully.
 
 <b>AgentId:</b> ${agentId}

@@ -1,13 +1,8 @@
-import {Redis} from "@upstash/redis";
-import {TwitterApi} from "twitter-api-v2";
 import {NextRequest} from "next/server";
 import {Bot} from "grammy";
+import {redisClient} from "@/app/libs/redisClient";
+import {twitterClient} from "@/app/libs/twitterClient";
 
-const redis = Redis.fromEnv();
-const twitterClient = new TwitterApi({
-  clientId: process.env.X_CLIENT_ID || "",
-  clientSecret: process.env.X_CLIENT_SECRET || ""
-});
 const token = process.env.TELEGRAM_BOT_TOKEN || ""
 const bot = new Bot(token)
 
@@ -15,7 +10,7 @@ const GET = async (req: NextRequest) => {
   const searchParams = req.nextUrl.searchParams
   const code = searchParams.get('code');
   const state = searchParams.get('state');
-  const {codeVerifier, state: stateVerifier, chatId, messageId} = await redis.get(`oauth2:${state}`) as {
+  const {codeVerifier, state: stateVerifier, chatId, messageId} = await redisClient.get(`oauth2:${state}`) as {
     codeVerifier: string,
     state: string,
     chatId: string | number,
@@ -30,7 +25,7 @@ const GET = async (req: NextRequest) => {
   const {client: loggedClient, accessToken, refreshToken, expiresIn} = response;
   const {data: userObject} = await loggedClient.v2.me();
   await Promise.all([
-    redis.pipeline()
+    redisClient.pipeline()
       .set(`twitterbotauth2:${state}`, {accessToken, refreshToken, expiresIn, userObject})
       .del(`oauth2:${state}`)
       .exec(),
