@@ -4,9 +4,6 @@ import requests
 from upstash_redis import Redis
 import boto3
 
-from actions.telegram.package.six import print_
-
-
 # pip3 install --target ./package requests upstash_redis boto3 --upgrade
 # cd package
 # zip -r ../my_deployment_package.zip .
