@@ -2,9 +2,8 @@ import {NextRequest} from "next/server";
 import {InvokeAgentCommand,} from "@aws-sdk/client-bedrock-agent-runtime";
 import {bedrockAgentRuntimeClient} from "@/app/libs/bedrockAgentRuntimeClient";
 import {redisClient} from "@/app/libs/redisClient";
-import {getFile} from "@/app/libs/telegram";
+import {getFile, getFileAsStream} from "@/app/libs/telegram";
 import {StartStreamTranscriptionCommand} from "@aws-sdk/client-transcribe-streaming";
-import {Readable} from "node:stream";
 import {transcribeStreamingClient} from "@/app/libs/transcribeStreamingClient";
 
 const BOT_DEVELOPER = 2130493951;
@@ -45,14 +44,13 @@ const POST = async (req: NextRequest, {params}: never) => {
     // 如果是 voice message，则需要先转成文字，再拼接到原来的 body 数据结构中
     if (body.message?.voice) {
       const file_id = body.message.voice.file_id;
-      const file_content = await getFile(file_id, botToken);
-      if (!file_content) {
+      const audio_stream = await getFileAsStream(file_id, botToken);
+      if (!audio_stream) {
         return Response.json({
           ok: true,
           msg: "file not found."
         });
       }
-      const readableStream = Readable.from(new Uint8Array(file_content));
       try {
         const data = await transcribeStreamingClient.send(new StartStreamTranscriptionCommand({
           MediaEncoding: "ogg-opus",
@@ -60,7 +58,7 @@ const POST = async (req: NextRequest, {params}: never) => {
           IdentifyMultipleLanguages: true,
           LanguageOptions: "en-US,zh-CN,id-ID",
           AudioStream: (async function* () {
-            for await (const chunk of readableStream) {
+            for await (const chunk of audio_stream) {
               yield {AudioEvent: {AudioChunk: chunk}};
             }
           })(),
