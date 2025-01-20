@@ -2,6 +2,7 @@ import os
 from upstash_redis import Redis
 import boto3
 import telebot
+from datetime import datetime
 
 # pip3 install --target ./package upstash_redis boto3 telebot --upgrade
 # cd package
@@ -61,7 +62,9 @@ def lambda_handler(event, context):
             if "AudioStream" not in response or response['AudioStream'] is None:
                 raise ValueError("Polly synthesis failed: No AudioStream in response")
 
-            file_name = "output.ogg"
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            temp_dir = "/tmp"
+            file_name = os.path.join(temp_dir, f"output_{timestamp}.ogg")
             with open(file_name, 'wb') as file:
                 file.write(response['AudioStream'].read())
             with open(file_name, 'rb') as voice_file:
