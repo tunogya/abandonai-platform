@@ -57,9 +57,9 @@ def lambda_handler(event, context):
         try:
             polly_client = boto3.Session().client('polly')
             response = polly_client.synthesize_speech(VoiceId='Ruth',
-                                                      OutputFormat='ogg',
+                                                      OutputFormat='ogg_vorbis',
                                                       Text = text,
-                                                      Engine = 'neural')
+                                                      Engine = 'generative')
             if "AudioStream" not in response or response['AudioStream'] is None:
                 raise ValueError("Polly synthesis failed: No AudioStream in response")
 
