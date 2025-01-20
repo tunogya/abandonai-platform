@@ -95,11 +95,8 @@ const POST = async (req: NextRequest, {params}: never) => {
     }
 
     if (body.message?.photo) {
-      console.log(JSON.stringify(body.message?.photo))
       // https://aws.amazon.com/cn/blogs/china/amazon-bedrock-claude-3-multimodal-usage-guide/
-      const photo = body.message.photo.some((photo: {width: number, height: number}) => photo.width <= 1568 && photo.height <= 1568 && photo.width > 200 && photo.height > 200);
-      console.log(photo)
-      console.log(JSON.stringify(photo))
+      const photo = body.message.photo.slice().reverse().find((photo: {width: number, height: number}) => photo.width <= 1568 && photo.height <= 1568 && photo.width > 200 && photo.height > 200);
       if (!photo) {
         return Response.json({
           ok: true,
