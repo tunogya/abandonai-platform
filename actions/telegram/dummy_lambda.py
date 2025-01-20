@@ -1,3 +1,4 @@
+import json
 import os
 import requests
 from upstash_redis import Redis
@@ -64,7 +65,7 @@ def lambda_handler(event, context):
             headers = {
                 "Content-Type": "application/json"
             }
-            response = requests.post(url, data=data, headers=headers)
+            response = requests.post(url, data=json.dumps(data), headers=headers)
         except:
             raise Exception("Error: {}".format(response.text))
     elif function == "sendVoice":
@@ -85,7 +86,7 @@ def lambda_handler(event, context):
                 files = {
                     "voice": voice_file
                 }
-                response = requests.post(url, data=data, files=files)
+                response = requests.post(url, data=json.dumps(data), files=files)
         except:
             raise Exception("Error: {}".format(response.text))
     # elif function == "sendPhoto":
@@ -98,7 +99,7 @@ def lambda_handler(event, context):
     #         headers = {
     #             "Content-Type": "application/json"
     #         }
-    #         response = requests.post(url, data=data, headers=headers)
+    #         response = requests.post(url, data=json.dumps(data), headers=headers)
     #     except:
     #         raise Exception("Error: {}".format(response.text))
     # elif function == "sendVideo":
@@ -111,7 +112,7 @@ def lambda_handler(event, context):
     #         headers = {
     #             "Content-Type": "application/json"
     #         }
-    #         response = requests.post(url, data=data, headers=headers)
+    #         response = requests.post(url, data=json.dumps(data), headers=headers)
     #     except:
     #         raise Exception("Error: {}".format(response.text))
     # elif function == "sendDocument":
@@ -124,7 +125,7 @@ def lambda_handler(event, context):
     #         headers = {
     #             "Content-Type": "application/json"
     #         }
-    #         response = requests.post(url, data=data, headers=headers)
+    #         response = requests.post(url, data=json.dumps(data), headers=headers)
     #     except:
     #         raise Exception("Error: {}".format(response.text))
     # elif function == "getFile":
@@ -136,7 +137,7 @@ def lambda_handler(event, context):
     #         headers = {
     #             "Content-Type": "application/json"
     #         }
-    #         response = requests.post(url, data=data, headers=headers)
+    #         response = requests.post(url, data=json.dumps(data), headers=headers)
     #     except:
     #         raise Exception("Error: {}".format(response.text))
 
