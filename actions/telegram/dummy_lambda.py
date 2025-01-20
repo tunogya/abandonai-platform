@@ -1,9 +1,9 @@
-import json
 import os
 import requests
 from upstash_redis import Redis
+import boto3
 
-# pip3 install --target ./package requests upstash_redis --upgrade
+# pip3 install --target ./package requests upstash_redis boto3 --upgrade
 # cd package
 # zip -r ../my_deployment_package.zip .
 # cd ..
@@ -64,81 +64,81 @@ def lambda_handler(event, context):
             headers = {
                 "Content-Type": "application/json"
             }
-            response = requests.post(url, data=json.dumps(data), headers=headers)
+            response = requests.post(url, data=data, headers=headers)
         except:
             raise Exception("Error: {}".format(response.text))
-    elif function == "sendPhoto":
+    elif function == "sendVoice":
         try:
-            url = "https://api.telegram.org/bot{}/sendPhoto".format(bot_token)
-            if parse_mode:
+            polly_client = boto3.Session().client('polly')
+            response = polly_client.synthesize_speech(VoiceId='Ruth',
+                                                      OutputFormat='ogg',
+                                                      Text = text,
+                                                      Engine = 'generative')
+            file_name = "output.ogg"
+            with open(file_name, 'wb') as file:
+                file.write(response['AudioStream'].read())
+            url = "https://api.telegram.org/bot{}/sendVoice".format(bot_token)
+            with open(file_name, 'rb') as voice_file:
                 data = {
                     "chat_id": chat_id,
-                    "photo": text,
-                    "parse_mode": parse_mode
                 }
-            else:
-                data = {
-                    "chat_id": chat_id,
-                    "photo": text
+                files = {
+                    "voice": voice_file
                 }
-            headers = {
-                "Content-Type": "application/json"
-            }
-            response = requests.post(url, data=json.dumps(data), headers=headers)
+                response = requests.post(url, data=data, files=files)
         except:
             raise Exception("Error: {}".format(response.text))
-    elif function == "sendVideo":
-        try:
-            url = "https://api.telegram.org/bot{}/sendVideo".format(bot_token)
-            if parse_mode:
-                data = {
-                    "chat_id": chat_id,
-                    "audio": text,
-                    "parse_mode": parse_mode
-                }
-            else:
-                data = {
-                    "chat_id": chat_id,
-                    "audio": text
-                }
-            headers = {
-                "Content-Type": "application/json"
-            }
-            response = requests.post(url, data=json.dumps(data), headers=headers)
-        except:
-            raise Exception("Error: {}".format(response.text))
-    elif function == "sendDocument":
-        try:
-            url = "https://api.telegram.org/bot{}/sendDocument".format(bot_token)
-            if parse_mode:
-                data = {
-                    "chat_id": chat_id,
-                    "document": text,
-                    "parse_mode": parse_mode
-                }
-            else:
-                data = {
-                    "chat_id": chat_id,
-                    "document": text
-                }
-            headers = {
-                "Content-Type": "application/json"
-            }
-            response = requests.post(url, data=json.dumps(data), headers=headers)
-        except:
-            raise Exception("Error: {}".format(response.text))
-    elif function == "getFile":
-        try:
-            url = "https://api.telegram.org/bot{}/getFile".format(bot_token)
-            data = {
-                "file_id": text
-            }
-            headers = {
-                "Content-Type": "application/json"
-            }
-            response = requests.post(url, data=json.dumps(data), headers=headers)
-        except:
-            raise Exception("Error: {}".format(response.text))
+    # elif function == "sendPhoto":
+    #     try:
+    #         url = "https://api.telegram.org/bot{}/sendPhoto".format(bot_token)
+    #         data = {
+    #             "chat_id": chat_id,
+    #             "photo": text
+    #         }
+    #         headers = {
+    #             "Content-Type": "application/json"
+    #         }
+    #         response = requests.post(url, data=data, headers=headers)
+    #     except:
+    #         raise Exception("Error: {}".format(response.text))
+    # elif function == "sendVideo":
+    #     try:
+    #         url = "https://api.telegram.org/bot{}/sendVideo".format(bot_token)
+    #         data = {
+    #             "chat_id": chat_id,
+    #             "audio": text
+    #         }
+    #         headers = {
+    #             "Content-Type": "application/json"
+    #         }
+    #         response = requests.post(url, data=data, headers=headers)
+    #     except:
+    #         raise Exception("Error: {}".format(response.text))
+    # elif function == "sendDocument":
+    #     try:
+    #         url = "https://api.telegram.org/bot{}/sendDocument".format(bot_token)
+    #         data = {
+    #             "chat_id": chat_id,
+    #             "document": text
+    #         }
+    #         headers = {
+    #             "Content-Type": "application/json"
+    #         }
+    #         response = requests.post(url, data=data, headers=headers)
+    #     except:
+    #         raise Exception("Error: {}".format(response.text))
+    # elif function == "getFile":
+    #     try:
+    #         url = "https://api.telegram.org/bot{}/getFile".format(bot_token)
+    #         data = {
+    #             "file_id": text
+    #         }
+    #         headers = {
+    #             "Content-Type": "application/json"
+    #         }
+    #         response = requests.post(url, data=data, headers=headers)
+    #     except:
+    #         raise Exception("Error: {}".format(response.text))
 
     action_response = {
         'actionGroup': actionGroup,
