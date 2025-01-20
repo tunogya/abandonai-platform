@@ -41,11 +41,10 @@ const POST = async (req: NextRequest, {params}: never) => {
       }
     }
 
-
     // 判断是否是 voice message
     // 如果是 voice message，则需要先转成文字，再拼接到原来的 body 数据结构中
     if (body.message?.voice) {
-      const file_id = body.voice.file_id;
+      const file_id = body.message.voice.file_id;
       const file_content = await getFile(file_id, botToken);
       const readableStream = new Readable({
         read() {
@@ -89,7 +88,7 @@ const POST = async (req: NextRequest, {params}: never) => {
     }
     if (body.message?.photo) {
       // https://aws.amazon.com/cn/blogs/china/amazon-bedrock-claude-3-multimodal-usage-guide/
-      const photo = body.photo.some((photo: {width: number, height: number}) => photo.width <= 1568 && photo.height <= 1568 && photo.width > 200 && photo.height > 200);
+      const photo = body.message.photo.some((photo: {width: number, height: number}) => photo.width <= 1568 && photo.height <= 1568 && photo.width > 200 && photo.height > 200);
       if (!photo) {
         return Response.json({
           ok: false,
