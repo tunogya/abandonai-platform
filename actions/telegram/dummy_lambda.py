@@ -19,8 +19,6 @@ def lambda_handler(event, context):
     parse_mode = None
     agent_id = None
 
-    response = None
-
     for parameter in parameters:
         if parameter['name'] == 'chat_id':
             chat_id = parameter['value']
@@ -79,7 +77,7 @@ def lambda_handler(event, context):
         'functionResponse': {
             'responseBody': {
                 "TEXT": {
-                    "body": "Response: {}".format(response.text)
+                    "body": "Response: Send Success"
                 }
             }
         }
