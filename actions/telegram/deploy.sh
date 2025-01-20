@@ -1,4 +1,4 @@
-pip3 install --target ./package requests upstash_redis boto3 --upgrade
+pip3 install --target ./package upstash_redis boto3 telebot --upgrade
 cd package
 zip -r ../my_deployment_package.zip .
 cd ..
