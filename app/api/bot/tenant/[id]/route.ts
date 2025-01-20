@@ -4,8 +4,6 @@ import {
 } from "@aws-sdk/client-bedrock-agent-runtime";
 import {bedrockAgentRuntimeClient} from "@/app/libs/bedrockAgentRuntimeClient";
 import {redisClient} from "@/app/libs/redisClient";
-// import {StartTranscriptionJobCommand} from "@aws-sdk/client-transcribe";
-// import {transcribeClient} from "@/app/libs/transcribeClient";
 
 const BOT_DEVELOPER = 2130493951;
 
@@ -39,18 +37,6 @@ const POST = async (req: NextRequest, {params}: never) => {
     // 判断是否是 voice message
     // 如果是 voice message，则需要先转成文字，再拼接到原来的 body 数据结构中
     console.log(body);
-    // const data = await transcribeClient.send(
-    //   new StartTranscriptionJobCommand({
-    //     TranscriptionJobName: "JOB_NAME",
-    //     LanguageCode: "en-US", // For example,
-    //     MediaFormat: "ogg", // For example, 'wav'
-    //     Media: {
-    //       MediaFileUri: "SOURCE_LOCATION",
-    //     },
-    //     OutputBucketName: "OUTPUT_BUCKET_NAME",
-    //   }),
-    // );
-    // console.log("Success - put", data);
 
     const command = new InvokeAgentCommand({
       agentId,
