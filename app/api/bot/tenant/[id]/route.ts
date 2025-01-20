@@ -82,7 +82,6 @@ const POST = async (req: NextRequest, {params}: never) => {
             }
           }
         }
-        console.log(content)
         body = {
           ...body,
           message: {
@@ -122,6 +121,7 @@ const POST = async (req: NextRequest, {params}: never) => {
       }
     }
 
+    console.log(JSON.stringify(body))
     const command = new InvokeAgentCommand({
       agentId,
       agentAliasId: agentAliasId,
