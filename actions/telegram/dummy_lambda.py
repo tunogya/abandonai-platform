@@ -5,7 +5,7 @@ import telebot
 from io import BytesIO
 from pydub.utils import mediainfo
 
-# pip3 install --target ./package upstash_redis boto3 telebot io --upgrade
+# pip3 install --target ./package upstash_redis boto3 telebot pydub --upgrade
 # cd package
 # zip -r ../my_deployment_package.zip .
 # cd ..
@@ -55,7 +55,7 @@ def lambda_handler(event, context):
             raise Exception("Error: Fail to send message")
     elif function == "sendVoice":
         try:
-            polly_client = boto3.Session().client('polly')
+            polly_client = boto3.Session(region="us-west-2").client('polly')
             response = polly_client.synthesize_speech(VoiceId='Ruth',
                                                       OutputFormat='ogg_vorbis',
                                                       Text = text,
