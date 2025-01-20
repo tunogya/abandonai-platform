@@ -4,6 +4,9 @@ import requests
 from upstash_redis import Redis
 import boto3
 
+from actions.telegram.package.six import print_
+
+
 # pip3 install --target ./package requests upstash_redis boto3 --upgrade
 # cd package
 # zip -r ../my_deployment_package.zip .
@@ -72,6 +75,7 @@ def lambda_handler(event, context):
     elif function == "sendVoice":
         try:
             polly_client = boto3.Session().client('polly')
+            print("Polly text: {}".format(text))
             response = polly_client.synthesize_speech(VoiceId='Ruth',
                                                       OutputFormat='ogg',
                                                       Text = text,
@@ -88,7 +92,7 @@ def lambda_handler(event, context):
                     "voice": voice_file
                 }
                 response = requests.post(url, data=json.dumps(data), files=files)
-                print("Response: {}".format(response.text))
+                print("Response: {}".format(response))
         except:
             raise Exception("Error: {}".format(response.text))
     # elif function == "sendPhoto":
