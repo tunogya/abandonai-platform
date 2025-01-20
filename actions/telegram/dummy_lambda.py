@@ -3,7 +3,6 @@ from upstash_redis import Redis
 import boto3
 import telebot
 from io import BytesIO
-from pydub.utils import mediainfo
 
 # pip3 install --target ./package upstash_redis boto3 telebot pydub --upgrade
 # cd package
@@ -67,10 +66,8 @@ def lambda_handler(event, context):
             audio_stream = BytesIO(response['AudioStream'].read())
             # Calculate the duration of the audio using pydub
             audio_stream.seek(0)  # 重置流的位置
-            audio_info = mediainfo(audio_stream)
-            duration = float(audio_info['duration'])
             # 使用 Telegram Bot API 发送语音
-            bot.send_voice(chat_id=chat_id, voice=audio_stream, duration=duration)
+            bot.send_voice(chat_id=chat_id, voice=audio_stream)
             print("Voice message sent successfully.")
         except boto3.exceptions.Boto3Error as e:
             print(f"Error with AWS Polly: {e}")
