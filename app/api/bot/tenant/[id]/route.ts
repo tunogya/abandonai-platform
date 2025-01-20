@@ -29,7 +29,7 @@ const POST = async (req: NextRequest, {params}: never) => {
 
     if (!agentAliasId || !botToken) {
       return Response.json({
-        ok: false,
+        ok: true,
         msg: "agentAliasId or botToken not found."
       });
     }
@@ -45,7 +45,9 @@ const POST = async (req: NextRequest, {params}: never) => {
     // 如果是 voice message，则需要先转成文字，再拼接到原来的 body 数据结构中
     if (body.message?.voice) {
       const file_id = body.message.voice.file_id;
+      console.log("file_id", file_id);
       const file_content = await getFile(file_id, botToken);
+      console.log("file_content", file_content)
       const readableStream = new Readable({
         read() {
           this.push(new Uint8Array(file_content));
@@ -62,7 +64,7 @@ const POST = async (req: NextRequest, {params}: never) => {
       const data = await transcribeStreamingClient.send(command);
       if  (!data.TranscriptResultStream) {
         return Response.json({
-          ok: false,
+          ok: true,
           msg: "TranscriptResultStream not found."
         });
       }
@@ -91,7 +93,7 @@ const POST = async (req: NextRequest, {params}: never) => {
       const photo = body.message.photo.some((photo: {width: number, height: number}) => photo.width <= 1568 && photo.height <= 1568 && photo.width > 200 && photo.height > 200);
       if (!photo) {
         return Response.json({
-          ok: false,
+          ok: true,
           msg: "photo not found."
         });
       }
@@ -120,7 +122,7 @@ const POST = async (req: NextRequest, {params}: never) => {
   } catch (error) {
     console.log("error", error);
     return Response.json({
-      ok: false,
+      ok: true,
       msg: "Something went wrong."
     })
   }
