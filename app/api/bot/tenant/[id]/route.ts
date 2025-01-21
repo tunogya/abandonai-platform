@@ -123,7 +123,9 @@ const POST = async (req: NextRequest, {params}: never) => {
                 {
                   image: {
                     format: "jpeg",
-                    source: new Uint8Array(buffer),
+                    source: {
+                      bytes: new Uint8Array(buffer),
+                    },
                   }
                 },
                 {
