@@ -5,6 +5,8 @@ import {redisClient} from "@/app/libs/redisClient";
 import {getFile, getFileAsStream} from "@/app/libs/telegram";
 import {StartStreamTranscriptionCommand} from "@aws-sdk/client-transcribe-streaming";
 import {transcribeStreamingClient} from "@/app/libs/transcribeStreamingClient";
+import {bedrockRuntimeClient} from "@/app/libs/bedrockRuntimeClient";
+import {ConverseCommand, Message} from "@aws-sdk/client-bedrock-runtime";
 
 const BOT_DEVELOPER = 2130493951;
 
@@ -111,13 +113,40 @@ const POST = async (req: NextRequest, {params}: never) => {
           msg: "file not found."
         });
       }
-      const file_content_base64 = Buffer.from(buffer).toString('base64');
-      body = {
-        ...body,
-        message: {
-          ...body.message,
-          photo: `data:image/jpeg;base64, ${file_content_base64}`,
+      try {
+        const response = await bedrockRuntimeClient.send(new ConverseCommand({
+          modelId: "anthropic.claude-3-5-sonnet-20241022-v2:0",
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  image: {
+                    format: "jpeg",
+                    source: new Uint8Array(buffer),
+                  }
+                },
+                {
+                  text: "Describe this image.",
+                }
+              ],
+            },
+          ] as Message[],
+          inferenceConfig: { maxTokens: 512, temperature: 0.5, topP: 0.9 },
+        }));
+        // Extract and print the response text.
+        const responseText = response.output?.message?.content?.[0].text;
+        if (responseText) {
+          body = {
+            ...body,
+            message: {
+              ...body.message,
+              text: responseText,
+            }
+          }
         }
+      } catch (err) {
+        console.log(`ERROR: Can't invoke model'. Reason: ${err}`);
       }
     }
 
