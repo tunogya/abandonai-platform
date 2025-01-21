@@ -31,13 +31,7 @@ const Page = () => {
         height: (webApp?.safeAreaInset.top || 0) + (webApp?.contentSafeAreaInset.top || 0)
       }}
       />
-      <div className={"flex justify-between p-8 min-h-[100px]"}>
-        <button className={"text-white bg-black bg-opacity-35 w-8 h-8 rounded-full flex items-center justify-center"}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-               stroke="currentColor" className="size-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
-          </svg>
-        </button>
+      <div className={"flex justify-end p-8 min-h-[100px]"}>
         <button className={"text-white w-8 h-8 rounded-full flex items-center justify-center"}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                stroke="currentColor" className="size-6">
