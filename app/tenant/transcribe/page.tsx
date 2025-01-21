@@ -7,19 +7,23 @@ const Page = () => {
 
   useEffect(() => {
     const resize = () => {
-      if (!window?.Telegram?.WebApp?.isFullscreen) {
-        window?.Telegram?.WebApp?.requestFullscreen()
-        window?.Telegram?.WebApp?.expand()
-        window.location.reload()
+      try {
+        if (!window?.Telegram?.WebApp?.isFullscreen) {
+          window.Telegram.WebApp.requestFullscreen()
+          window.Telegram.WebApp.expand()
+          window.location.reload()
+        }
+      } catch (e) {
+        console.log(e)
       }
     }
     resize();
   }, []);
 
   // 只能在全屏状态下显示
-  if (!webApp?.isFullscreen) {
-    return null
-  }
+  // if (!webApp?.isFullscreen) {
+  //   return null
+  // }
 
   return (
     <div className={"h-screen overflow-hidden flex flex-col"}>

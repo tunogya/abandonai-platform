@@ -7,10 +7,14 @@ const Page = () => {
 
   useEffect(() => {
     const resize = () => {
-      if (!window?.Telegram?.WebApp?.isFullscreen) {
-        window?.Telegram?.WebApp?.requestFullscreen()
-        window?.Telegram?.WebApp?.expand()
-        window.location.reload()
+      try {
+        if (!window?.Telegram?.WebApp?.isFullscreen) {
+          window.Telegram.WebApp.requestFullscreen()
+          window.Telegram.WebApp.expand()
+          window.location.reload()
+        }
+      } catch (e) {
+        console.log(e)
       }
     }
     resize();
