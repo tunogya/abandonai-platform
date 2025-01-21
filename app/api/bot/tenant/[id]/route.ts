@@ -55,10 +55,10 @@ const POST = async (req: NextRequest, {params}: never) => {
       }
       try {
         const data = await transcribeStreamingClient.send(new StartStreamTranscriptionCommand({
-          MediaEncoding: "pcm",
+          LanguageCode: "zh-CN",
+          MediaEncoding: "ogg-opus",
           MediaSampleRateHertz: 16000,
-          IdentifyMultipleLanguages: true,
-          LanguageOptions: "en-US,zh-CN,id-ID",
+          EnablePartialResultsStabilization: true,
           AudioStream: (async function* () {
             for await (const chunk of audio_stream) {
               yield {AudioEvent: {AudioChunk: chunk}};
