@@ -21,9 +21,9 @@ const Page = () => {
   }, []);
 
   // 只能在全屏状态下显示
-  // if (!webApp?.isFullscreen) {
-  //   return null
-  // }
+  if (!webApp?.isFullscreen) {
+    return null
+  }
 
   return (
     <div className={"h-screen overflow-hidden flex flex-col bg-[#D6412D]"}>
