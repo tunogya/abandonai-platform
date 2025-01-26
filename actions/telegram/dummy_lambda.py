@@ -43,13 +43,11 @@ def lambda_handler(event, context):
 
     if function == "sendMessage":
         try:
-            bot.send_action(chat_id=chat_id, action='typing')
             bot.send_message(chat_id=chat_id, text=text, parse_mode=parse_mode)
         except:
             raise Exception("Error: Fail to send message")
     elif function == "sendVoice":
         try:
-            bot.send_action(chat_id=chat_id, action='record_voice')
             polly_client = boto3.Session().client('polly')
             response = polly_client.synthesize_speech(VoiceId='Ruth',
                                                       OutputFormat='ogg_vorbis',
