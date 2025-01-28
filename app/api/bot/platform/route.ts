@@ -223,11 +223,13 @@ What do you want to do with the bot?`, {
       }).catch((e) => console.log(e));
       return;
     }
+    const voice = await redisClient.get(`voice:${agentId}`);
     await ctx.editMessageText(`Edit agent ${response.agent.agentName} info.
 
 <b>Name:</b> ${response.agent.agentName}
 <b>Description:</b> ${response.agent.description}
 <b>Instruction:</b> ${response.agent.instruction}
+<b>Voice:</b> ${voice || "NULL"}
 `, {
       parse_mode: "HTML",
       reply_markup: {
