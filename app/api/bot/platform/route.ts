@@ -569,13 +569,7 @@ bot.on("message", async (ctx) => {
           return;
         }
         await redisClient.set(`params:${ctx.from?.id}`, ["newagent", agentName, instruction]);
-        // Your AWS account id.
-        const accountId = "913870644571";
-        // The name of the agent's execution role. It must be prefixed by `AmazonBedrockExecutionRoleForAgents_`.
-        const roleName = "AmazonBedrockExecutionRoleForAgents_FJ2B7VCI69D";
-        // The ARN for the agent's execution role.
-        // Follow the ARN format: 'arn:aws:iam::account-id:role/role-name'
-        const roleArn = `arn:aws:iam::${accountId}:role/${roleName}`;
+        const roleArn = `arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForAgents_FJ2B7VCI69D`;
         const response = await bedrockAgentClient.send(new CreateAgentCommand({
           agentName: agentName,
           instruction: instruction,
