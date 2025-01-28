@@ -48,8 +48,11 @@ def lambda_handler(event, context):
             raise Exception("Error: Fail to send message")
     elif function == "sendVoice":
         try:
+            voiceId = redis.get('voice:{}'.format(agent_id))
+            if not voiceId:
+                voiceId = 'Ruth'
             polly_client = boto3.Session().client('polly')
-            response = polly_client.synthesize_speech(VoiceId='Ruth',
+            response = polly_client.synthesize_speech(VoiceId=voiceId,
                                                       OutputFormat='ogg_vorbis',
                                                       Text = text,
                                                       Engine = 'generative')

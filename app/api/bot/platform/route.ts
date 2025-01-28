@@ -240,7 +240,8 @@ What do you want to do with the bot?`, {
             text: "Edit Instruction",
             callback_data: `editinstruction:${response.agent.agentId}`
           }, {text: "Edit Actions", callback_data: `editactions:${response.agent.agentId}`}],
-          [{text: "Edit Memory", callback_data: `editmemory:${response.agent.agentId}`}],
+          [{text: "Edit Voice", callback_data: `editvoice:${response.agent.agentId}`},
+            {text: "Edit Memory", callback_data: `editmemory:${response.agent.agentId}`}],
           [{text: "« Back to Agent", callback_data: `agent:${response.agent.agentId}`}],
         ]
       }
@@ -398,6 +399,14 @@ What do you want to do with the bot?`, {
     await Promise.all([
       redisClient.set(`params:${ctx.from?.id}`, ["editinstruction", agentId]),
       ctx.editMessageText("Please enter the new instruction for the agent."),
+    ])
+      .catch((e) => console.log(e));
+  }
+  if (data.startsWith("editvoice")) {
+    const agentId = data.split(":")[1];
+    await Promise.all([
+      redisClient.set(`params:${ctx.from?.id}`, ["editvoice", agentId]),
+      ctx.editMessageText("Please enter the voice name of agent."),
     ])
       .catch((e) => console.log(e));
   }
@@ -703,6 +712,12 @@ bot.on("message", async (ctx) => {
           parse_mode: "HTML",
         })
       }
+    }
+    if (params[0] === "editvoice") {
+      const agentId = params[1];
+      const voice = ctx.message.text;
+      await redisClient.set(`voice:${agentId}`, voice);
+      await ctx.reply("Voice updated successfully.");
     }
     if (params[0] === "editinstruction") {
       if (params.length === 2) {
