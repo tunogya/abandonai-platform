@@ -8,15 +8,13 @@ import {transcribeStreamingClient} from "@/app/libs/transcribeStreamingClient";
 import {bedrockRuntimeClient} from "@/app/libs/bedrockRuntimeClient";
 import {ConverseCommand, Message} from "@aws-sdk/client-bedrock-runtime";
 
-const BOT_DEVELOPER = 2130493951;
-
 const POST = async (req: NextRequest, {params}: never) => {
   const {id} = await params;
   let body = await req.json();
-  if (body.message.chat.id !== BOT_DEVELOPER) {
+  if (body.message.chat.id < 0) {
     return Response.json({
       ok: false,
-      msg: "Not Auth"
+      msg: "Not support group."
     })
   }
   try {
