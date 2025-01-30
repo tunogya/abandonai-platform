@@ -1,7 +1,47 @@
 import boto3
-from io import BytesIO
+import io
 import base64
 import json
+import httpx
+from PIL import Image
+
+AVAILABLE_FORMAT = {"jpeg", "png", "gif", "webp"}
+MAX_SIZE = 1568
+
+def preprocessing_image(image_url, target_format=None, re_encoding=False):
+    # download image from url
+    image_data = httpx.get(image_url).content
+    # or read from local
+    # image_data = open(image_url, "rb").read()
+
+    # load image to PIL
+    image_pil = Image.open(io.BytesIO(image_data))
+
+    # check image format if need re enconding
+    image_format = image_pil.format.lower()
+    target_format = target_format if target_format else image_format
+    if target_format not in AVAILABLE_FORMAT:
+        # set to webp by default
+        target_format = "webp"
+    re_encoding = re_encoding or (target_format != image_format)
+
+    # check image size if need resize
+    width, height = image_pil.size
+    max_size = max(width, height)
+    if max_size > MAX_SIZE:
+        width = round(width * MAX_SIZE / max_size )
+        height = round(height * MAX_SIZE / max_size )
+        image_pil = image_pil.resize((width, height))
+        re_encoding = True
+
+    if re_encoding:
+        buffer = io.BytesIO()
+        # quality: 75 by default | 100 for lossless compression
+        image_pil.save(buffer, format=target_format, quality=75)
+        image_data = buffer.getvalue()
+
+    image_base64 = base64.b64encode(image_data).decode("utf-8")
+    return image_base64, target_format
 
 def lambda_handler(event, context):
     actionGroup = event['actionGroup']
@@ -22,39 +62,35 @@ def lambda_handler(event, context):
     try:
         if function == "viewPhoto":
             try:
-                s3_client = boto3.client('s3', region_name='us-east-1')
-                s3_response_object = s3_client.get_object(Bucket="abandon.ai", Key=photo_uri)
-                buffer = BytesIO(s3_response_object['Body'].read())
-                image_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-                bedrock_runtime_client = boto3.client('bedrock-runtime')
-                payload = {
-                    "modelId": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+                image_base64, image_format = preprocessing_image(photo_uri, target_format="webp")
+                body = json.dumps({
+                    "anthropic_version": "bedrock-2023-05-31",
+                    "max_tokens": 2048,
                     "messages": [
                         {
                             "role": "user",
                             "content": [
                                 {
-                                    "image": {
-                                        "format": "jpeg",
-                                        "source": {
-                                            "bytes": image_base64
-                                        }
-                                    }
+                                    "type": "image",
+                                    "source": {
+                                        "type": "base64",
+                                        "media_type": f"image/{image_format}",
+                                        "data": image_base64,
+                                    },
                                 },
                                 {
+                                    "type": "text",
                                     "text": prompt
                                 }
-                            ]
+                            ],
                         }
                     ],
-                    "inferenceConfig": {"maxTokens": 512, "temperature": 0.5, "topP": 0.9}
-                }
-                response = bedrock_runtime_client.invoke_model(
-                    body=payload
+                }, ensure_ascii=False)
+                bedrock_runtime = boto3.client('bedrock-runtime', region_name="us-west-2")
+                response = bedrock_runtime.invoke_model(
+                    body=body, modelId="anthropic.claude-3-5-sonnet-20241022-v2:0"
                 )
-                response_data = response["body"].read()
-                response_json = json.loads(response_data)
-                function_response = response_json.get("output", {}).get("message", {}).get("content", [{}])[0].get("text")
+                function_response = json.loads(response.get('body').read())["content"][0]["text"]
             except Exception as e:
                 print(e)
                 function_response = f"View Photo Failed"

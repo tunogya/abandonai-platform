@@ -11,7 +11,7 @@ rm -rf my_deployment_package.zip
 echo "Clearing previous artifacts... Done ✅"
 
 echo "Fetching and installing dependencies... 🔥"
-pip3 install --target ./package boto3 --upgrade --quiet --disable-pip-version-check
+pip3 install --target ./package boto3 httpx PIL --upgrade --quiet --disable-pip-version-check
 
 # Transition to the packaging folder 🎁
 cd package
