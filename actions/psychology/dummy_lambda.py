@@ -39,7 +39,7 @@ def lambda_handler(event, context):
         }
     bot = telebot.TeleBot(bot_token)
 
-    if function == "executeCQL":
+    if function == "":
         try:
 
 
