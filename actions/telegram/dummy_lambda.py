@@ -80,7 +80,7 @@ def lambda_handler(event, context):
         elif function == "viewPhoto":
             try:
                 s3_client = boto3.client('s3')
-                s3_response_object = s3_client.get_object(Bucket="XXXXXXXXXX", Key=photo_uri)
+                s3_response_object = s3_client.get_object(Bucket="abandon.ai", Key=photo_uri)
                 buffer = BytesIO(s3_response_object['Body'].read())
                 image_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
                 bedrock_runtime_client = boto3.client('bedrock-runtime')
