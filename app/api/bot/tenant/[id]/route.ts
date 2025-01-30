@@ -136,7 +136,7 @@ const POST = async (req: NextRequest, {params}: never) => {
         ...body,
         message: {
           ...body.message,
-          photo: file_path,
+          photo: `https://s3.abandon.ai/${file_path}`,
         },
       }
     }
