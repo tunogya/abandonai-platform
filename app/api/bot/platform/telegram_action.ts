@@ -61,7 +61,7 @@ export const updateTelegramAction = async (agentId: string, bedrockAgentClient: 
       agentId,
       agentVersion: "DRAFT",
       actionGroupName: "TelegramAction",
-      description: "Only when you want send message to Telegram users, you can use this API.",
+      description: "Some API in Telegram, like sendMessage, sendVoice, or viewPhoto...",
       functionSchema: TELEGRAM_FUNCTION_SCHEMA,
       actionGroupExecutor: {
         lambda: 'arn:aws:lambda:us-west-2:913870644571:function:TelegramAction-otlfn'
