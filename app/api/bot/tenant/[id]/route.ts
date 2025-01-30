@@ -5,8 +5,9 @@ import {redisClient} from "@/app/libs/redisClient";
 import {getFile, getFileAsStream} from "@/app/libs/telegram";
 import {StartStreamTranscriptionCommand} from "@aws-sdk/client-transcribe-streaming";
 import {transcribeStreamingClient} from "@/app/libs/transcribeStreamingClient";
-import {bedrockRuntimeClient} from "@/app/libs/bedrockRuntimeClient";
-import {ConverseCommand, Message} from "@aws-sdk/client-bedrock-runtime";
+import {s3Client} from "@/app/libs/s3Client";
+import {PutObjectCommand} from "@aws-sdk/client-s3";
+import {v4 as uuidv4} from 'uuid';
 
 const POST = async (req: NextRequest, {params}: never) => {
   const {id} = await params;
@@ -111,46 +112,25 @@ const POST = async (req: NextRequest, {params}: never) => {
           msg: "file not found."
         });
       }
-      try {
-        const response = await bedrockRuntimeClient.send(new ConverseCommand({
-          modelId: "anthropic.claude-3-5-sonnet-20241022-v2:0",
-          messages: [
-            {
-              role: "user",
-              content: [
-                {
-                  image: {
-                    format: "jpeg",
-                    source: {
-                      bytes: new Uint8Array(buffer),
-                    },
-                  }
-                },
-                {
-                  text: "Describe this image.",
-                }
-              ],
-            },
-          ] as Message[],
-          inferenceConfig: { maxTokens: 512, temperature: 0.5, topP: 0.9 },
-        }));
-        // Extract and print the response text.
-        const responseText = response.output?.message?.content?.[0].text;
-        if (responseText) {
-          body = {
-            ...body,
-            message: {
-              ...body.message,
-              text: responseText,
-            }
-          }
+      const id =  uuidv4();
+      const file_path = `telegram/${body.message.chat.id}/${id}.jpg`;
+      await s3Client.send(new PutObjectCommand({
+        Bucket: "abandon.ai",
+        Key: file_path,
+        Body: new Uint8Array(buffer),
+        ContentType: "image/jpeg",
+        Metadata: {
+          "Content-Type": "image/jpeg",
         }
-      } catch (err) {
-        console.log(`ERROR: Can't invoke model'. Reason: ${err}`);
+      }))
+      body = {
+        ...body,
+        message: {
+          ...body.message,
+          photo: file_path,
+        },
       }
     }
-
-    console.log(JSON.stringify(body))
     const command = new InvokeAgentCommand({
       agentId,
       agentAliasId: agentAliasId,
