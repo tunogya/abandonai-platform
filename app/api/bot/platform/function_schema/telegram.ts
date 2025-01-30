@@ -44,7 +44,7 @@ export const TELEGRAM_FUNCTION_SCHEMA = {
           "type": "string"
         },
         "text": {
-          "description": "Text of the voice to be generated.",
+          "description": "Text of the voice to be generated. Only can be English.",
           "required": true,
           "type": "string"
         },

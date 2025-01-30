@@ -135,7 +135,7 @@ const POST = async (req: NextRequest, {params}: never) => {
       agentId,
       agentAliasId: agentAliasId,
       sessionId: body.message.chat.id,
-      inputText: `You received a message from Telegram. You can reply a message to user. And If user send with a voice, you need to use voice reply first (The voice only support English). Here is the message: ${JSON.stringify(body)}`,
+      inputText: `You received a message from Telegram. You can do something to response. Here is the message: ${JSON.stringify(body)}`,
     });
     await bedrockAgentRuntimeClient.send(command);
     return Response.json({
