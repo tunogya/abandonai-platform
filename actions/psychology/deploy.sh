@@ -11,7 +11,7 @@ rm -rf my_deployment_package.zip
 echo "Clearing previous artifacts... Done ✅"
 
 echo "Fetching and installing dependencies... 🔥"
-pip3 install --target ./package boto3 httpx Pillow --upgrade --quiet --disable-pip-version-check
+pip3 install --target ./package upstash_redis boto3 telebot pydub --upgrade --quiet --disable-pip-version-check
 
 # Transition to the packaging folder 🎁
 cd package
@@ -29,9 +29,13 @@ echo "============================================================="
 # AWS Lambda Deployment Phase 🚀
 echo "Deploying to AWS Lambda... 🎯"
 
-# AWS Lambda Update - Function: BasicAction-jv0e4 🌩️
-aws lambda update-function-code --function-name BasicAction-jv0e4 --zip-file fileb://my_deployment_package.zip --region us-west-2 --no-cli-pager
+# AWS Lambda Update - Function: PsychologyAction-3ojy1 🌩️
+aws lambda update-function-code --function-name PsychologyAction-3ojy1 --zip-file fileb://my_deployment_package.zip --region us-west-2 --no-cli-pager
+
+# Delete my_deployment_package.zip
+rm -rf my_deployment_package.zip
+rm -rf package
 
 # Deployment success message ✨
-echo "Lambda function 'BasicAction-jv0e4' successfully updated! 🎉"
+echo "Lambda function 'PsychologyAction-3ojy1' successfully updated! 🎉"
 echo "============================================================="
