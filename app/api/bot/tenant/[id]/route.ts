@@ -122,7 +122,7 @@ const POST = async (req: NextRequest, {params}: never) => {
         });
       }
       const id = uuidv4();
-      const file_path = `telegram/${body.message.chat.id}/${id}.jpg`;
+      const file_path = `t.me/${body.message.chat.id}/${id}.jpg`;
       await s3Client.send(new PutObjectCommand({
         Bucket: "abandon.ai",
         Key: file_path,
