@@ -64,7 +64,6 @@ def lambda_handler(event, context):
             try:
                 image_base64, image_format = preprocessing_image(photo_uri, target_format="webp")
                 body = json.dumps({
-                    "anthropic_version": "bedrock-2023-05-31",
                     "max_tokens": 2048,
                     "messages": [
                         {
