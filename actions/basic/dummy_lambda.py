@@ -56,6 +56,7 @@ def lambda_handler(event, context):
                 response_json = json.loads(response_data)
                 function_response = response_json.get("output", {}).get("message", {}).get("content", [{}])[0].get("text")
             except Exception as e:
+                print(e)
                 function_response = f"View Photo Failed"
                 raise
 
