@@ -10,6 +10,7 @@ import {deleteTelegramAction, updateTelegramAction} from "@/app/api/bot/platform
 import {bedrockAgentClient} from "@/app/libs/bedrockAgentClient";
 import {redisClient} from "@/app/libs/redisClient";
 import {twitterClient} from "@/app/libs/twitterClient";
+import {updateBasicAction} from "@/app/api/bot/platform/basic_action";
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
@@ -349,6 +350,7 @@ What do you want to do with the bot?`, {
     await ctx.editMessageText(`Settings for ${response.agent.agentName}.`, {
       reply_markup: {
         inline_keyboard: [
+          [{ text: "Basic Action", callback_data: `basicaction:${response.agent.agentId}` }],
           [{text: "Telegram Bot", callback_data: `telegrambot:${response.agent.agentId}`}, {text: "Twitter Bot", callback_data: `twitterbot:${response.agent.agentId}`}],
           [{text: "« Back to Agent", callback_data: `agent:${response.agent.agentId}`}],
         ]
@@ -478,6 +480,18 @@ What do you want to do with the bot?`, {
       }
     })
   }
+  if (data.startsWith("basicaction")) {
+    const agentId = data.split(":")[1];
+    await ctx.editMessageText(`You can update agent basic action`, {
+      parse_mode: "HTML",
+      reply_markup: {
+        inline_keyboard: [
+          [{text: "Update Action", callback_data: `updatebasicaction:${agentId}`}],
+          [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+        ]
+      }
+    })
+  }
   if (data.startsWith("logouttwitter")) {
     const agentId = data.split(":")[1];
     await Promise.all([
@@ -519,6 +533,17 @@ What do you want to do with the bot?`, {
         ]
       }
     }).catch((e) => console.log(e));
+  }
+  if (data.startsWith("updatebasicaction")) {
+    const agentId = data.split(":")[1];
+    await updateBasicAction(agentId, bedrockAgentClient);
+    await ctx.editMessageText("Basic action updated successfully.", {
+        reply_markup: {
+          inline_keyboard: [
+            [{text: "« Back to Agent", callback_data: `agent:${agentId}`}],
+          ]
+        }
+      }).catch((e) => console.log(e));
   }
   if (data.startsWith("newversion")) {
     const agentId = data.split(":")[1];

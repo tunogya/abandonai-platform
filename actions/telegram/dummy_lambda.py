@@ -3,8 +3,6 @@ from upstash_redis import Redis
 import boto3
 import telebot
 from io import BytesIO
-import base64
-import json
 
 def lambda_handler(event, context):
     actionGroup = event['actionGroup']
@@ -15,9 +13,6 @@ def lambda_handler(event, context):
     text = None
     parse_mode = None
     agent_id = None
-    photo_uri = None
-    prompt = None
-
     function_response = None
 
     for parameter in parameters:
@@ -29,10 +24,6 @@ def lambda_handler(event, context):
             parse_mode = parameter['value']
         elif parameter['name'] == 'agent_id':
             agent_id = parameter['value']
-        elif parameter['name'] == 'photo_uri':
-            photo_uri = parameter['value']
-        elif parameter['name'] == 'prompt':
-            prompt = parameter['value']
 
     redis = Redis(url=os.environ['UPSTASH_REDIS_REST_URL'], token=os.environ['UPSTASH_REDIS_REST_TOKEN'])
 
@@ -75,45 +66,6 @@ def lambda_handler(event, context):
                 raise
             except Exception as e:
                 function_response = f"Send Fail: Unexpected error"
-                raise
-
-        elif function == "viewPhoto":
-            try:
-                s3_client = boto3.client('s3')
-                s3_response_object = s3_client.get_object(Bucket="abandon.ai", Key=photo_uri)
-                buffer = BytesIO(s3_response_object['Body'].read())
-                image_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-                bedrock_runtime_client = boto3.client('bedrock-runtime')
-                payload = {
-                    "modelId": "anthropic.claude-3-5-sonnet-20241022-v2:0",
-                    "messages": [
-                        {
-                            "role": "user",
-                            "content": [
-                                {
-                                    "image": {
-                                        "format": "jpeg",
-                                        "source": {
-                                            "bytes": image_base64
-                                        }
-                                    }
-                                },
-                                {
-                                    "text": prompt
-                                }
-                            ]
-                        }
-                    ],
-                    "inferenceConfig": {"maxTokens": 512, "temperature": 0.5, "topP": 0.9}
-                }
-                response = bedrock_runtime_client.invoke_model(
-                    body=payload
-                )
-                response_data = response["body"].read()
-                response_json = json.loads(response_data)
-                function_response = response_json.get("output", {}).get("message", {}).get("content", [{}])[0].get("text")
-            except Exception as e:
-                function_response = f"View Photo Failed"
                 raise
 
     except Exception:
