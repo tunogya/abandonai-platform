@@ -87,7 +87,7 @@ def lambda_handler(event, context):
                 }, ensure_ascii=False)
                 bedrock_runtime = boto3.client('bedrock-runtime', region_name="us-west-2")
                 response = bedrock_runtime.invoke_model(
-                    body=body, modelId="anthropic.claude-3-5-sonnet-20241022-v2:0"
+                    body=body, modelId="anthropic.claude-3-haiku-20240307-v1:0"
                 )
                 function_response = json.loads(response.get('body').read())["content"][0]["text"]
             except Exception as e:
@@ -96,6 +96,7 @@ def lambda_handler(event, context):
                 raise
 
     except Exception:
+        function_response = f"View Photo Failed"
         pass
     finally:
         action_response = {
