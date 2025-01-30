@@ -97,7 +97,16 @@ const POST = async (req: NextRequest, {params}: never) => {
 
     if (body.message?.photo) {
       // https://aws.amazon.com/cn/blogs/china/amazon-bedrock-claude-3-multimodal-usage-guide/
-      const photo = body.message.photo.find((photo: {width: number, height: number}) => photo.width <= 1568 && photo.height <= 1568 && photo.width > 240 && photo.height > 240);
+      const photo = body.message.photo.filter((photo: {
+        width: number,
+        height: number
+      }) => photo.width <= 1568 && photo.height <= 1568 && photo.width > 200 && photo.height > 200).reduce((prev: {
+        width: number,
+        height: number
+      }, curr: {
+        width: number,
+        height: number
+      }) => prev.width * prev.height > curr.width * curr.height ? prev : curr);
       if (!photo) {
         return Response.json({
           ok: true,
@@ -105,14 +114,14 @@ const POST = async (req: NextRequest, {params}: never) => {
         });
       }
       const file_id = photo.file_id;
-      const buffer =  await getFile(file_id, botToken)
+      const buffer = await getFile(file_id, botToken)
       if (!buffer) {
         return Response.json({
           ok: true,
           msg: "file not found."
         });
       }
-      const id =  uuidv4();
+      const id = uuidv4();
       const file_path = `telegram/${body.message.chat.id}/${id}.jpg`;
       await s3Client.send(new PutObjectCommand({
         Bucket: "abandon.ai",
