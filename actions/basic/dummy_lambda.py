@@ -22,7 +22,7 @@ def lambda_handler(event, context):
     try:
         if function == "viewPhoto":
             try:
-                s3_client = boto3.client('s3')
+                s3_client = boto3.client('s3', region_name='us-east-1')
                 s3_response_object = s3_client.get_object(Bucket="abandon.ai", Key=photo_uri)
                 buffer = BytesIO(s3_response_object['Body'].read())
                 image_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
