@@ -53,13 +53,13 @@ def lambda_handler(event, context):
                 table = dynamodb.Table('judy')
 
                 response = table.query(
-                    KeyConditionExpression=Key('PK').eq(f'USER#{chat_id}'),
+                    KeyConditionExpression=boto3.dynamodb.conditions.Key('PK').eq(f'USER#{chat_id}'),
                     ScanIndexForward=False,
                     Limit=10
                 )
-                items = response['Items']
+                items = response.get('Items', [])
                 # return as json string
-                function_response = json.dumps(items)
+                function_response = json.dumps(items, ensure_ascii=False)
             except Exception as e:
                 function_response = f"Error: Failed to get treatment records - {str(e)}"
                 raise
