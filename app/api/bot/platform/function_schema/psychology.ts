@@ -6,8 +6,8 @@ export const PSYCHOLOGY_FUNCTION_SCHEMA = {
       "description": "Create a new treatment record.",
       "name": "newTreatmentRecord",
       "parameters": {
-        "user_id": {
-          "description": "The id of the user.",
+        "chat_id": {
+          "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
           "required": true,
           "type": "string"
         },
@@ -28,7 +28,7 @@ export const PSYCHOLOGY_FUNCTION_SCHEMA = {
       "description": "Get treatment records by patient ID.",
       "name": "getTreatmentRecords",
       "parameters": {
-        "user_id": {
+        "chat_id": {
           "description": "The id of the user.",
           "required": true,
           "type": "string"

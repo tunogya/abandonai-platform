@@ -31,7 +31,7 @@ def lambda_handler(event, context):
         bot_token = redis.get('telegrambottoken:{}'.format(agent_id))
         if not bot_token:
             function_response = 'Error: Bot token not found for agent ID {}'.format(agent_id)
-            raise Exception(function_response)
+            raise
 
         bot = telebot.TeleBot(bot_token)
 
@@ -39,7 +39,7 @@ def lambda_handler(event, context):
             try:
                 bot.send_message(chat_id=chat_id, text=text, parse_mode=parse_mode)
                 function_response = "Send Success"
-            except Exception as e:
+            except:
                 function_response = f"Send Fail"
                 raise
 
@@ -55,7 +55,7 @@ def lambda_handler(event, context):
                                                           Engine = 'generative')
                 if "AudioStream" not in response or response['AudioStream'] is None:
                     function_response = "Send Fail: No AudioStream in response"
-                    raise ValueError(function_response)
+                    raise
 
                 audio_stream = BytesIO(response['AudioStream'].read())
                 audio_stream.seek(0)
@@ -64,11 +64,11 @@ def lambda_handler(event, context):
             except boto3.exceptions.Boto3Error as e:
                 function_response = f"Send Fail: Error with AWS Polly"
                 raise
-            except Exception as e:
+            except:
                 function_response = f"Send Fail: Unexpected error"
                 raise
 
-    except Exception:
+    except:
         pass
     finally:
         action_response = {
