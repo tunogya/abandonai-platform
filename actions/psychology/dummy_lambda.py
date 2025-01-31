@@ -59,7 +59,7 @@ def lambda_handler(event, context):
                 )
                 items = response.get('Items', [])
                 # return as json string
-                function_response = json.dumps(items, ensure_ascii=False)
+                function_response = json.dumps(items, ensure_ascii=False, default=str)
             except Exception as e:
                 function_response = f"Error: Failed to get treatment records - {str(e)}"
                 raise
