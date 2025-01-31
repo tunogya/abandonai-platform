@@ -27,7 +27,7 @@ def lambda_handler(event, context):
                 # use dynamodb to store the treatment record
                 dynamodb = boto3.resource('dynamodb',  region_name='us-west-2')
                 table = dynamodb.Table('judy')
-                response = table.put_item(
+                table.put_item(
                     Item={
                         'PK': 'USER#{}'.format(chat_id),
                         'SK': 'TR#{}'.format(str(time.time())),
