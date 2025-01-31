@@ -1,6 +1,5 @@
 import boto3
 import time
-
 import json
 
 
@@ -40,8 +39,8 @@ def lambda_handler(event, context):
                     }
                 )
                 function_response = "Success: Treatment record created"
-            except:
-                function_response = "Error: Fail to send message"
+            except Exception as e:
+                function_response = f"Error: Failed to create treatment record - {str(e)}"
                 raise
         elif function == "getTreatmentRecords":
             try:
@@ -59,10 +58,11 @@ def lambda_handler(event, context):
                 items = response['Items']
                 # return as json string
                 function_response = json.dumps(items)
-            except:
-                function_response = "Error: Fail to send message"
+            except Exception as e:
+                function_response = f"Error: Failed to get treatment records - {str(e)}"
                 raise
-    except:
+    except Exception as e:
+        function_response = f"Error: Operation failed - {str(e)}"
         raise
     finally:
         action_response = {
