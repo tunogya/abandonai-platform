@@ -6,8 +6,8 @@ export const LAWYER_FUNCTION_SCHEMA = {
       "description": "New case",
       "name": "newCase",
       "parameters": {
-        "client_id": {
-          "description": "",
+        "chat_id": {
+          "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
           "required": true,
           "type": "string"
         },
@@ -38,8 +38,8 @@ export const LAWYER_FUNCTION_SCHEMA = {
       "description": "Get cases by client id",
       "name": "getCases",
       "parameters": {
-        "client_id": {
-          "description": "",
+        "chat_id": {
+          "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
           "required": true,
           "type": "string"
         }

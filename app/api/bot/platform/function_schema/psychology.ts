@@ -29,7 +29,7 @@ export const PSYCHOLOGY_FUNCTION_SCHEMA = {
       "name": "getTreatmentRecords",
       "parameters": {
         "chat_id": {
-          "description": "The id of the user.",
+          "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
           "required": true,
           "type": "string"
         },
