@@ -36,7 +36,7 @@ export const updatePsychologyAction = async (agentId: string, bedrockAgentClient
       agentId,
       agentVersion: "DRAFT",
       actionGroupName: "PsychologyAction",
-      description: "Some actions for psychology.",
+      description: "Some database call methods for psychological counseling",
       functionSchema: PSYCHOLOGY_FUNCTION_SCHEMA,
       actionGroupExecutor: {
         lambda: 'arn:aws:lambda:us-west-2:913870644571:function:PsychologyAction-3ojy1'
