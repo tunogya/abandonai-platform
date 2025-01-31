@@ -34,7 +34,7 @@ def lambda_handler(event, context):
                 table.put_item(
                     Item={
                         'PK': 'USER#{}'.format(chat_id),
-                        'SK': 'TR#{}'.format(str(time.time())),
+                        'SK': 'TR#{}'.format(int(time.time())),
                         'type': 'TREATMENT_RECORD',
                         'chat_id': chat_id,
                         'notes': notes,
