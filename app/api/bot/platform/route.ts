@@ -421,10 +421,10 @@ What do you want to do with the bot?`, {
   }
   if (data.startsWith("twitterbot")) {
     const agentId = data.split(":")[1];
-    const {userObject} = await redisClient.get(`twitterbotauth2:${agentId}`) as {
+    const twitter_data = await redisClient.get(`twitterbotauth2:${agentId}`) as {
       userObject: { id: string, username: string, name: string }
-    }
-    if (!userObject) {
+    } | null
+    if (!twitter_data) {
       const {
         url,
         codeVerifier,
@@ -453,6 +453,7 @@ What do you want to do with the bot?`, {
       ])
         .catch((e) => console.log(e));
     } else {
+      const { userObject } = twitter_data
       await ctx.editMessageText(`This agent have login with <a href="https://x.com/${userObject.username}">${userObject.name}</a>`, {
         parse_mode: "HTML",
         reply_markup: {
