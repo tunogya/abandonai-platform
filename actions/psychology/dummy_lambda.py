@@ -22,6 +22,10 @@ def lambda_handler(event, context):
             attachments = parameter['value']
 
     try:
+        if chat_id is None:
+            function_response = "Error: chat_id is missing"
+            raise Exception(function_response)
+
         if function == "newTreatmentRecord":
             try:
                 # use dynamodb to store the treatment record
@@ -34,8 +38,8 @@ def lambda_handler(event, context):
                         'type': 'TREATMENT_RECORD',
                         'chat_id': chat_id,
                         'notes': notes,
-                        'attachments': attachments,
-                        'create_at': int(time.time()),
+                        'attachments': attachments if attachments is not None else [],
+                        'created_at': int(time.time()),
                     }
                 )
                 function_response = "Success: Treatment record created"
@@ -47,11 +51,9 @@ def lambda_handler(event, context):
                 # get the latest 10 treatment records
                 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
                 table = dynamodb.Table('judy')
+
                 response = table.query(
-                    KeyConditionExpression='PK = :pk',
-                    ExpressionAttributeValues={
-                        ':pk': 'USER#{}'.format(chat_id)
-                    },
+                    KeyConditionExpression=Key('PK').eq(f'USER#{chat_id}'),
                     ScanIndexForward=False,
                     Limit=10
                 )
