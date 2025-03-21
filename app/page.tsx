@@ -50,28 +50,19 @@ const Page = async () => {
             Company
           </div>
         </div>
-        {
-          session ? (
-            <div className={"flex gap-3"}>
-              <a
-                href={"/auth/login?returnTo=/app/home"}
-                className={"bg-black text-white text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
-              >
-                GO TO APP
-              </a>
-            </div>
-            ) : (
-            <div className={"flex gap-3"}>
-              <a href={"/auth/login?returnTo=/app/home"} className={"text-sm bg-gray-200 px-3 h-6 rounded-full font-medium flex items-center justify-center"}>Log in</a>
-              <a
-                href={"/auth/login?returnTo=/app/home"}
-                className={"bg-black text-white text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
-              >
-                GO TO APP
-              </a>
-            </div>
-          )
-        }
+        <div className={"flex gap-3"}>
+          {
+            !session && (
+              <a href={"/auth/login?returnTo=/app/home&audience=https://abandon.ai/api"} className={"text-sm bg-gray-200 px-3 h-6 rounded-full font-medium flex items-center justify-center"}>Log in</a>
+            )
+          }
+          <a
+            href={"/auth/login?returnTo=/app/home&audience=https://abandon.ai/api"}
+            className={"bg-black text-white text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
+          >
+            GO TO APP
+          </a>
+        </div>
       </div>
       <div className={"max-w-screen-2xl ml-auto mr-auto py-40 px-5 gap-4 flex flex-col"}>
         <div className={"text-5xl font-bold"}>
@@ -82,7 +73,7 @@ const Page = async () => {
         </div>
         <div className={"flex"}>
           <a
-            href={"/auth/login?screen_hint=signup&returnTo=/app/home"}
+            href={"/auth/login?screen_hint=signup&returnTo=/app/home&audience=https://abandon.ai/api"}
             className={"cursor-pointer"}
           >
             <div className={"h-10 px-4 uppercase bg-black text-white flex items-center justify-center rounded-full font-bold text-[14px]"}>
