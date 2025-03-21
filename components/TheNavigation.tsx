@@ -70,7 +70,7 @@ const TheNavigation = () => {
           <button className={"hover:bg-gray-100 rounded-lg flex p-3 gap-3 w-full"}>
             {
               user?.picture ? (
-                <img src={user.picture} alt={user.picture} width={"40"} height={"40"} className={"rounded-full"}/>
+                <Image src={user.picture} alt={user.picture} width={"40"} height={"40"} className={"rounded-full"}/>
               ) : (
                 <div/>
               )
