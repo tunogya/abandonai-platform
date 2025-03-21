@@ -10,11 +10,13 @@ const TheNavigation = () => {
     {
       name: "Home",
       pathname: "/app/home",
+      startsWith: "/app/home",
       icon: <HomeIcon className={"w-5 h-5"}/>,
     },
     {
       name: "Innies",
-      pathname: "/app/innies",
+      pathname: "/app/innie-lab",
+      startsWith: "/app/innie",
       icon: <UserIcon className={"w-5 h-5"}/>
     }
   ]
@@ -53,7 +55,7 @@ const TheNavigation = () => {
         {
           ROUTERS.map((item) => (
             <Link href={item.pathname} prefetch key={item.name}
-                  className={`h-8 flex gap-2 items-center hover:bg-gray-100 px-2 rounded text-[14px] font-medium cursor-pointer ${pathname === item.pathname ? "bg-gray-100" : ""}`}>
+                  className={`h-8 flex gap-2 items-center hover:bg-gray-100 px-2 rounded text-[14px] font-medium cursor-pointer ${pathname.startsWith(item.startsWith) ? "bg-gray-100" : ""}`}>
               {item.icon}
               {item.name}
             </Link>
