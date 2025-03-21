@@ -11,8 +11,8 @@
 }
 
 :root {
-  --background: #E0E0E0;
-  --foreground: #4C4C4C;
+  --background: #FFFFFF;
+  --foreground: #000000;
   --tg-theme-bg-color: #E0E0E0;
   --tg-theme-header-bg-color: #E0E0E0;
   --tg-theme-text-color: #4C4C4C;
@@ -37,5 +37,5 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: formaDJR, sans-serif;
 }

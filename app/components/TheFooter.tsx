@@ -1,10 +1,7 @@
-import Link from "next/link";
-import TheFooter from "@/app/components/TheFooter";
-
-const Page = () => {
+const TheFooter = () => {
   return (
-    <div className={"min-h-screen"}>
-      <div className={"h-16 flex items-center px-5 justify-between max-w-screen-2xl ml-auto mr-auto"}>
+    <div className={"max-w-screen-2xl ml-auto mr-auto p-5"}>
+      <div className={"flex justify-between border-b pb-5"}>
         <svg width="160" height="16" viewBox="0 0 259 26" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M36.8811 24.624C37.2051 25.056 36.9531 25.344 36.5931 25.344H31.9491C31.5531 25.344 31.3731 25.128 31.1211 24.732L28.8171 21.168H8.18908L5.88508 24.732C5.63308 25.128 5.48908 25.344 5.05708 25.344H0.449079C0.0890793 25.344 -0.162921 25.056 0.125079 24.624L15.6051 0.720001C15.8211 0.360002 16.0011 0.144 16.3971 0.144H20.6451C21.0051 0.144 21.1851 0.360002 21.4011 0.720001L36.8811 24.624ZM10.9971 16.812H26.0091L18.7371 5.508H18.2691L10.9971 16.812Z"
@@ -28,62 +25,22 @@ const Page = () => {
             d="M227.125 25.344C226.765 25.344 226.585 25.164 226.585 24.804V0.684C226.585 0.324 226.765 0.144 227.125 0.144H231.913C232.237 0.144 232.381 0.288001 232.705 0.540002L252.721 19.404H253.153V0.684C253.153 0.324 253.369 0.144 253.729 0.144H257.689C258.049 0.144 258.229 0.324 258.229 0.684V24.804C258.229 25.164 258.049 25.344 257.689 25.344H252.901C252.577 25.344 252.433 25.2 252.109 24.948L232.093 6.084H231.661V24.804C231.661 25.164 231.445 25.344 231.085 25.344H227.125Z"
             fill="currentColor"/>
         </svg>
-
         <div
-          className={"text-[12px] font-bold flex"}
-          style={{
-            fontFamily: "Manifold Extended CF"
-          }}
+          className={"font-bold text-[18px]"}
         >
-          <div className={"px-[10px] uppercase"}>
-            AI Innie
-          </div>
-          <div className={"px-[10px] uppercase"}>
-            Solutions
-          </div>
-          <div className={"px-[10px] uppercase"}>
-            Docs
-          </div>
-          <div className={"px-[10px] uppercase"}>
-            Pricing
-          </div>
-          <div className={"px-[10px] uppercase"}>
-            Company
-          </div>
-        </div>
-
-        <Link
-          href={"/app/home"}
-          prefetch
-          className={"bg-black text-white text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
-        >
-          GO TO APP
-        </Link>
-      </div>
-
-      <div className={"max-w-screen-2xl ml-auto mr-auto py-40 px-5 gap-4 flex flex-col"}>
-        <div className={"text-5xl font-bold"} style={{
-          fontFamily: "formaDJR"
-        }}>
-          Create your owned innie powered by AI
-        </div>
-        <div className={"text-[18px]"}>
-          Train your innie, and let it make money for you, and more
-        </div>
-        <div>
-          <button
-            className={"h-10 px-4 uppercase bg-black text-white rounded-full font-bold text-[14px]"}
-          >
-            Get started free
-          </button>
+          Reach Everyone with AI Innie
         </div>
       </div>
-
-      <div className={"h-[300px]"}>
+      <div
+        className={"pt-5 flex gap-5 text-[12px]"}
+      >
+        <div>© {new Date().getUTCFullYear()} ABANDON INC.</div>
+        <div>Privacy</div>
+        <div>Terms</div>
+        <div>Safety</div>
       </div>
-      <TheFooter />
     </div>
-  );
-};
+  )
+}
 
-export default Page;
+export default TheFooter
