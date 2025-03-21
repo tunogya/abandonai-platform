@@ -1,7 +1,24 @@
 "use client";
 import Link from "next/link";
+import {usePathname} from "next/navigation";
+import {HomeIcon, UserIcon} from "@heroicons/react/24/outline";
 
 const TheNavigation = () => {
+  const pathname = usePathname();
+
+  const ROUTERS = [
+    {
+      name: "Home",
+      pathname: "/app/home",
+      icon: <HomeIcon className={"w-5 h-5"}/>,
+    },
+    {
+      name: "Innies",
+      pathname: "/app/innies",
+      icon: <UserIcon className={"w-5 h-5"}/>
+    }
+  ]
+
   return (
     <div className={"h-screen fixed left-0 top-0 w-64 min-w-64 border-r bg-white py-4 flex flex-col gap-2"}>
       <div className={"px-3"}>
@@ -33,13 +50,15 @@ const TheNavigation = () => {
 
       </div>
       <div className={"px-3 py-2 flex flex-col gap-1"}>
-        <Link href={"/app/home"} prefetch className={"h-8 flex items-center hover:bg-gray-100 px-2 rounded text-[14px] font-medium cursor-pointer"}>
-          Home
-        </Link>
-        <Link href={"/app/innies"} prefetch
-              className={"h-8 flex items-center hover:bg-gray-100 px-2 rounded text-[14px] font-medium cursor-pointer"}>
-          Innies
-        </Link>
+        {
+          ROUTERS.map((item) => (
+            <Link href={item.pathname} prefetch key={item.name}
+                  className={`h-8 flex gap-2 items-center hover:bg-gray-100 px-2 rounded text-[14px] font-medium cursor-pointer ${pathname === item.pathname ? "bg-gray-100" : ""}`}>
+              {item.icon}
+              {item.name}
+            </Link>
+          ))
+        }
       </div>
     </div>
   )
