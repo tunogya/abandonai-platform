@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import {HomeIcon, UserIcon} from "@heroicons/react/24/outline";
+import {ArrowUpTrayIcon, HomeIcon, UserIcon} from "@heroicons/react/24/outline";
 import {useUser} from "@auth0/nextjs-auth0";
 import Image from "next/image";
 import {ChevronDownIcon} from "@heroicons/react/16/solid";
+import {Menu, MenuButton, MenuItem, MenuItems, MenuSeparator} from "@headlessui/react";
 
 const TheNavigation = () => {
   const pathname = usePathname();
@@ -68,22 +69,64 @@ const TheNavigation = () => {
       </div>
       <div className={"mt-auto flex flex-col gap-1"}>
         <div className={"px-3"}>
-          <button className={"hover:bg-gray-100 rounded-lg flex pl-3 py-3 gap-3 w-full items-center pr-2"}>
-            {
-              user?.picture ? (
-                <Image src={user.picture} alt={user.picture} width={"40"} height={"40"} className={"rounded-full"}/>
-              ) : (
-                <div/>
-              )
-            }
-            <div className={"flex flex-col items-start"}>
-              <div className={"font-bold text-[14px] truncate whitespace-nowrap max-w-[124px]"}>{user?.name}</div>
-              <div className={"text-[12px] text-gray-500 truncate whitespace-nowrap max-w-[124px]"}>
-                {user?.email}
+          <Menu>
+            <MenuButton className={"hover:bg-gray-100 rounded-lg flex pl-3 py-3 gap-3 w-full items-center pr-2"}>
+              {
+                user?.picture ? (
+                  <Image src={user.picture} alt={user.picture} width={"40"} height={"40"} className={"rounded-full"}/>
+                ) : (
+                  <div/>
+                )
+              }
+              <div className={"flex flex-col items-start"}>
+                <div className={"font-bold text-[14px] truncate whitespace-nowrap max-w-[124px]"}>{user?.name}</div>
+                <div className={"text-[12px] text-gray-500 truncate whitespace-nowrap max-w-[124px]"}>
+                  {user?.email}
+                </div>
               </div>
-            </div>
-            <ChevronDownIcon className={"w-4 h-4 ml-auto text-gray-500"} />
-           </button>
+              <ChevronDownIcon className={"w-4 h-4 ml-auto text-gray-500"} />
+            </MenuButton>
+            <MenuItems
+              anchor="right end"
+              transition
+              className="mx-5 w-56 origin-top-right rounded-xl border border-gray-100 bg-white py-1 text-xs font-medium text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+            >
+              <MenuItem>
+                <Link className="block hover:bg-gray-100 px-3 py-2" href="/profile">
+                  Profile
+                </Link>
+              </MenuItem>
+              <MenuItem>
+                <Link className="block hover:bg-gray-100 px-3 py-2" href="/api-keys">
+                  API Keys
+                </Link>
+              </MenuItem>
+              <MenuItem>
+                <Link className="block hover:bg-gray-100 px-3 py-2" href="/webhooks">
+                  Webhooks
+                </Link>
+              </MenuItem>
+              <MenuItem>
+                <Link className="block hover:bg-gray-100 px-3 py-2" href="/subscription">
+                  Subscription
+                </Link>
+              </MenuItem>
+              <MenuSeparator className="my-1 h-px bg-gray-100" />
+              <MenuItem>
+                <a className="block hover:bg-gray-100 px-3 py-2" href="/payouts">
+                  Payouts
+                </a>
+              </MenuItem>
+              <MenuSeparator className="my-1 h-px bg-gray-100" />
+              <MenuItem>
+                <a className="hover:bg-gray-100 px-3 py-2 flex items-center gap-2" href="/auth/logout">
+                  <ArrowUpTrayIcon className={"w-4 h-4 rotate-[90deg]"} />
+                  Sign out
+                </a>
+              </MenuItem>
+            </MenuItems>
+          </Menu>
+
         </div>
       </div>
     </div>
