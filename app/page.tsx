@@ -55,7 +55,17 @@ const Page = async () => {
           </div>
         </div>
         {
-          session ? null : (
+          session ? (
+            <div className={"flex gap-3"}>
+              <Link
+                href={"/app/home"}
+                prefetch
+                className={"bg-black text-white text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
+              >
+                GO TO APP
+              </Link>
+            </div>
+            ) : (
             <div className={"flex gap-3"}>
               <a href="/auth/login" className={"text-sm bg-gray-200 px-3 h-6 rounded-full font-medium flex items-center justify-center"}>Log in</a>
               <Link
