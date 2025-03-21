@@ -68,7 +68,7 @@ const Page = () => {
           Create your owned innie powered by AI
         </div>
         <div className={"text-[18px]"}>
-          Train your innie, and let it make money for you, and more
+          Train your innie once, let it generate income for you, and enjoy true freedom
         </div>
         <div>
           <button
