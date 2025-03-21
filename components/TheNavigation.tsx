@@ -2,9 +2,12 @@
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 import {HomeIcon, UserIcon} from "@heroicons/react/24/outline";
+import {useUser} from "@auth0/nextjs-auth0";
+import Image from "next/image";
 
 const TheNavigation = () => {
   const pathname = usePathname();
+  const { user } = useUser();
 
   const ROUTERS = [
     {
@@ -61,6 +64,25 @@ const TheNavigation = () => {
             </Link>
           ))
         }
+      </div>
+      <div className={"mt-auto flex flex-col gap-1"}>
+        <div className={"px-3"}>
+          <button className={"hover:bg-gray-100 rounded-lg flex p-3 gap-3 w-full"}>
+            {
+              user?.picture ? (
+                <img src={user.picture} alt={user.picture} width={"40"} height={"40"} className={"rounded-full"}/>
+              ) : (
+                <div/>
+              )
+            }
+            <div className={"max-w-[120px] w-full flex flex-col items-start"}>
+              <div className={"font-bold text-[14px] truncate whitespace-nowrap max-w-[124px]"}>{user?.name}</div>
+              <div className={"text-[12px] text-gray-500 truncate whitespace-nowrap max-w-[124px]"}>
+                {user?.email}
+              </div>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   )
