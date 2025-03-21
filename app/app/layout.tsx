@@ -1,4 +1,4 @@
-import TheNavigation from "@/app/components/TheNavigation";
+import TheNavigation from "@/components/TheNavigation";
 
 const Layout = ({
                   children,
