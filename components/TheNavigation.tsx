@@ -25,7 +25,7 @@ const TheNavigation = () => {
     <div className={"h-screen fixed left-0 top-0 w-64 min-w-64 border-r bg-white py-4 flex flex-col gap-2 border-gray-alpha-200"}>
       <div className={"px-3"}>
         <div className={"h-10 flex items-center px-2.5"}>
-          <svg width="120" viewBox="0 0 259 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="180" viewBox="0 0 259 26" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M36.8811 24.624C37.2051 25.056 36.9531 25.344 36.5931 25.344H31.9491C31.5531 25.344 31.3731 25.128 31.1211 24.732L28.8171 21.168H8.18908L5.88508 24.732C5.63308 25.128 5.48908 25.344 5.05708 25.344H0.449079C0.0890793 25.344 -0.162921 25.056 0.125079 24.624L15.6051 0.720001C15.8211 0.360002 16.0011 0.144 16.3971 0.144H20.6451C21.0051 0.144 21.1851 0.360002 21.4011 0.720001L36.8811 24.624ZM10.9971 16.812H26.0091L18.7371 5.508H18.2691L10.9971 16.812Z"
               fill="currentColor"/>
