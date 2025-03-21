@@ -37,5 +37,5 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: formaDJR, sans-serif;
+  font-family: inter, sans-serif;
 }

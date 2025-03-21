@@ -1,12 +1,11 @@
 import type {Metadata} from "next";
-import localFont from 'next/font/local'
+import {Inter} from "next/font/google";
 import "./globals.css";
 
-const formaDJR = localFont({
-  src: './fonts/FormaDJR.ttf',
-  display: 'swap',
-  variable: '--font-formaDJR',
-})
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inputSans",
+});
 
 export const metadata: Metadata = {
   title: "ABANDON",
@@ -28,7 +27,7 @@ export default function RootLayout({
       <title>ABANDON</title>
     </head>
     <body
-      className={`${formaDJR.className} antialiased`}
+      className={`${inter.className} antialiased`}
     >
     {children}
     </body>

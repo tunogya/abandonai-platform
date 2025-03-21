@@ -62,9 +62,7 @@ const Page = () => {
       </div>
 
       <div className={"max-w-screen-2xl ml-auto mr-auto py-40 px-5 gap-4 flex flex-col"}>
-        <div className={"text-5xl font-bold"} style={{
-          fontFamily: "formaDJR"
-        }}>
+        <div className={"text-5xl font-bold"}>
           Create your owned innie powered by AI
         </div>
         <div className={"text-[18px]"}>

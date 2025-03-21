@@ -1,12 +1,7 @@
 const Page = () => {
   return (
     <div>
-      <div>
-        Home
-      </div>
-      <div>
-
-      </div>
+      Innies
     </div>
   )
 }

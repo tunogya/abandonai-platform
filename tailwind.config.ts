@@ -8,10 +8,6 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['var(--font-formaDJR)'],
-        mono: ['var(--font-inputSans)'],
-      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
