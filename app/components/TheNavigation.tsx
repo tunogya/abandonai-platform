@@ -14,15 +14,15 @@ const TheNavigation = () => {
       icon: <HomeIcon className={"w-5 h-5"}/>,
     },
     {
-      name: "Innies",
-      pathname: "/app/innie-lab",
-      startsWith: "/app/innie",
+      name: "NPCs",
+      pathname: "/app/npc-lab",
+      startsWith: "/app/npc",
       icon: <UserIcon className={"w-5 h-5"}/>
     }
   ]
 
   return (
-    <div className={"h-screen fixed left-0 top-0 w-64 min-w-64 border-r bg-white py-4 flex flex-col gap-2"}>
+    <div className={"h-screen fixed left-0 top-0 w-64 min-w-64 border-r bg-white py-4 flex flex-col gap-2 border-gray-alpha-200"}>
       <div className={"px-3"}>
         <div className={"h-10 flex items-center px-2.5"}>
           <svg width="120" viewBox="0 0 259 26" fill="none" xmlns="http://www.w3.org/2000/svg">
