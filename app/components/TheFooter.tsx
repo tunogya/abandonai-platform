@@ -28,7 +28,7 @@ const TheFooter = () => {
         <div
           className={"font-bold text-[18px]"}
         >
-          Reach Everyone with AI NPCs
+          Reach Everyone with AI NPC
         </div>
       </div>
       <div

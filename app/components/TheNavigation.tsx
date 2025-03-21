@@ -14,7 +14,7 @@ const TheNavigation = () => {
       icon: <HomeIcon className={"w-5 h-5"}/>,
     },
     {
-      name: "NPCs",
+      name: "NPC",
       pathname: "/app/npc-lab",
       startsWith: "/app/npc",
       icon: <UserIcon className={"w-5 h-5"}/>

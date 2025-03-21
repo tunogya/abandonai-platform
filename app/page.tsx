@@ -36,7 +36,7 @@ const Page = () => {
           }}
         >
           <div className={"px-[10px] uppercase"}>
-            NPCs
+            NPC
           </div>
           <div className={"px-[10px] uppercase"}>
             Solutions
@@ -63,7 +63,7 @@ const Page = () => {
 
       <div className={"max-w-screen-2xl ml-auto mr-auto py-40 px-5 gap-4 flex flex-col"}>
         <div className={"text-5xl font-bold"}>
-          Create your owned NPCs powered by AI
+          Create your owned NPC powered by AI
         </div>
         <div className={"text-[18px]"}>
           Train your NPC once, let it generate income for you, and enjoy true freedom

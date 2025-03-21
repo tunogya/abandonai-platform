@@ -5,11 +5,11 @@ const Page = () => {
     <div>
       <div className={"h-16 border-b flex items-center px-5 gap-5 border-gray-alpha-200"}>
         <div className={"text-[18px] font-bold"}>
-          NPCs
+          NPC
         </div>
         <div className={"flex items-center"}>
           <Link href={"/app/npc-lab"} className={"h-7 px-3 text-[14px] flex items-center font-medium bg-black rounded-full text-white"}>
-            My NPCs
+            My NPC
           </Link>
           <Link href={"/app/npc-library"} className={"h-7 px-3 text-[14px] flex items-center font-medium text-gray-500"}>
             Library
@@ -23,7 +23,7 @@ const Page = () => {
         <div className={"flex gap-3 px-5 3xl:px-4"}>
           <input
             className={"flex h-9 w-full rounded-[10px] border border-gray-alpha-200 bg-transparent px-3 py-1 text-sm shadow-none transition-colors placeholder:text-subtle focus-ring focus-visible:border-foreground focus-visible:ring-[0.5px] focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 flex-1"}
-            placeholder={"Search my NPCs..."}
+            placeholder={"Search my NPC..."}
           />
           <button className={"border w-40 rounded-[10px] border-gray-alpha-200 text-sm font-medium text-start pl-3 pr-2 py-2"}>
             Recent
