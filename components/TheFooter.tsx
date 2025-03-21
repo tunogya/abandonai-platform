@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const TheFooter = () => {
   return (
     <div className={"max-w-screen-2xl ml-auto mr-auto p-5"}>
@@ -35,9 +37,9 @@ const TheFooter = () => {
         className={"pt-5 flex gap-5 text-[12px]"}
       >
         <div>© {new Date().getUTCFullYear()} ABANDON INC.</div>
-        <div>Privacy</div>
-        <div>Terms</div>
-        <div>Safety</div>
+        <Link prefetch href={"/privacy-policy.md"}>Privacy</Link>
+        <Link prefetch href={"/terms-of-use.md"}>Terms</Link>
+        <Link prefetch href={"/safety.md"}>Safety</Link>
       </div>
     </div>
   )

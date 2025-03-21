@@ -34,9 +34,6 @@ const Page = async () => {
 
         <div
           className={"text-[12px] font-bold flex"}
-          style={{
-            fontFamily: "Manifold Extended CF"
-          }}
         >
           <div className={"px-[10px] uppercase"}>
             NPC
