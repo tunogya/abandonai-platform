@@ -11,10 +11,10 @@ const Page = () => {
           <Link href={"/app/npc-lab"} className={"h-7 px-3 text-[14px] flex items-center font-medium bg-black rounded-full text-white"}>
             My NPC
           </Link>
-          <Link href={"/app/npc-library"} className={"h-7 px-3 text-[14px] flex items-center font-medium text-gray-500"}>
+          <Link href={"/app/npc-library"} className={"h-7 px-3 text-[14px] flex items-center font-medium text-gray-500 rounded-full"}>
             Library
           </Link>
-          <Link href={"/app/npc-library/collections"} className={"h-7 px-3 text-[14px] flex items-center font-medium text-gray-500"}>
+          <Link href={"/app/npc-library/collections"} className={"h-7 px-3 text-[14px] flex items-center font-medium text-gray-500 rounded-full"}>
             Collections
           </Link>
         </div>

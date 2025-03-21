@@ -31,3 +31,11 @@ body {
   background: var(--background);
   font-family: inter, sans-serif;
 }
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 1px solid black;
+}
