@@ -1,4 +1,5 @@
 import Link from "next/link";
+import {ChevronDownIcon} from "@heroicons/react/16/solid";
 
 const Page = () => {
   return (
@@ -25,11 +26,17 @@ const Page = () => {
             className={"flex h-9 w-full rounded-[10px] border border-gray-alpha-200 bg-transparent px-3 py-1 text-sm shadow-none transition-colors placeholder:text-subtle focus-ring focus-visible:border-foreground focus-visible:ring-[0.5px] focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 flex-1"}
             placeholder={"Search my NPC..."}
           />
-          <button className={"border w-40 rounded-[10px] border-gray-alpha-200 text-sm font-medium text-start pl-3 pr-2 py-2"}>
-            Recent
+          <button className={"border w-40 rounded-[10px] border-gray-alpha-200 text-sm font-medium text-start pl-3 pr-2 py-2 flex items-center"}>
+            <div>
+              Recent
+            </div>
+            <ChevronDownIcon className={"w-4 h-4 ml-auto text-gray-500"} />
           </button>
-          <button className={"border w-40 rounded-[10px] border-gray-alpha-200 text-sm font-medium text-start pl-3 pr-2 py-2"}>
-            NPC type
+          <button className={"border w-40 rounded-[10px] border-gray-alpha-200 text-sm font-medium text-start pl-3 pr-2 py-2 flex items-center"}>
+            <div>
+              NPC type
+            </div>
+            <ChevronDownIcon className={"w-4 h-4 ml-auto text-gray-500"} />
           </button>
         </div>
         <div className={"w-full px-5 3xl:px-4"}>

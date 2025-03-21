@@ -4,6 +4,7 @@ import {usePathname} from "next/navigation";
 import {HomeIcon, UserIcon} from "@heroicons/react/24/outline";
 import {useUser} from "@auth0/nextjs-auth0";
 import Image from "next/image";
+import {ChevronDownIcon} from "@heroicons/react/16/solid";
 
 const TheNavigation = () => {
   const pathname = usePathname();
@@ -67,7 +68,7 @@ const TheNavigation = () => {
       </div>
       <div className={"mt-auto flex flex-col gap-1"}>
         <div className={"px-3"}>
-          <button className={"hover:bg-gray-100 rounded-lg flex p-3 gap-3 w-full"}>
+          <button className={"hover:bg-gray-100 rounded-lg flex pl-3 py-3 gap-3 w-full items-center pr-2"}>
             {
               user?.picture ? (
                 <Image src={user.picture} alt={user.picture} width={"40"} height={"40"} className={"rounded-full"}/>
@@ -75,13 +76,14 @@ const TheNavigation = () => {
                 <div/>
               )
             }
-            <div className={"max-w-[120px] w-full flex flex-col items-start"}>
+            <div className={"flex flex-col items-start"}>
               <div className={"font-bold text-[14px] truncate whitespace-nowrap max-w-[124px]"}>{user?.name}</div>
               <div className={"text-[12px] text-gray-500 truncate whitespace-nowrap max-w-[124px]"}>
                 {user?.email}
               </div>
             </div>
-          </button>
+            <ChevronDownIcon className={"w-4 h-4 ml-auto text-gray-500"} />
+           </button>
         </div>
       </div>
     </div>
