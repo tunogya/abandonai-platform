@@ -1,4 +1,3 @@
-import Link from "next/link";
 import TheFooter from "@/components/TheFooter";
 import { auth0 } from "@/lib/auth0";
 
@@ -54,24 +53,22 @@ const Page = async () => {
         {
           session ? (
             <div className={"flex gap-3"}>
-              <Link
-                href={"/app/home"}
-                prefetch
+              <a
+                href={"/auth/login?returnTo=/app/home"}
                 className={"bg-black text-white text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
               >
                 GO TO APP
-              </Link>
+              </a>
             </div>
             ) : (
             <div className={"flex gap-3"}>
-              <a href="/auth/login" className={"text-sm bg-gray-200 px-3 h-6 rounded-full font-medium flex items-center justify-center"}>Log in</a>
-              <Link
-                href={"/app/home"}
-                prefetch
+              <a href={"/auth/login?returnTo=/app/home"} className={"text-sm bg-gray-200 px-3 h-6 rounded-full font-medium flex items-center justify-center"}>Log in</a>
+              <a
+                href={"/auth/login?returnTo=/app/home"}
                 className={"bg-black text-white text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
               >
                 GO TO APP
-              </Link>
+              </a>
             </div>
           )
         }
@@ -83,12 +80,15 @@ const Page = async () => {
         <div className={"text-[18px]"}>
           Train your NPC once, let it generate income for you, and enjoy true freedom
         </div>
-        <div>
-          <button
-            className={"h-10 px-4 uppercase bg-black text-white rounded-full font-bold text-[14px]"}
+        <div className={"flex"}>
+          <a
+            href={"/auth/login?screen_hint=signup&returnTo=/app/home"}
+            className={"cursor-pointer"}
           >
-            Get started free
-          </button>
+            <div className={"h-10 px-4 uppercase bg-black text-white flex items-center justify-center rounded-full font-bold text-[14px]"}>
+              Get started free
+            </div>
+          </a>
         </div>
       </div>
 
