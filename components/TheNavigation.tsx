@@ -114,7 +114,7 @@ const TheNavigation = () => {
               </MenuItem>
               <MenuSeparator className="my-1 h-px bg-gray-100 dark:bg-gray-900" />
               <MenuItem>
-                <Link prefetch className="block hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2" href="/payouts">
+                <Link prefetch className="block hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2" href="/app/payouts">
                   Payouts
                 </Link>
               </MenuItem>
