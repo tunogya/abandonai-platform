@@ -60,7 +60,7 @@ const Page = async () => {
           {/*You must use <a> tags instead of the <Link> component to ensure that the routing is not done client-side as that may result in some unexpected behavior.*/}
           <a
             href={"/auth/login?returnTo=/app/home&audience=https://abandon.ai/api"}
-            className={"bg-black text-white text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
+            className={"bg-foreground text-background text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
           >
             GO TO APP
           </a>
@@ -79,13 +79,12 @@ const Page = async () => {
             href={"/auth/login?screen_hint=signup&returnTo=/app/home&audience=https://abandon.ai/api"}
             className={"cursor-pointer"}
           >
-            <div className={"h-10 px-4 uppercase bg-black text-white flex items-center justify-center rounded-full font-bold text-[14px]"}>
+            <div className={"h-10 px-4 uppercase bg-foreground text-background flex items-center justify-center rounded-full font-bold text-[14px]"}>
               Get started free
             </div>
           </a>
         </div>
       </div>
-
       <div className={"h-[300px]"}>
       </div>
       <TheFooter />

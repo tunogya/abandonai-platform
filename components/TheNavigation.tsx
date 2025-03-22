@@ -27,7 +27,7 @@ const TheNavigation = () => {
   ]
 
   return (
-    <div className={"h-screen fixed left-0 top-0 w-64 min-w-64 border-r bg-white py-4 flex flex-col gap-2 border-gray-alpha-200"}>
+    <div className={"h-screen fixed left-0 top-0 w-64 min-w-64 border-r bg-white dark:bg-black py-4 flex flex-col gap-2 border-gray-200 dark:border-gray-800"}>
       <div className={"px-3"}>
         <div className={"h-10 flex items-center px-2.5"}>
           <Link href={"/"} prefetch>
@@ -61,7 +61,7 @@ const TheNavigation = () => {
         {
           ROUTERS.map((item) => (
             <Link href={item.pathname} prefetch key={item.name}
-                  className={`h-8 flex gap-2 items-center hover:bg-gray-100 px-2 rounded text-[14px] font-medium cursor-pointer ${pathname.startsWith(item.startsWith) ? "bg-gray-100" : ""}`}>
+                  className={`h-8 flex gap-2 items-center hover:bg-gray-100 dark:hover:bg-gray-900 px-2 rounded text-[14px] font-medium cursor-pointer ${pathname.startsWith(item.startsWith) ? "bg-gray-100 dark:bg-gray-900" : ""}`}>
               {item.icon}
               {item.name}
             </Link>
@@ -71,7 +71,7 @@ const TheNavigation = () => {
       <div className={"mt-auto flex flex-col gap-1"}>
         <div className={"px-3"}>
           <Menu>
-            <MenuButton className={"hover:bg-gray-100 rounded-[10px] flex pl-3 py-3 gap-3 w-full items-center pr-2"}>
+            <MenuButton className={"hover:bg-gray-100 dark:hover:bg-gray-900 rounded-[10px] flex pl-3 py-3 gap-3 w-full items-center pr-2"}>
               {
                 user?.picture ? (
                   <Image src={user.picture} alt={user.picture} width={"40"} height={"40"} className={"rounded-full"}/>
@@ -90,37 +90,37 @@ const TheNavigation = () => {
             <MenuItems
               anchor="right end"
               transition
-              className="mx-5 w-56 origin-top-right rounded-[10px] border border-gray-100 bg-white py-1 text-xs font-medium text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+              className="mx-5 w-56 origin-top-right rounded-[10px] border border-gray-200 dark:border-gray-800 bg-white dark:bg-black py-1 text-xs font-medium text-black dark:text-white transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
             >
               <MenuItem>
-                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/app/profile">
+                <Link prefetch className="block hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2" href="/app/profile">
                   Profile
                 </Link>
               </MenuItem>
               <MenuItem>
-                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/app/api-keys">
+                <Link prefetch className="block hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2" href="/app/api-keys">
                   API Keys
                 </Link>
               </MenuItem>
               <MenuItem>
-                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/app/webhooks">
+                <Link prefetch className="block hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2" href="/app/webhooks">
                   Webhooks
                 </Link>
               </MenuItem>
               <MenuItem>
-                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/app/subscription">
+                <Link prefetch className="block hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2" href="/app/subscription">
                   Subscription
                 </Link>
               </MenuItem>
-              <MenuSeparator className="my-1 h-px bg-gray-100" />
+              <MenuSeparator className="my-1 h-px bg-gray-100 dark:bg-gray-900" />
               <MenuItem>
-                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/payouts">
+                <Link prefetch className="block hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2" href="/payouts">
                   Payouts
                 </Link>
               </MenuItem>
-              <MenuSeparator className="my-1 h-px bg-gray-100" />
+              <MenuSeparator className="my-1 h-px bg-gray-100 dark:bg-gray-900" />
               <MenuItem>
-                <a className="hover:bg-gray-100 px-3 py-2 flex items-center gap-2" href="/auth/logout">
+                <a className="hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2 flex items-center gap-2" href="/auth/logout">
                   <ArrowUpTrayIcon className={"w-4 h-4 rotate-[90deg]"} />
                   Sign out
                 </a>

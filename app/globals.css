@@ -15,8 +15,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1D1D1D;
-    --foreground: #8F8F8F;
+    --background: #000000;
+    --foreground: #FFFFFF;
     --tg-theme-bg-color: #1D1D1D;
     --tg-theme-header-bg-color: #1D1D1D;
     --tg-theme-text-color: #8F8F8F;
