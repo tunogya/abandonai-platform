@@ -51,11 +51,13 @@ const Page = async () => {
           </div>
         </div>
         <div className={"flex gap-3"}>
+          {/*You must use <a> tags instead of the <Link> component to ensure that the routing is not done client-side as that may result in some unexpected behavior.*/}
           {
             !session && (
               <a href={"/auth/login?returnTo=/app/home&audience=https://abandon.ai/api"} className={"text-sm bg-gray-200 px-3 h-6 rounded-full font-medium flex items-center justify-center"}>Log in</a>
             )
           }
+          {/*You must use <a> tags instead of the <Link> component to ensure that the routing is not done client-side as that may result in some unexpected behavior.*/}
           <a
             href={"/auth/login?returnTo=/app/home&audience=https://abandon.ai/api"}
             className={"bg-black text-white text-[12px] px-3 rounded-full h-6 font-bold flex items-center justify-center"}
@@ -72,6 +74,7 @@ const Page = async () => {
           Train your NPC once, let it generate income for you, and enjoy true freedom
         </div>
         <div className={"flex"}>
+          {/*You must use <a> tags instead of the <Link> component to ensure that the routing is not done client-side as that may result in some unexpected behavior.*/}
           <a
             href={"/auth/login?screen_hint=signup&returnTo=/app/home&audience=https://abandon.ai/api"}
             className={"cursor-pointer"}
