@@ -92,30 +92,30 @@ const TheNavigation = () => {
               className="mx-5 w-56 origin-top-right rounded-xl border border-gray-100 bg-white py-1 text-xs font-medium text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
             >
               <MenuItem>
-                <Link className="block hover:bg-gray-100 px-3 py-2" href="/app/profile">
+                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/app/profile">
                   Profile
                 </Link>
               </MenuItem>
               <MenuItem>
-                <Link className="block hover:bg-gray-100 px-3 py-2" href="/app/api-keys">
+                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/app/api-keys">
                   API Keys
                 </Link>
               </MenuItem>
               <MenuItem>
-                <Link className="block hover:bg-gray-100 px-3 py-2" href="/app/webhooks">
+                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/app/webhooks">
                   Webhooks
                 </Link>
               </MenuItem>
               <MenuItem>
-                <Link className="block hover:bg-gray-100 px-3 py-2" href="/app/subscription">
+                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/app/subscription">
                   Subscription
                 </Link>
               </MenuItem>
               <MenuSeparator className="my-1 h-px bg-gray-100" />
               <MenuItem>
-                <a className="block hover:bg-gray-100 px-3 py-2" href="/payouts">
+                <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/payouts">
                   Payouts
-                </a>
+                </Link>
               </MenuItem>
               <MenuSeparator className="my-1 h-px bg-gray-100" />
               <MenuItem>
