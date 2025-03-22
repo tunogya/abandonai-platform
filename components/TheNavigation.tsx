@@ -98,7 +98,7 @@ const TheNavigation = () => {
                 </Link>
               </MenuItem>
               <MenuItem>
-                <Link prefetch className="block hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2" href="/app/api-keys">
+                <Link prefetch className="block hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-2" href="/app/apikeys">
                   API Keys
                 </Link>
               </MenuItem>
