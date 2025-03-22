@@ -70,7 +70,7 @@ const TheNavigation = () => {
       <div className={"mt-auto flex flex-col gap-1"}>
         <div className={"px-3"}>
           <Menu>
-            <MenuButton className={"hover:bg-gray-100 rounded-lg flex pl-3 py-3 gap-3 w-full items-center pr-2"}>
+            <MenuButton className={"hover:bg-gray-100 rounded-[10px] flex pl-3 py-3 gap-3 w-full items-center pr-2"}>
               {
                 user?.picture ? (
                   <Image src={user.picture} alt={user.picture} width={"40"} height={"40"} className={"rounded-full"}/>
@@ -89,7 +89,7 @@ const TheNavigation = () => {
             <MenuItems
               anchor="right end"
               transition
-              className="mx-5 w-56 origin-top-right rounded-xl border border-gray-100 bg-white py-1 text-xs font-medium text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+              className="mx-5 w-56 origin-top-right rounded-[10px] border border-gray-100 bg-white py-1 text-xs font-medium text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
             >
               <MenuItem>
                 <Link prefetch className="block hover:bg-gray-100 px-3 py-2" href="/app/profile">

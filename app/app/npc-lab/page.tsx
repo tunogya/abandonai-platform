@@ -4,7 +4,7 @@ import {ChevronDownIcon} from "@heroicons/react/16/solid";
 const Page = () => {
   return (
     <div>
-      <div className={"h-16 border-b flex items-center px-5 gap-5 border-gray-alpha-200"}>
+      <div className={"h-16 border-b flex items-center px-5 gap-5 border-gray-200"}>
         <div className={"text-[18px] font-bold"}>
           NPC
         </div>
@@ -21,18 +21,18 @@ const Page = () => {
         </div>
       </div>
       <div className={"flex flex-col gap-3 pt-5 pb-4"}>
-        <div className={"flex gap-3 px-5 3xl:px-4"}>
+        <div className={"flex gap-3 px-5 3xl:px-4 h-9"}>
           <input
-            className={"flex h-9 w-full rounded-[10px] border border-gray-alpha-200 bg-transparent px-3 py-1 text-sm shadow-none transition-colors placeholder:text-subtle focus-ring focus-visible:border-foreground focus-visible:ring-[0.5px] focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 flex-1"}
+            className={"flex h-9 w-full rounded-[10px] border border-gray-200 bg-transparent px-3 py-1 text-sm shadow-none transition-colors placeholder:text-subtle focus-ring focus-visible:border-foreground focus-visible:ring-[0.5px] focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 flex-1"}
             placeholder={"Search my NPC..."}
           />
-          <button className={"border w-40 rounded-[10px] border-gray-alpha-200 text-sm font-medium text-start pl-3 pr-2 py-2 flex items-center"}>
+          <button className={"border w-40 rounded-[10px] border-gray-200 text-sm font-medium text-start pl-3 pr-2 py-2 flex items-center"}>
             <div>
               Recent
             </div>
             <ChevronDownIcon className={"w-4 h-4 ml-auto text-gray-500"} />
           </button>
-          <button className={"border w-40 rounded-[10px] border-gray-alpha-200 text-sm font-medium text-start pl-3 pr-2 py-2 flex items-center"}>
+          <button className={"border w-40 rounded-[10px] border-gray-200 text-sm font-medium text-start pl-3 pr-2 py-2 flex items-center"}>
             <div>
               NPC type
             </div>
@@ -53,7 +53,7 @@ const Page = () => {
             className="text-sm font-medium mr-1 text-black">Create or clone a new NPC</span> (2 / 3 slots used)
           </p></div>
           <button
-            className={"relative inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors duration-200 focus-ring disabled:pointer-events-auto bg-foreground text-background shadow-none hover:bg-gray-alpha-800 active:bg-gray-alpha-700 disabled:bg-gray-alpha-400 disabled:text-gray-100 h-9 px-[12px] rounded-[10px] w-fit"}>
+            className={"relative inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors duration-200 focus-ring disabled:pointer-events-auto bg-foreground text-background shadow-none hover:bg-gray-800 active:bg-gray-700 disabled:bg-gray-400 disabled:text-gray-100 h-9 px-[12px] rounded-[10px] w-fit"}>
             Add a new NPC
           </button>
         </div>

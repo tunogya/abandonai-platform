@@ -33,7 +33,7 @@ const Page = async () => {
           </div>
           <div>
             <div className={"min-h-[92px] h-[92px] flex items-center gap-3"}>
-              <div className={"w-[120px] h-[80px] bg-gray-100 rounded-xl flex items-center justify-center"}>
+              <div className={"w-[120px] h-[80px] bg-gray-100 rounded-[10px] flex items-center justify-center"}>
 
               </div>
               <div className={"flex flex-col justify-center h-full"}>
@@ -47,7 +47,7 @@ const Page = async () => {
             </div>
 
             <div className={"min-h-[92px] h-[92px] flex items-center gap-3"}>
-              <div className={"w-[120px] h-[80px] bg-gray-100 rounded-xl flex items-center justify-center"}>
+              <div className={"w-[120px] h-[80px] bg-gray-100 rounded-[10px] flex items-center justify-center"}>
 
               </div>
               <div className={"flex flex-col justify-center h-full"}>
@@ -61,7 +61,7 @@ const Page = async () => {
             </div>
 
             <div className={"min-h-[92px] h-[92px] flex items-center gap-3"}>
-              <div className={"w-[120px] h-[80px] bg-gray-100 rounded-xl flex items-center justify-center"}>
+              <div className={"w-[120px] h-[80px] bg-gray-100 rounded-[10px] flex items-center justify-center"}>
 
               </div>
               <div className={"flex flex-col justify-center h-full"}>
