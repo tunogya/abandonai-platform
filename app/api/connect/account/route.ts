@@ -4,6 +4,8 @@ import {verifyToken} from "@/lib/jwt";
 import {docClient} from "@/lib/dynamodb";
 import {GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
 
+const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
+
 const GET = async (req: NextRequest) => {
   let decodedToken;
   try {
@@ -22,13 +24,13 @@ const GET = async (req: NextRequest) => {
   try {
     // get connect account from dynamodb
     const { Item } = await docClient.send(new GetCommand({
-      TableName: "abandon.ai",
+      TableName: "abandon",
       Key: {
         PK: decodedToken.sub,
-        SK: "CONNECT_ACCOUNT",
+        SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
       },
+      ProjectionExpression: "id",
     }))
-
     return Response.json({ok: true, account: Item?.id});
   } catch (e) {
     console.error('An error occurred when calling the DynamoDB API to get the connected account:', e);
@@ -66,11 +68,9 @@ const POST = async (req: NextRequest) => {
       },
     });
 
-    const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
-
     // save connect id to dynamodb
     await docClient.send(new PutCommand({
-      TableName: "abandon.ai",
+      TableName: "abandon",
       Item: {
         PK: decodedToken.sub,
         SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
