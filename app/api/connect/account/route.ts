@@ -73,6 +73,8 @@ const POST = async (req: NextRequest) => {
         PK: decodedToken.sub,
         SK: "CONNECT_ACCOUNT",
         id: account.id,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       },
     }));
 
