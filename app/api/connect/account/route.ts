@@ -66,12 +66,14 @@ const POST = async (req: NextRequest) => {
       },
     });
 
+    const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
+
     // save connect id to dynamodb
     await docClient.send(new PutCommand({
       TableName: "abandon.ai",
       Item: {
         PK: decodedToken.sub,
-        SK: "CONNECT_ACCOUNT",
+        SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
         id: account.id,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
