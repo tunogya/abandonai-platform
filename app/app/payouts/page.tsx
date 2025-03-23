@@ -10,7 +10,7 @@ const Page = () => {
   const [error, setError] = useState(false);
   const [connectedAccountId, setConnectedAccountId] = useState();
   const [accessToken, setAccessToken] = useState(undefined);
-  const { data } = useSWR(accessToken ? "/api/connect/account" : null, (url) => fetch(url, {
+  const { data, isLoading } = useSWR(accessToken ? "/api/connect/account" : null, (url) => fetch(url, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -31,17 +31,13 @@ const Page = () => {
   }, [data]);
 
   return (
-    <div className="container">
-      <div className="banner">
-        <h2>ABANDON INC.</h2>
-      </div>
-      <div className="content">
+    <div>
+      <div>
         {!connectedAccountId && <h2>Get ready for take off</h2>}
-        {!connectedAccountId && <p>ABANDON INC. is the world&#39;s leading air travel platform: join our team of pilots to help people travel faster.</p>}
         {connectedAccountId && <h2>Add information to start accepting money</h2>}
-        {connectedAccountId && <p>Matt&#39;s Mats partners with Stripe to help you receive payments while keeping your personal and bank details secure.</p>}
         {!accountCreatePending && !connectedAccountId && (
           <button
+            disabled={isLoading}
             onClick={async () => {
               setAccountCreatePending(true);
               setError(false);
@@ -106,7 +102,7 @@ const Page = () => {
         )}
         {error && <p className="error">Something went wrong!</p>}
         {(connectedAccountId || accountCreatePending || accountLinkCreatePending) && (
-          <div className="dev-callout">
+          <div>
             {connectedAccountId && <p>Your connected account ID is: <code className="bold">{connectedAccountId}</code></p>}
             {accountCreatePending && <p>Creating a connected account...</p>}
             {accountLinkCreatePending && <p>Creating a new Account Link...</p>}
