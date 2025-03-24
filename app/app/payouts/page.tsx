@@ -93,7 +93,7 @@ const Page = () => {
               )}
               {connectedAccountId && (
                 <button
-                  disabled={accountLinkCreatePending}
+                  disabled={isLoading || accountLinkCreatePending}
                   className="flex items-center bg-foreground text-background text-[14px] px-2 py-3 font-medium rounded-[10px] min-w-32 leading-none"
                   onClick={async () => {
                     setAccountLinkCreatePending(true);
