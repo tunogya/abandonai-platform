@@ -18,14 +18,14 @@ const Page = () => {
               <div
                 className="max-sm:w-full flex md:items-center space-x-0 md:space-x-2 space-y-2 md:space-y-0 flex-col md:flex-row">
                 <button
-                  className="relative inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors duration-200 focus-ring disabled:pointer-events-auto bg-background/20 border border-subtle text-foreground shadow-none hover:bg-gray-alpha-50 active:bg-gray-alpha-100 disabled:bg-background disabled:text-gray-400 h-9 px-[12px] rounded-[10px]">Manage
+                  className="relative inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors duration-200 focus-ring disabled:pointer-events-auto bg-background/20 border border-subtle text-foreground shadow-none hover:bg-gray-50 active:bg-gray-100 disabled:bg-background disabled:text-gray-400 h-9 px-[12px] rounded-[10px]">Manage
                   billing info
                 </button>
               </div>
             </div>
             <div className="flex gap-4 px-6 py-4 items-center"><span className="font-medium inter text-sm text-gray-700">Current Plan</span>
               <div
-                className="inline-flex items-center text-xs px-2.5 h-6 rounded-full font-medium transition-colors whitespace-nowrap focus-ring border border-transparent bg-gray-alpha-100 text-foreground">Free
+                className="inline-flex items-center text-xs px-2.5 h-6 rounded-full font-medium transition-colors whitespace-nowrap focus-ring border border-transparent bg-gray-100 text-foreground">Free
               </div>
             </div>
             <div className="gap-4 px-6 py-4 items-center block"><span className="font-medium inter text-sm text-gray-700">Credit Usage</span><span
@@ -43,6 +43,9 @@ const Page = () => {
           <stripe-pricing-table pricing-table-id="prctbl_1R5DSHFPRjptKGExT3P3TgNb"
             // @ts-ignore
                                 publishable-key="pk_test_51R4l0JFPRjptKGExv3qKKRzHirgSUbMDEXyyvFUSXG5wtJHUoR0xoOTQvm2rFK58JENY2GlsfJR5Yjv1HH9ubO5100KotagW6I"></stripe-pricing-table>
+        </div>
+        <div className={"block font-sans text-3xl font-semibold text-foreground mb-6 mt-36"}>
+          Frequently asked questions
         </div>
       </div>
     </div>
