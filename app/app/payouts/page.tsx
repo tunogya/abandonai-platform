@@ -182,8 +182,8 @@ const Page = () => {
               </div>
             </div>
             <div>
-              <div className="flex justify-center mt-3"><a className="link link-black text-gray text-xs" target="_blank"
-                                                           href="/vla">Voice Library Addendum to our Terms</a></div>
+              <div className="flex justify-center mt-3"><a className="underline underline-offset-4 text-black font-medium text-gray text-xs" target="_blank"
+                                                           href="/vla">NPC Library Addendum to our Terms</a></div>
               <div className="bg-background border border-gray-200 shadow-sm px-3 pb-3 mt-3 rounded-lg">
                 <div className="pt-3">
                   <dt className="text-lg">
