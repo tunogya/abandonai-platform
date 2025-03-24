@@ -49,15 +49,23 @@ const Page = () => {
         <div className="relative flex-1 min-h-0">
           <div className="max-w-3xl mx-auto">
             <div
-              className="bg-yellow-50 border border-gray-200 shadow-sm p-3 mt-3 rounded-lg flex flex-row items-center justify-between gap-3">
+              className={`${connectedAccountId ? "" : "bg-yellow-50"} border border-gray-200 shadow-sm p-3 mt-3 rounded-lg flex flex-row items-center justify-between gap-3`}>
               <div>
-                <p className="block font-bold text-foreground">Create Stripe Connect Account</p><span
+                <p className="block font-bold text-foreground">
+                  {
+                    connectedAccountId ? "Manage Stripe Connect Account" : "Create Stripe Connect Account"
+                  }
+                </p><span
                 className="block text-sm font-normal text-gray-700">
-                <p>We use Stripe Connect to process payments. Connect your Stripe Connect account to receive payments for rewards you&#39;ve earned.</p></span>
+                <p>
+                  {
+                    connectedAccountId ? "Your Stripe Connect account is connected to your Abandon account. Manage your account and payouts." : "We use Stripe Connect to process payments. Connect your Stripe Connect account to receive payments for rewards you&#39;ve earned."
+                  }
+                </p></span>
               </div>
               {!connectedAccountId && (
                 <button
-                  className="flex items-center bg-foreground text-background text-[14px] px-2 py-3 font-medium rounded-[10px] min-w-[120px]"
+                  className="flex items-center bg-foreground text-background text-[14px] px-2 py-3 font-medium rounded-[10px] leading-none min-w-32"
                   disabled={isLoading || accountCreatePending}
                   onClick={async () => {
                     setAccountCreatePending(true);
@@ -86,7 +94,7 @@ const Page = () => {
               {connectedAccountId && (
                 <button
                   disabled={accountLinkCreatePending}
-                  className="flex items-center bg-foreground text-background text-[14px] px-2 py-3 font-medium rounded-[10px] min-w-[120px]"
+                  className="flex items-center bg-foreground text-background text-[14px] px-2 py-3 font-medium rounded-[10px] min-w-32 leading-none"
                   onClick={async () => {
                     setAccountLinkCreatePending(true);
                     fetch("/api/connect/account_link", {
@@ -110,7 +118,7 @@ const Page = () => {
                       });
                   }}
                 >
-                  { accountLinkCreatePending ? "Add information..." : "Add information"}
+                  { accountLinkCreatePending ? "Manage Account..." : "Manage Account"}
                 </button>
               )}
             </div>
