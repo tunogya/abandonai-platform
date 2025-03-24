@@ -22,7 +22,7 @@ const POST = async (req: NextRequest) => {
     const accountLink = await stripe.accountLinks.create({
       account: account,
       refresh_url: `${req.headers.get("origin")}/app/payouts/refresh/${account}`,
-      return_url: `${req.headers.get("origin")}/app/payouts/return/${account}`,
+      return_url: `${req.headers.get("origin")}/app/payouts`,
       type: "account_onboarding",
     });
 
