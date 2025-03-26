@@ -21,6 +21,10 @@ const POST = async (req: NextRequest) => {
   }
   const { name, instruction, description } = await req.json();
 
+  if (!name || !instruction || !description) {
+    return Response.json({ok: false, msg: "Missing required fields"}, {status: 400});
+  }
+
   const roleArn = `arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForAgents_XW6XCMLTJ9`;
   const response = await bedrockAgentClient.send(new CreateAgentCommand({
     agentName: name,
