@@ -18,7 +18,6 @@ const Page = () => {
   useEffect(() => {
     (async () => {
       const accessToken = await getAccessToken();
-      console.log(accessToken);
       setAccessToken(accessToken);
     })();
   }, []);

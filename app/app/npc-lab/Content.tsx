@@ -1,6 +1,6 @@
 "use client";
 import {ChevronDownIcon} from "@heroicons/react/16/solid";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
   Dialog,
   DialogPanel,
@@ -11,7 +11,9 @@ import {
   Legend,
   Textarea
 } from "@headlessui/react";
-import clsx from 'clsx'
+import clsx from 'clsx';
+import {getAccessToken } from "@auth0/nextjs-auth0";
+import useSWR from "swr";
 
 const Content = () => {
   const [tab, setTab] = useState("All");
@@ -20,6 +22,41 @@ const Content = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [instruction, setInstruction ] = useState("");
+  const [accessToken, setAccessToken] = useState(undefined);
+  const { data } = useSWR(accessToken ? "/api/npc" : null, (url) => fetch(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  }).then((res) => res.json()));
+
+  useEffect(() => {
+    (async () => {
+      const accessToken = await getAccessToken();
+      setAccessToken(accessToken);
+    })();
+  }, []);
+
+  const createNPC = async () => {
+    const response = await fetch("/api/npc", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        name,
+        description,
+        instruction,
+      }),
+    });
+
+    if (response.ok) {
+      setName("");
+      setDescription("");
+      setInstruction("");
+      setIsOpen(false);
+    }
+  }
 
   return (
     <div className={"flex flex-col gap-3 pt-5"}>
@@ -111,8 +148,9 @@ const Content = () => {
                 </Fieldset>
                 <div className="mt-4">
                   <button
-                    className="items-center w-full gap-2 rounded-md bg-foreground text-background py-1.5 px-3 text-sm/6 font-semibold shadow-inner shadow-white/10"
-                    onClick={() => setIsOpen(false)}
+                    disabled={!name || !description || !instruction}
+                    className="items-center w-full gap-2 rounded-md bg-foreground text-background py-1.5 px-3 text-sm/6 font-semibold shadow-inner shadow-white/10 disabled:bg-gray-200"
+                    onClick={createNPC}
                   >
                     Create
                   </button>
@@ -123,14 +161,14 @@ const Content = () => {
         </Dialog>
       </div>
       <div>
-        <div className={"w-full h-14 px-5 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center line-clamp-1 font-medium text-sm"}>
-          Content
-        </div>
-        <div className={"w-full h-14 px-5 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center line-clamp-1 font-medium text-sm"}>
-          Content
-        </div>
+        {
+          data?.items && data?.items?.map((item: any, index: number) => (
+            <div key={index} className={"w-full h-14 px-5 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center line-clamp-1 font-medium text-sm"}>
+              {item.agentName}
+            </div>
+          ))
+        }
       </div>
-
     </div>
   )
 }
