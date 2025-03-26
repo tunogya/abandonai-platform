@@ -22,6 +22,7 @@ const Content = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [instruction, setInstruction ] = useState("");
+  const [status, setStatus] = useState("idle");
   const [accessToken, setAccessToken] = useState(undefined);
   const { data } = useSWR(accessToken ? "/api/npc" : null, (url) => fetch(url, {
     headers: {
@@ -37,24 +38,35 @@ const Content = () => {
   }, []);
 
   const createNPC = async () => {
-    const response = await fetch("/api/npc", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: JSON.stringify({
-        name,
-        description,
-        instruction,
-      }),
-    });
+    setStatus("loading");
+    try {
+      const response = await fetch("/api/npc", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          name,
+          description,
+          instruction,
+        }),
+      });
 
-    if (response.ok) {
-      setName("");
-      setDescription("");
-      setInstruction("");
-      setIsOpen(false);
+      if (response.ok) {
+        setStatus("success")
+        setName("");
+        setDescription("");
+        setInstruction("");
+        setIsOpen(false);
+      }
+    } catch (e) {
+      setStatus("error")
+      console.log(e);
+    } finally {
+      setTimeout(() => {
+        setStatus("idle");
+      }, 3000);
     }
   }
 
@@ -148,11 +160,13 @@ const Content = () => {
                 </Fieldset>
                 <div className="mt-4">
                   <button
-                    disabled={!name || !description || !instruction}
+                    disabled={!name || !description || !instruction || status !== "idle"}
                     className="items-center w-full gap-2 rounded-md bg-foreground text-background py-1.5 px-3 text-sm/6 font-semibold shadow-inner shadow-white/10 disabled:bg-gray-200"
                     onClick={createNPC}
                   >
-                    Create
+                    {status === "loading" ? "Creating..." : "Create"}
+                    {status === "success" && "Created!"}
+                    {status === "error" && "Error!"}
                   </button>
                 </div>
               </DialogPanel>

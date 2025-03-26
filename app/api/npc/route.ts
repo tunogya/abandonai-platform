@@ -70,6 +70,8 @@ const POST = async (req: NextRequest) => {
         agentName: response?.agent?.agentName,
         createdAt: response?.agent?.createdAt?.toISOString(),
         type: "NPC",
+        GPK: "NPC",
+        GSK: response?.agent?.agentId,
       }
     }));
     return Response.json({ok: true, npc: response.agent}, {status: 200});
