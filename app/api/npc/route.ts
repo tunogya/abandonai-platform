@@ -1,9 +1,9 @@
 import {NextRequest} from "next/server";
 import {verifyToken} from "@/lib/jwt";
 import {bedrockAgentClient} from "@/lib/bedrockAgent";
-import {CreateAgentCommand} from "@aws-sdk/client-bedrock-agent";
+import {CreateAgentCommand, DeleteAgentCommand} from "@aws-sdk/client-bedrock-agent";
 import {docClient} from "@/lib/dynamodb";
-import {PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
+import {DeleteCommand, PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
 
 const GET = async (req: NextRequest) => {
   let decodedToken;
@@ -70,6 +70,7 @@ const POST = async (req: NextRequest) => {
         agentName: response?.agent?.agentName,
         createdAt: response?.agent?.createdAt?.toISOString(),
         type: "NPC",
+        sub: decodedToken.sub,
         GPK: "NPC",
         GSK: response?.agent?.agentId,
       }
@@ -81,4 +82,43 @@ const POST = async (req: NextRequest) => {
   }
 }
 
-export {GET, POST}
+const DELETE = async (req: NextRequest) => {
+  let decodedToken;
+  try {
+    const accessToken = req.headers.get("authorization")?.split(" ")?.[1];
+    if (!accessToken) {
+      return Response.json({ok: false, msg: "Need Authorization"}, {status: 403});
+    }
+    decodedToken = await verifyToken(accessToken);
+    if (!decodedToken) {
+      return Response.json({ok: false, msg: "Invalid Authorization"}, {status: 403});
+    }
+  } catch (e) {
+    return Response.json({ok: false, msg: e}, {status: 403});
+  }
+  const { agentId } = await req.json();
+
+  if (!agentId) {
+    return Response.json({ok: false, msg: "Missing required fields"}, {status: 400});
+  }
+
+  try {
+    // 删除前可能还有其他的操作
+    await bedrockAgentClient.send(new DeleteAgentCommand({
+      agentId: agentId,
+    }));
+    await docClient.send(new DeleteCommand({
+      TableName: "abandon",
+      Key: {
+        PK: decodedToken.sub,
+        SK: `NPC-${agentId}`,
+      }
+    }));
+    return Response.json({ok: true}, {status: 200});
+  } catch (e) {
+    console.log(e);
+    return Response.json({ok: false, msg: e}, {status: 500});
+  }
+}
+
+export {GET, POST, DELETE}

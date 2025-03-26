@@ -24,7 +24,7 @@ const Content = () => {
   const [instruction, setInstruction ] = useState("");
   const [status, setStatus] = useState("idle");
   const [accessToken, setAccessToken] = useState(undefined);
-  const { data } = useSWR(accessToken ? "/api/npc" : null, (url) => fetch(url, {
+  const { data, mutate } = useSWR(accessToken ? "/api/npc" : null, (url) => fetch(url, {
     headers: {
       Authorization: `Bearer ${accessToken}`
     }
@@ -65,6 +65,7 @@ const Content = () => {
       console.log(e);
     } finally {
       setTimeout(() => {
+        mutate();
         setStatus("idle");
       }, 3000);
     }
@@ -127,8 +128,15 @@ const Content = () => {
                   <Field>
                     <Label className="text-sm/6 font-medium">NPC name</Label>
                     <Input
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => {
+                        // only accept ([0-9a-zA-Z][_-]?){1,100}
+                        if ((e.target.value.length > 0 && !e.target.value.match(/^([0-9a-zA-Z][_-]?){1,100}$/)) || e.target.value.length > 100) {
+                          return;
+                        }
+                        setName(e.target.value)
+                      }}
                       value={name}
+                      placeholder={"([0-9a-zA-Z][_-]?){1,100}"}
                       className={clsx(
                         'mt-3 block w-full rounded-lg border-none py-1.5 px-3 text-sm/6 bg-gray-100',
                         'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
@@ -136,10 +144,11 @@ const Content = () => {
                     />
                   </Field>
                   <Field>
-                    <Label className="text-sm/6 font-medium">Description</Label>
+                    <Label className="text-sm/6 font-medium">Instruction</Label>
                     <Textarea
-                      onChange={(e) => setDescription(e.target.value)}
-                      value={description}
+                      placeholder={"must have length greater than or equal to 40"}
+                      onChange={(e) => setInstruction(e.target.value)}
+                      value={instruction}
                       className={clsx(
                         'mt-3 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
                         'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
@@ -147,10 +156,11 @@ const Content = () => {
                     />
                   </Field>
                   <Field>
-                    <Label className="text-sm/6 font-medium">Instruction</Label>
+                    <Label className="text-sm/6 font-medium">Description</Label>
                     <Textarea
-                      onChange={(e) => setInstruction(e.target.value)}
-                      value={instruction}
+                      placeholder={"Option"}
+                      onChange={(e) => setDescription(e.target.value)}
+                      value={description}
                       className={clsx(
                         'mt-3 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
                         'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
@@ -160,7 +170,7 @@ const Content = () => {
                 </Fieldset>
                 <div className="mt-4">
                   <button
-                    disabled={!name || !description || !instruction || status !== "idle"}
+                    disabled={!name || !description || !instruction || instruction.length < 40 || status !== "idle"}
                     className="items-center w-full gap-2 rounded-md bg-foreground text-background py-1.5 px-3 text-sm/6 font-semibold shadow-inner shadow-white/10 disabled:bg-gray-200"
                     onClick={createNPC}
                   >
