@@ -3,7 +3,7 @@ import TheMenuOfNPC from "@/components/TheMenuOfNPC";
 
 const Page = () => {
   return (
-    <div>
+    <div className={"relative"}>
       <TheMenuOfNPC />
       <Content />
     </div>

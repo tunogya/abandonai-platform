@@ -1,10 +1,25 @@
 "use client";
 import {ChevronDownIcon} from "@heroicons/react/16/solid";
 import {useState} from "react";
+import {
+  Dialog,
+  DialogPanel,
+  Field,
+  Fieldset,
+  Input,
+  Label,
+  Legend,
+  Textarea
+} from "@headlessui/react";
+import clsx from 'clsx'
 
 const Content = () => {
   const [tab, setTab] = useState("All");
   const TABS = ["All", "Personal", "Community", "Default"];
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [instruction, setInstruction ] = useState("");
 
   return (
     <div className={"flex flex-col gap-3 pt-5"}>
@@ -47,9 +62,65 @@ const Content = () => {
           className="text-sm font-medium mr-1 text-black dark:text-white">Create or clone a new NPC</span> (2 / 3 slots used)
         </p></div>
         <button
+          onClick={() => setIsOpen(true)}
           className={"relative inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors duration-200 focus-ring disabled:pointer-events-auto bg-foreground text-background shadow-none hover:bg-gray-800 active:bg-gray-700 disabled:bg-gray-400 disabled:text-gray-100 h-9 px-[12px] rounded-[10px] w-fit"}>
           Add a new NPC
         </button>
+        <Dialog open={isOpen} as="div" className="z-10" onClose={() => setIsOpen(false)}>
+          <div className="fixed inset-0 z-10 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <DialogPanel
+                transition
+                className="w-full max-w-md rounded-xl p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 border bg-background"
+              >
+                <Fieldset className="space-y-3 rounded-xl ">
+                  <Legend className="text-base/7 font-semibold ">NPC Builder</Legend>
+                  <Field>
+                    <Label className="text-sm/6 font-medium">NPC name</Label>
+                    <Input
+                      onChange={(e) => setName(e.target.value)}
+                      value={name}
+                      className={clsx(
+                        'mt-3 block w-full rounded-lg border-none py-1.5 px-3 text-sm/6 bg-gray-100',
+                        'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+                      )}
+                    />
+                  </Field>
+                  <Field>
+                    <Label className="text-sm/6 font-medium">Description</Label>
+                    <Textarea
+                      onChange={(e) => setDescription(e.target.value)}
+                      value={description}
+                      className={clsx(
+                        'mt-3 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
+                        'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+                      )}
+                    />
+                  </Field>
+                  <Field>
+                    <Label className="text-sm/6 font-medium">Instruction</Label>
+                    <Textarea
+                      onChange={(e) => setInstruction(e.target.value)}
+                      value={instruction}
+                      className={clsx(
+                        'mt-3 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
+                        'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+                      )}
+                    />
+                  </Field>
+                </Fieldset>
+                <div className="mt-4">
+                  <button
+                    className="items-center w-full gap-2 rounded-md bg-foreground text-background py-1.5 px-3 text-sm/6 font-semibold shadow-inner shadow-white/10"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Create
+                  </button>
+                </div>
+              </DialogPanel>
+            </div>
+          </div>
+        </Dialog>
       </div>
       <div>
         <div className={"w-full h-14 px-5 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center line-clamp-1 font-medium text-sm"}>
