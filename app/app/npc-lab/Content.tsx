@@ -17,7 +17,7 @@ import {
   ArrowPathIcon,
   ArrowLeftEndOnRectangleIcon,
   ChevronDownIcon,
-  ArrowRightEndOnRectangleIcon
+  ArrowRightEndOnRectangleIcon, TrashIcon
 } from "@heroicons/react/24/outline";
 import {useRouter, useSearchParams} from "next/navigation";
 
@@ -33,6 +33,11 @@ const Content = () => {
   const [status, setStatus] = useState("idle");
   const [accessToken, setAccessToken] = useState(undefined);
   const { data, mutate } = useSWR(accessToken ? "/api/npc" : null, (url) => fetch(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  }).then((res) => res.json()));
+  const { data: npcData } = useSWR(accessToken && searchParams.get("npcId") ? `` : null, (url) => fetch(url, {
     headers: {
       Authorization: `Bearer ${accessToken}`
     }
@@ -248,8 +253,54 @@ const Content = () => {
       </div>
       {
         searchParams.get("npcId") && (
-          <div className={"max-w-screen-sm w-full border-l border-gray-200 dark:border-gray-800 p-5"}>
-            Content
+          <div className={"max-w-screen-sm w-full border-l border-gray-200 dark:border-gray-800 flex flex-col"}>
+            <div className={"flex h-20 border-b items-center px-5 text-xl font-semibold"}>
+              Title
+            </div>
+            <div className={"flex-1"}>
+            </div>
+            <div className={"h-16 max-w-screen-sm w-full border-t border-gray-200 dark:border-gray-800 flex items-center px-3 justify-between"}>
+              <div>
+                {
+
+                }
+                <button
+                  onClick={() => {
+                    router.replace(`/app/npc-lab`)
+                  }}
+                  className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
+                >
+                  <TrashIcon width={16} height={16}/>
+                  <div>
+                    Delete
+                  </div>
+                </button>
+              </div>
+              <div>
+                <button
+                  onClick={() => {
+                    router.replace(`/app/npc-lab`)
+                  }}
+                  className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
+                >
+                  <TrashIcon width={16} height={16}/>
+                  <div>
+                    ID
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                  }}
+                  className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium bg-foreground text-background"}
+                >
+                  <ArrowPathIcon width={16} height={16}/>
+                  <div>
+                    Chat with NPC
+                  </div>
+                </button>
+              </div>
+
+            </div>
           </div>
         )
       }
