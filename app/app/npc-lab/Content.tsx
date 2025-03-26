@@ -206,7 +206,7 @@ const Content = () => {
                   </div>
                 </div>
                 <div className={"flex items-center"}>
-                  <button className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}>
+                  <button className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium w-[70px]"}>
                     <ArrowPathIcon width={16} height={16}/>
                     <div>
                       Use
@@ -218,7 +218,7 @@ const Content = () => {
                         onClick={() => {
                           router.replace(`/app/npc-lab`)
                         }}
-                        className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
+                        className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium w-[70px]"}
                       >
                         <ArrowRightEndOnRectangleIcon width={16} height={16}/>
                         <div>
@@ -230,7 +230,7 @@ const Content = () => {
                         onClick={() => {
                           router.replace(`/app/npc-lab?npcId=${item.agentId}`)
                         }}
-                        className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
+                        className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium w-[70px]"}
                       >
                         <ArrowLeftEndOnRectangleIcon width={16} height={16}/>
                         <div>
