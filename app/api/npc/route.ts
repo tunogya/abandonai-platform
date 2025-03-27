@@ -55,6 +55,35 @@ const POST = async (req: NextRequest) => {
     return Response.json({ok: false, msg: "Missing required fields"}, {status: 400});
   }
 
+  if (name.length > 100) {
+    return Response.json({ok: false, msg: "Name too long"}, {status: 400});
+  }
+
+  if (instruction.length < 40 || instruction.length > 1000) {
+    return Response.json({ok: false, msg: "Instruction must greater than or equal to 40 and less than 1000"}, {status: 400});
+  }
+
+  try {
+    const response = await docClient.send(new QueryCommand({
+      TableName: "abandon",
+      KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+      ExpressionAttributeValues: {
+        ":pk": decodedToken.sub,
+        ":sk": "NPC"
+      },
+      ExpressionAttributeNames: {
+        "#id": "id",
+      },
+      ProjectionExpression: "#id",
+    }));
+    if (response.Items?.length && response.Items?.length > 3) {
+      return Response.json({ok: false, msg: "You have reached the maximum number of NPCs"}, {status: 400});
+    }
+  } catch (e) {
+    console.log(e);
+    return Response.json({ok: false, msg: e}, {status: 500});
+  }
+
   const roleArn = `arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForAgents_XW6XCMLTJ9`;
   try {
     const response = await bedrockAgentClient.send(new CreateAgentCommand({
