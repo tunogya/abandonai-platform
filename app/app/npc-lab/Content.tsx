@@ -37,7 +37,7 @@ const Content = () => {
       Authorization: `Bearer ${accessToken}`
     }
   }).then((res) => res.json()));
-  const { data: npcData } = useSWR((accessToken && searchParams.get("npcId")) ? `/api/npc/${searchParams.get("npcId")}` : null, (url) => fetch(url, {
+  const { data: npcData, mutate: npcMutate } = useSWR((accessToken && searchParams.get("npcId")) ? `/api/npc/${searchParams.get("npcId")}` : null, (url) => fetch(url, {
     headers: {
       Authorization: `Bearer ${accessToken}`
     }
@@ -132,7 +132,7 @@ const Content = () => {
       console.log(e);
     } finally {
       setTimeout(() => {
-        mutate();
+        npcMutate();
         setStatus("idle");
       }, 1000);
     }
@@ -180,6 +180,7 @@ const Content = () => {
             className="text-sm font-medium mr-1 text-black dark:text-white">Create or clone a new NPC</span> ({data?.items?.length || 0} / 3 slots used)
           </p></div>
           <button
+            disabled={data?.items?.length >= 3}
             onClick={() => setIsOpen(true)}
             className={"relative inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors duration-200 focus-ring disabled:pointer-events-auto bg-foreground text-background shadow-none hover:bg-gray-800 active:bg-gray-700 disabled:bg-gray-400 disabled:text-gray-100 h-9 px-[12px] rounded-[10px] w-fit"}>
             Add a new NPC
@@ -194,7 +195,7 @@ const Content = () => {
                   <Fieldset className="space-y-3 rounded-xl ">
                     <Legend className="text-base/7 font-semibold ">NPC Builder</Legend>
                     <Field>
-                      <Label className="text-sm/6 font-medium">NPC name</Label>
+                      <Label className="text-sm/6 font-medium">Username</Label>
                       <Input
                         onChange={(e) => {
                           // only accept ([0-9a-zA-Z][_-]?){1,100}
@@ -212,11 +213,11 @@ const Content = () => {
                       />
                     </Field>
                     <Field>
-                      <Label className="text-sm/6 font-medium">Instruction</Label>
+                      <Label className="text-sm/6 font-medium">Description</Label>
                       <Textarea
-                        placeholder={"must have length greater than or equal to 40"}
-                        onChange={(e) => setInstruction(e.target.value)}
-                        value={instruction}
+                        placeholder={"Option"}
+                        onChange={(e) => setDescription(e.target.value)}
+                        value={description}
                         className={clsx(
                           'mt-1 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
                           'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
@@ -224,11 +225,11 @@ const Content = () => {
                       />
                     </Field>
                     <Field>
-                      <Label className="text-sm/6 font-medium">Description</Label>
+                      <Label className="text-sm/6 font-medium">Instruction</Label>
                       <Textarea
-                        placeholder={"Option"}
-                        onChange={(e) => setDescription(e.target.value)}
-                        value={description}
+                        placeholder={"must have length greater than or equal to 40"}
+                        onChange={(e) => setInstruction(e.target.value)}
+                        value={instruction}
                         className={clsx(
                           'mt-1 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
                           'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
@@ -256,11 +257,15 @@ const Content = () => {
               <div key={index} className={"w-full h-14 px-5 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center justify-between"}>
                 <div className={"flex flex-col"}>
                   <div className={"line-clamp-1 font-semibold text-sm"}>
-                    {item.name}
+                    @{item.name}
                   </div>
-                  <div className={"text-sm text-gray-500"}>
-                    {item.description}
-                  </div>
+                  {
+                    item.description && (
+                      <div className={"text-sm text-gray-500"}>
+                        {item.description}
+                      </div>
+                    )
+                  }
                 </div>
                 <div className={"flex items-center"}>
                   <button className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium w-[70px]"}>
