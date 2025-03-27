@@ -79,7 +79,6 @@ const POST = async (req: NextRequest) => {
       },
       ExpressionAttributeNames: {
         "#id": "id",
-        "#name": "name",
         "#status": "status",
       },
       ProjectionExpression: "#id",
@@ -107,9 +106,6 @@ const POST = async (req: NextRequest) => {
           maxRecentSessions: 100,
         }
       },
-      tags: {
-        sub: decodedToken.sub as string,
-      }
     }));
     await docClient.send(new PutCommand({
       TableName: "abandon",
