@@ -25,7 +25,12 @@ const GET = async (req: NextRequest) => {
     ExpressionAttributeValues: {
       ":pk": decodedToken.sub,
       ":sk": "NPC"
-    }
+    },
+    ExpressionAttributeNames: {
+      "#id": "id",
+      "#name": "name"
+    },
+    ProjectionExpression: "#id, #name, description, createdAt",
   }));
   return Response.json({ok: true, items: response.Items}, {status: 200});
 }
@@ -66,8 +71,8 @@ const POST = async (req: NextRequest) => {
         SK: `NPC-${response?.agent?.agentId}`,
         instruction: instruction,
         description: description,
-        agentId: response?.agent?.agentId,
-        agentName: response?.agent?.agentName,
+        id: response?.agent?.agentId,
+        name: response?.agent?.agentName,
         createdAt: response?.agent?.createdAt?.toISOString(),
         type: "NPC",
         sub: decodedToken.sub,

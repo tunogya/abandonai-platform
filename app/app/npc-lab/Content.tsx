@@ -17,7 +17,7 @@ import {
   ArrowPathIcon,
   ArrowLeftEndOnRectangleIcon,
   ChevronDownIcon,
-  ArrowRightEndOnRectangleIcon, TrashIcon
+  ArrowRightEndOnRectangleIcon, TrashIcon, DocumentDuplicateIcon
 } from "@heroicons/react/24/outline";
 import {useRouter, useSearchParams} from "next/navigation";
 
@@ -37,7 +37,7 @@ const Content = () => {
       Authorization: `Bearer ${accessToken}`
     }
   }).then((res) => res.json()));
-  const { data: npcData } = useSWR(accessToken && searchParams.get("npcId") ? `` : null, (url) => fetch(url, {
+  const { data: npcData } = useSWR((accessToken && searchParams.get("npcId")) ? `/api/npc/${searchParams.get("npcId")}` : null, (url) => fetch(url, {
     headers: {
       Authorization: `Bearer ${accessToken}`
     }
@@ -72,6 +72,32 @@ const Content = () => {
         setDescription("");
         setInstruction("");
         setIsOpen(false);
+      }
+    } catch (e) {
+      setStatus("error")
+      console.log(e);
+    } finally {
+      setTimeout(() => {
+        mutate();
+        setStatus("idle");
+      }, 3000);
+    }
+  }
+
+  const deleteNPC = async () => {
+    setStatus("loading");
+    try {
+      const response = await fetch(`/api/npc/${searchParams.get("npcId")}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+      });
+
+      if (response.ok) {
+        setStatus("success")
+        router.push("/app/npc-lab");
       }
     } catch (e) {
       setStatus("error")
@@ -204,7 +230,7 @@ const Content = () => {
               <div key={index} className={"w-full h-14 px-5 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center justify-between"}>
                 <div className={"flex flex-col"}>
                   <div className={"line-clamp-1 font-semibold text-sm"}>
-                    {item.agentName}
+                    {item.name}
                   </div>
                   <div className={"text-sm text-gray-500"}>
                     {item.description}
@@ -218,7 +244,7 @@ const Content = () => {
                     </div>
                   </button>
                   {
-                    searchParams.get("npcId") === item.agentId ? (
+                    searchParams.get("npcId") === item.id ? (
                       <button
                         onClick={() => {
                           router.replace(`/app/npc-lab`)
@@ -233,7 +259,7 @@ const Content = () => {
                     ) : (
                       <button
                         onClick={() => {
-                          router.replace(`/app/npc-lab?npcId=${item.agentId}`)
+                          router.replace(`/app/npc-lab?npcId=${item.id}`)
                         }}
                         className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium w-[70px]"}
                       >
@@ -255,19 +281,14 @@ const Content = () => {
         searchParams.get("npcId") && (
           <div className={"max-w-screen-sm w-full border-l border-gray-200 dark:border-gray-800 flex flex-col"}>
             <div className={"flex h-20 border-b items-center px-5 text-xl font-semibold"}>
-              Title
+              {npcData?.item?.name}
             </div>
             <div className={"flex-1"}>
             </div>
             <div className={"h-16 max-w-screen-sm w-full border-t border-gray-200 dark:border-gray-800 flex items-center px-3 justify-between"}>
               <div>
-                {
-
-                }
                 <button
-                  onClick={() => {
-                    router.replace(`/app/npc-lab`)
-                  }}
+                  onClick={deleteNPC}
                   className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
                 >
                   <TrashIcon width={16} height={16}/>
@@ -279,11 +300,11 @@ const Content = () => {
               <div>
                 <button
                   onClick={() => {
-                    router.replace(`/app/npc-lab`)
+                    navigator.clipboard.writeText(npcData?.item?.id || "").then(() => console.log("copy success"))
                   }}
                   className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
                 >
-                  <TrashIcon width={16} height={16}/>
+                  <DocumentDuplicateIcon width={16} height={16}/>
                   <div>
                     ID
                   </div>
