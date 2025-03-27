@@ -63,6 +63,7 @@ const POST = async (req: NextRequest) => {
     return Response.json({ok: false, msg: "Instruction must greater than or equal to 40 and less than 1000"}, {status: 400});
   }
 
+  // check npc numbers
   try {
     const response = await docClient.send(new QueryCommand({
       TableName: "abandon",
@@ -92,6 +93,16 @@ const POST = async (req: NextRequest) => {
       description: description,
       foundationModel: "anthropic.claude-3-5-sonnet-20241022-v2:0",
       agentResourceRoleArn: roleArn,
+      memoryConfiguration: {
+        enabledMemoryTypes: ["SESSION_SUMMARY"],
+        storageDays: 90,
+        sessionSummaryConfiguration: {
+          maxRecentSessions: 100,
+        }
+      },
+      tags: {
+        sub: decodedToken.sub as string,
+      }
     }));
     await docClient.send(new PutCommand({
       TableName: "abandon",

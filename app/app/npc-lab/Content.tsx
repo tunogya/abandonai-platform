@@ -110,6 +110,35 @@ const Content = () => {
     }
   }
 
+  const prepareNPC = async () => {
+    setStatus("loading");
+    try {
+      const response = await fetch(`/api/npc/${searchParams.get("npcId")}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          action: "PREPARE",
+        })
+      });
+
+      if (response.ok) {
+        setStatus("success")
+        router.push("/app/npc-lab");
+      }
+    } catch (e) {
+      setStatus("error")
+      console.log(e);
+    } finally {
+      setTimeout(() => {
+        mutate();
+        setStatus("idle");
+      }, 1000);
+    }
+  }
+
   return (
     <div className={"flex flex-1"}>
       <div className={"flex flex-col gap-3 pt-5 flex-1"}>
@@ -280,8 +309,28 @@ const Content = () => {
       {
         searchParams.get("npcId") && (
           <div className={"max-w-screen-sm w-full border-l border-gray-200 dark:border-gray-800 flex flex-col"}>
-            <div className={"flex h-20 border-b items-center px-5 text-xl font-semibold"}>
-              {npcData?.item?.name}
+            <div className={"flex h-20 border-b items-center px-5 justify-between"}>
+              <div className={"flex items-center space-x-3"}>
+                <div className={"text-xl font-semibold"}>
+                  {npcData?.item?.name}
+                </div>
+                <div className={"text-gray-500 text-sm"}>
+                  status
+                </div>
+              </div>
+              <div>
+                <button
+                  onClick={() => {
+                  }}
+                  className={"h-8 text-[12px] px-2.5 border border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
+                >
+                  <ArrowPathIcon width={16} height={16}/>
+                  <div>
+                    Prepare
+                  </div>
+                </button>
+              </div>
+
             </div>
             <div className={"flex-1"}>
             </div>
