@@ -22,13 +22,16 @@ const GET = async (req: NextRequest) => {
   const response = await docClient.send(new QueryCommand({
     TableName: "abandon",
     KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+    FilterExpression: "#status <> :status",
     ExpressionAttributeValues: {
       ":pk": decodedToken.sub,
-      ":sk": "NPC"
+      ":sk": "NPC",
+      ":status": "DELETED"
     },
     ExpressionAttributeNames: {
       "#id": "id",
-      "#name": "name"
+      "#name": "name",
+      "#status": "status",
     },
     ProjectionExpression: "#id, #name, description, createdAt",
   }));
@@ -68,12 +71,16 @@ const POST = async (req: NextRequest) => {
     const response = await docClient.send(new QueryCommand({
       TableName: "abandon",
       KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+      FilterExpression: "#status <> :status",
       ExpressionAttributeValues: {
         ":pk": decodedToken.sub,
-        ":sk": "NPC"
+        ":sk": "NPC",
+        ":status": "DELETED"
       },
       ExpressionAttributeNames: {
         "#id": "id",
+        "#name": "name",
+        "#status": "status",
       },
       ProjectionExpression: "#id",
     }));

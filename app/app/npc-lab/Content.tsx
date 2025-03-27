@@ -126,7 +126,6 @@ const Content = () => {
 
       if (response.ok) {
         setStatus("success")
-        router.push("/app/npc-lab");
       }
     } catch (e) {
       setStatus("error")
@@ -243,9 +242,7 @@ const Content = () => {
                       className="items-center w-full gap-2 rounded-md bg-foreground text-background py-1.5 px-3 text-sm/6 font-semibold shadow-inner shadow-white/10 disabled:bg-gray-200"
                       onClick={createNPC}
                     >
-                      {status === "loading" ? "Creating..." : "Create"}
-                      {status === "success" && "Created!"}
-                      {status === "error" && "Error!"}
+                      {status === "loading" ? "loading..." : "Create"}
                     </button>
                   </div>
                 </DialogPanel>
@@ -312,44 +309,44 @@ const Content = () => {
             <div className={"flex h-20 border-b items-center px-5 justify-between"}>
               <div className={"flex items-center space-x-3"}>
                 <div className={"text-xl font-semibold"}>
-                  {npcData?.item?.name}
+                  {npcData?.item?.agentName}
                 </div>
                 <div className={"text-gray-500 text-sm"}>
-                  status
+                  {npcData?.item?.agentStatus}
                 </div>
               </div>
               <div>
                 <button
-                  onClick={() => {
-                  }}
+                  disabled={status !== "idle"}
+                  onClick={prepareNPC}
                   className={"h-8 text-[12px] px-2.5 border border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
                 >
                   <ArrowPathIcon width={16} height={16}/>
                   <div>
-                    Prepare
+                    { status === "loading" ? "loading..." : "Prepare"}
                   </div>
                 </button>
               </div>
-
             </div>
             <div className={"flex-1"}>
             </div>
             <div className={"h-16 max-w-screen-sm w-full border-t border-gray-200 dark:border-gray-800 flex items-center px-3 justify-between"}>
               <div>
                 <button
+                  disabled={status !== "idle"}
                   onClick={deleteNPC}
                   className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
                 >
                   <TrashIcon width={16} height={16}/>
                   <div>
-                    Delete
+                    { status === "loading" ? "loading..." : "Delete"}
                   </div>
                 </button>
               </div>
               <div>
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText(npcData?.item?.id || "").then(() => console.log("copy success"))
+                    navigator.clipboard.writeText(npcData?.item?.agentId || "").then(() => console.log("copy success"))
                   }}
                   className={"h-8 text-[12px] px-2.5 border  border-gray-200 dark:border-gray-800 rounded-[10px] mr-2 inline-flex items-center space-x-1 font-medium"}
                 >
@@ -369,7 +366,6 @@ const Content = () => {
                   </div>
                 </button>
               </div>
-
             </div>
           </div>
         )
