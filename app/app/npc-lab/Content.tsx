@@ -80,7 +80,7 @@ const Content = () => {
       setTimeout(() => {
         mutate();
         setStatus("idle");
-      }, 3000);
+      }, 1000);
     }
   }
 
@@ -106,7 +106,7 @@ const Content = () => {
       setTimeout(() => {
         mutate();
         setStatus("idle");
-      }, 3000);
+      }, 1000);
     }
   }
 
@@ -178,7 +178,7 @@ const Content = () => {
                         value={name}
                         placeholder={"([0-9a-zA-Z][_-]?){1,100}"}
                         className={clsx(
-                          'mt-3 block w-full rounded-lg border-none py-1.5 px-3 text-sm/6 bg-gray-100',
+                          'mt-1 block w-full rounded-lg border-none py-1.5 px-3 text-sm/6 bg-gray-100',
                           'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
                         )}
                       />
@@ -190,7 +190,7 @@ const Content = () => {
                         onChange={(e) => setInstruction(e.target.value)}
                         value={instruction}
                         className={clsx(
-                          'mt-3 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
+                          'mt-1 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
                           'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
                         )}
                       />
@@ -202,7 +202,7 @@ const Content = () => {
                         onChange={(e) => setDescription(e.target.value)}
                         value={description}
                         className={clsx(
-                          'mt-3 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
+                          'mt-1 block w-full rounded-lg border-none  py-1.5 px-3 text-sm/6 bg-gray-100',
                           'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
                         )}
                       />
