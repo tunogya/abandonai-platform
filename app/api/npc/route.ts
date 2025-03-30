@@ -1,9 +1,11 @@
 import {NextRequest} from "next/server";
 import {verifyToken} from "@/lib/jwt";
 import {bedrockAgentClient} from "@/lib/bedrockAgent";
-import {CreateAgentCommand} from "@aws-sdk/client-bedrock-agent";
+import {CreateAgentCommand, CreateKnowledgeBaseCommand} from "@aws-sdk/client-bedrock-agent";
 import {docClient} from "@/lib/dynamodb";
 import {PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
+import { InvokeCommand } from "@aws-sdk/client-lambda";
+import lambdaClient from "@/lib/lambda";
 
 const GET = async (req: NextRequest) => {
   let decodedToken;
@@ -123,6 +125,56 @@ const POST = async (req: NextRequest) => {
         GSK: response?.agent?.agentId,
       }
     }));
+    // create knowledge db
+    await lambdaClient.send(new InvokeCommand({
+      FunctionName: "arn:aws:lambda:us-west-2:913870644571:function:init-knowledge-base-schema",
+      InvocationType: "Event",
+      Payload: JSON.stringify({
+        schema_name: response?.agent?.agentId,
+      })
+    }));
+    // create knowledge base
+    await bedrockAgentClient.send(new CreateKnowledgeBaseCommand({
+      name: response?.agent?.agentId,
+      roleArn: "arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBaseCluster",
+      knowledgeBaseConfiguration: {
+        type: "VECTOR",
+        vectorKnowledgeBaseConfiguration: {
+          embeddingModelArn: "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-image-v1",
+          embeddingModelConfiguration: {
+            bedrockEmbeddingModelConfiguration: {
+              dimensions: 1536,
+              embeddingDataType: "FLOAT32",
+            }
+          },
+          supplementalDataStorageConfiguration: {
+            storageLocations: [
+              {
+                type: "S3",
+                s3Location: {
+                  uri: `s3://datasets.abandon.ai/${response?.agent?.agentId}`
+                }
+              }
+            ]
+          }
+        }
+      },
+      storageConfiguration: {
+        type: "RDS",
+        rdsConfiguration: {
+          resourceArn: "arn:aws:rds:us-west-2:913870644571:cluster:npc-knowledge",
+          credentialsSecretArn: "arn:aws:secretsmanager:us-west-2:913870644571:secret:rds!cluster-201f8942-37a5-425a-93b4-33e0573f51d7-xsuo3t",
+          databaseName: "bedrock_knowledge_base_cluster",
+          tableName: `${response?.agent?.agentId}.bedrock_knowledge_base`,
+          fieldMapping: {
+            primaryKeyField: "id",
+            vectorField: "embedding",
+            textField: "chunks",
+            metadataField: "metadata",
+          }
+        }
+      }
+    }))
     return Response.json({ok: true, npc: response.agent}, {status: 200});
   } catch (e) {
     console.log(e);
