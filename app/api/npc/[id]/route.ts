@@ -1,7 +1,7 @@
 import {NextRequest} from "next/server";
 import {verifyToken} from "@/lib/jwt";
 import {bedrockAgentClient} from "@/lib/bedrockAgent";
-import {DeleteAgentCommand, GetAgentCommand, PrepareAgentCommand, DeleteKnowledgeBaseCommand} from "@aws-sdk/client-bedrock-agent";
+import {DeleteAgentCommand, GetAgentCommand, PrepareAgentCommand} from "@aws-sdk/client-bedrock-agent";
 import {docClient} from "@/lib/dynamodb";
 import {UpdateCommand} from "@aws-sdk/lib-dynamodb";
 
