@@ -7,6 +7,7 @@ import {PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
 import { InvokeCommand } from "@aws-sdk/client-lambda";
 import lambdaClient from "@/lib/lambda";
 
+// 获取本人名下的 NPC 列表
 const GET = async (req: NextRequest) => {
   let decodedToken;
   try {
@@ -40,6 +41,7 @@ const GET = async (req: NextRequest) => {
   return Response.json({ok: true, items: response.Items}, {status: 200});
 }
 
+// 创建一个新的 NPC
 const POST = async (req: NextRequest) => {
   let decodedToken;
   try {
@@ -140,7 +142,7 @@ const POST = async (req: NextRequest) => {
       knowledgeBaseConfiguration: {
         type: "VECTOR",
         vectorKnowledgeBaseConfiguration: {
-          embeddingModelArn: "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-image-v1",
+          embeddingModelArn: "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v1",
           embeddingModelConfiguration: {
             bedrockEmbeddingModelConfiguration: {
               dimensions: 1536,
