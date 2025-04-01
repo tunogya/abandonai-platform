@@ -1,13 +1,13 @@
 import {NextRequest} from "next/server";
 import {verifyToken} from "@/lib/jwt";
 import {bedrockAgentClient} from "@/lib/bedrockAgent";
-import {CreateAgentCommand, CreateKnowledgeBaseCommand} from "@aws-sdk/client-bedrock-agent";
+import {CreateAgentCommand, CreateKnowledgeBaseCommand, CreateDataSourceCommand} from "@aws-sdk/client-bedrock-agent";
 import {docClient} from "@/lib/dynamodb";
 import {PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
-import { InvokeCommand } from "@aws-sdk/client-lambda";
+import {InvokeCommand} from "@aws-sdk/client-lambda";
 import lambdaClient from "@/lib/lambda";
 
-// 获取本人名下的 NPC 列表
+// Get the list of NPCs under my name
 const GET = async (req: NextRequest) => {
   let decodedToken;
   try {
@@ -41,7 +41,7 @@ const GET = async (req: NextRequest) => {
   return Response.json({ok: true, items: response.Items}, {status: 200});
 }
 
-// 创建一个新的 NPC
+// Create a new NPC
 const POST = async (req: NextRequest) => {
   let decodedToken;
   try {
@@ -56,7 +56,7 @@ const POST = async (req: NextRequest) => {
   } catch (e) {
     return Response.json({ok: false, msg: e}, {status: 403});
   }
-  const { name, instruction, description } = await req.json();
+  const {name, instruction, description} = await req.json();
 
   if (!name || !instruction || !description) {
     return Response.json({ok: false, msg: "Missing required fields"}, {status: 400});
@@ -67,7 +67,10 @@ const POST = async (req: NextRequest) => {
   }
 
   if (instruction.length < 40 || instruction.length > 1000) {
-    return Response.json({ok: false, msg: "Instruction must greater than or equal to 40 and less than 1000"}, {status: 400});
+    return Response.json({
+      ok: false,
+      msg: "Instruction must greater than or equal to 40 and less than 1000"
+    }, {status: 400});
   }
 
   // check npc numbers
@@ -97,7 +100,7 @@ const POST = async (req: NextRequest) => {
 
   const roleArn = `arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForAgents_XW6XCMLTJ9`;
   try {
-    const response = await bedrockAgentClient.send(new CreateAgentCommand({
+    const {agent} = await bedrockAgentClient.send(new CreateAgentCommand({
       agentName: name,
       instruction: instruction,
       description: description,
@@ -111,20 +114,23 @@ const POST = async (req: NextRequest) => {
         }
       },
     }));
+    if (!agent?.agentId) {
+      return Response.json({ok: false, msg: "Create agent failed"}, {status: 500});
+    }
     await docClient.send(new PutCommand({
       TableName: "abandon",
       Item: {
         PK: decodedToken.sub,
-        SK: `NPC-${response?.agent?.agentId}`,
+        SK: `NPC-${agent?.agentId}`,
         instruction: instruction,
         description: description,
-        id: response?.agent?.agentId,
-        name: response?.agent?.agentName,
-        createdAt: response?.agent?.createdAt?.toISOString(),
+        id: agent?.agentId,
+        name: agent?.agentName,
+        createdAt: agent?.createdAt?.toISOString(),
         type: "NPC",
         sub: decodedToken.sub,
         GPK: "NPC",
-        GSK: response?.agent?.agentId,
+        GSK: agent?.agentId,
       }
     }));
     // create knowledge db
@@ -132,12 +138,12 @@ const POST = async (req: NextRequest) => {
       FunctionName: "arn:aws:lambda:us-west-2:913870644571:function:init-knowledge-base-schema",
       InvocationType: "Event",
       Payload: JSON.stringify({
-        schema_name: response?.agent?.agentId,
+        schema_name: agent?.agentId,
       })
     }));
     // create knowledge base
-    await bedrockAgentClient.send(new CreateKnowledgeBaseCommand({
-      name: response?.agent?.agentId,
+    const {knowledgeBase} = await bedrockAgentClient.send(new CreateKnowledgeBaseCommand({
+      name: agent?.agentId,
       roleArn: "arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBaseCluster",
       knowledgeBaseConfiguration: {
         type: "VECTOR",
@@ -153,7 +159,7 @@ const POST = async (req: NextRequest) => {
               {
                 type: "S3",
                 s3Location: {
-                  uri: `s3://datasets.abandon.ai/${response?.agent?.agentId}`
+                  uri: `s3://datasets.abandon.ai/${agent?.agentId}`
                 }
               }
             ]
@@ -166,7 +172,7 @@ const POST = async (req: NextRequest) => {
           resourceArn: "arn:aws:rds:us-west-2:913870644571:cluster:npc-knowledge",
           credentialsSecretArn: "arn:aws:secretsmanager:us-west-2:913870644571:secret:rds!cluster-201f8942-37a5-425a-93b4-33e0573f51d7-xsuo3t",
           databaseName: "bedrock_knowledge_base_cluster",
-          tableName: `${response?.agent?.agentId}.bedrock_knowledge_base`,
+          tableName: `${agent?.agentId}.bedrock_knowledge_base`,
           fieldMapping: {
             primaryKeyField: "id",
             vectorField: "embedding",
@@ -175,8 +181,51 @@ const POST = async (req: NextRequest) => {
           }
         }
       }
-    }))
-    return Response.json({ok: true, npc: response.agent}, {status: 200});
+    }));
+    if (!knowledgeBase?.knowledgeBaseId) {
+      return Response.json({ok: false, msg: "Create knowledge base failed"}, {status: 500});
+    }
+    // create dataSource
+    const {dataSource} = await bedrockAgentClient.send(new CreateDataSourceCommand({
+      knowledgeBaseId: knowledgeBase?.knowledgeBaseId,
+      name: "s3",
+      dataSourceConfiguration: {
+        s3Configuration: {
+          bucketArn: "arn:aws:s3:::datasets.abandon.ai",
+          inclusionPrefixes: [
+            agent?.agentId ?? ""
+          ]
+        },
+        type: "S3"
+      },
+      dataDeletionPolicy: "DELETE",
+      vectorIngestionConfiguration: {
+        chunkingConfiguration: {
+          chunkingStrategy: "HIERARCHICAL",
+          hierarchicalChunkingConfiguration: {
+            levelConfigurations: [
+              {
+                "maxTokens": 1500
+              },
+              {
+                "maxTokens": 300
+              }
+            ],
+            overlapTokens: 60
+          }
+        },
+        parsingConfiguration: {
+          bedrockDataAutomationConfiguration: {
+            parsingModality: "MULTIMODAL"
+          },
+          parsingStrategy: "BEDROCK_DATA_AUTOMATION"
+        }
+      }
+    }));
+    if (!dataSource?.dataSourceId) {
+      return Response.json({ok: false, msg: "Create data source failed"}, {status: 500});
+    }
+    return Response.json({ok: true, npc: agent, knowledgeBase, dataSource}, {status: 200});
   } catch (e) {
     console.log(e);
     return Response.json({ok: false, msg: e}, {status: 500});
