@@ -142,7 +142,7 @@ const POST = async (req: NextRequest) => {
       knowledgeBaseConfiguration: {
         type: "VECTOR",
         vectorKnowledgeBaseConfiguration: {
-          embeddingModelArn: "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v1",
+          embeddingModelArn: "arn:aws:bedrock:us-west-2::foundation-model/amazon.titan-embed-text-v1",
           embeddingModelConfiguration: {
             bedrockEmbeddingModelConfiguration: {
               dimensions: 1536,
