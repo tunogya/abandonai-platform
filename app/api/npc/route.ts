@@ -145,7 +145,6 @@ const POST = async (req: NextRequest) => {
           embeddingModelArn: "arn:aws:bedrock:us-west-2::foundation-model/amazon.titan-embed-text-v1",
           embeddingModelConfiguration: {
             bedrockEmbeddingModelConfiguration: {
-              dimensions: 1536,
               embeddingDataType: "FLOAT32",
             }
           },
