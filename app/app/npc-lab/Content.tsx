@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useState} from "react";
+import {Suspense, useEffect, useState} from "react";
 import {
   Dialog,
   DialogPanel,
@@ -379,4 +379,12 @@ const Content = () => {
   )
 }
 
-export default Content;
+const Wrapper = () => {
+  return (
+    <Suspense>
+      <Content />
+    </Suspense>
+  )
+}
+
+export default Wrapper;
