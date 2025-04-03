@@ -4,8 +4,6 @@ import {bedrockAgentClient} from "@/lib/bedrockAgent";
 import {CreateAgentCommand, CreateKnowledgeBaseCommand, CreateDataSourceCommand} from "@aws-sdk/client-bedrock-agent";
 import {docClient} from "@/lib/dynamodb";
 import {PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
-import {InvokeCommand} from "@aws-sdk/client-lambda";
-import lambdaClient from "@/lib/lambda";
 
 // Get the list of NPCs under my name
 const GET = async (req: NextRequest) => {
@@ -121,66 +119,52 @@ const POST = async (req: NextRequest) => {
       TableName: "abandon",
       Item: {
         PK: decodedToken.sub,
-        SK: `NPC-${agent?.agentId}`,
+        SK: `NPC-${agent.agentId}`,
         instruction: instruction,
         description: description,
-        id: agent?.agentId,
-        name: agent?.agentName,
-        createdAt: agent?.createdAt?.toISOString(),
+        id: agent.agentId,
+        name: agent.agentName,
+        createdAt: agent.createdAt?.toISOString(),
         type: "NPC",
         sub: decodedToken.sub,
         GPK: "NPC",
-        GSK: agent?.agentId,
+        GSK: agent.agentId,
       }
     }));
     // create knowledge db
-    await lambdaClient.send(new InvokeCommand({
-      FunctionName: "arn:aws:lambda:us-west-2:913870644571:function:init-knowledge-base-schema",
-      InvocationType: "Event",
-      Payload: JSON.stringify({
-        schema_name: agent?.agentId,
-      })
-    }));
+
     // create knowledge base
     const {knowledgeBase} = await bedrockAgentClient.send(new CreateKnowledgeBaseCommand({
-      name: agent?.agentId,
+      name: agent.agentId,
       roleArn: "arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBaseCluster",
       knowledgeBaseConfiguration: {
         type: "VECTOR",
         vectorKnowledgeBaseConfiguration: {
-          embeddingModelArn: "arn:aws:bedrock:us-west-2::foundation-model/amazon.titan-embed-text-v1",
-          embeddingModelConfiguration: {
-            bedrockEmbeddingModelConfiguration: {
-              embeddingDataType: "FLOAT32",
-            }
-          },
+          embeddingModelArn: "arn:aws:bedrock:us-west-2::foundation-model/cohere.embed-multilingual-v3",
           supplementalDataStorageConfiguration: {
             storageLocations: [
               {
-                type: "S3",
                 s3Location: {
-                  uri: `s3://datasets.abandon.ai/${agent?.agentId}`
-                }
+                  uri: `s3://transcribe.abandon.ai/${agent.agentId}`
+                },
+                type: "S3"
               }
             ]
           }
         }
       },
       storageConfiguration: {
-        type: "RDS",
-        rdsConfiguration: {
-          resourceArn: "arn:aws:rds:us-west-2:913870644571:cluster:npc-knowledge",
-          credentialsSecretArn: "arn:aws:secretsmanager:us-west-2:913870644571:secret:rds!cluster-201f8942-37a5-425a-93b4-33e0573f51d7-xsuo3t",
-          databaseName: "bedrock_knowledge_base_cluster",
-          tableName: `${agent?.agentId}.bedrock_knowledge_base`,
+        pineconeConfiguration: {
+          connectionString: "https://knowledge-base-ds9oskf.svc.apw5-4e34-81fa.pinecone.io",
+          credentialsSecretArn: "arn:aws:secretsmanager:us-west-2:913870644571:secret:prof/bedrock/pinecone-srLFtk",
           fieldMapping: {
-            primaryKeyField: "id",
-            vectorField: "embedding",
-            textField: "chunks",
             metadataField: "metadata",
-          }
-        }
-      }
+            textField: "chunk"
+          },
+          namespace: agent.agentId
+        },
+        type: "PINECONE"
+      },
     }));
     if (!knowledgeBase?.knowledgeBaseId) {
       return Response.json({ok: false, msg: "Create knowledge base failed"}, {status: 500});
@@ -193,7 +177,7 @@ const POST = async (req: NextRequest) => {
         s3Configuration: {
           bucketArn: "arn:aws:s3:::datasets.abandon.ai",
           inclusionPrefixes: [
-            agent?.agentId ?? ""
+            agent.agentId
           ]
         },
         type: "S3"
