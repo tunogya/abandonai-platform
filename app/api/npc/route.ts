@@ -1,7 +1,7 @@
 import {NextRequest} from "next/server";
 import {verifyToken} from "@/lib/jwt";
 import {bedrockAgentClient} from "@/lib/bedrockAgent";
-import {CreateAgentCommand, CreateKnowledgeBaseCommand, CreateDataSourceCommand} from "@aws-sdk/client-bedrock-agent";
+import {CreateAgentCommand, CreateKnowledgeBaseCommand, CreateDataSourceCommand, AssociateAgentKnowledgeBaseCommand} from "@aws-sdk/client-bedrock-agent";
 import {docClient} from "@/lib/dynamodb";
 import {PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
 
@@ -206,6 +206,14 @@ const POST = async (req: NextRequest) => {
         }
       }
     }));
+
+    await bedrockAgentClient.send(new AssociateAgentKnowledgeBaseCommand({
+      agentId: agent.agentId,
+      agentVersion: "DRAFT",
+      knowledgeBaseId: knowledgeBase.knowledgeBaseId,
+      description: "Add knowledge base",
+      knowledgeBaseState: "ENABLED",
+    }))
     if (!dataSource?.dataSourceId) {
       return Response.json({ok: false, msg: "Create data source failed"}, {status: 500});
     }
