@@ -103,7 +103,11 @@ const DELETE = async (req: NextRequest, { params }: any) => {
       agentId: agentId,
     }));
     // delete knowledge base from pinecone
-    await pc.index("knowledge-base").namespace(agentId).deleteAll();
+    try {
+      await pc.index("knowledge-base").namespace(agentId).deleteAll();
+    } catch (e) {
+      console.log(e)
+    }
     return Response.json({ok: true}, {status: 200});
   } catch (e: any) {
     if (e.name === "ConditionalCheckFailedException") {
