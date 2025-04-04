@@ -96,14 +96,13 @@ const POST = async (req: NextRequest) => {
     return Response.json({ok: false, msg: e}, {status: 500});
   }
 
-  const roleArn = `arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForAgents_XW6XCMLTJ9`;
   try {
     const {agent} = await bedrockAgentClient.send(new CreateAgentCommand({
       agentName: name,
       instruction: instruction,
       description: description,
       foundationModel: "anthropic.claude-3-5-sonnet-20241022-v2:0",
-      agentResourceRoleArn: roleArn,
+      agentResourceRoleArn: process.env.AWS_AGENT_ARN || "",
       memoryConfiguration: {
         enabledMemoryTypes: ["SESSION_SUMMARY"],
         storageDays: 90,
@@ -136,11 +135,11 @@ const POST = async (req: NextRequest) => {
     // create knowledge base
     const {knowledgeBase} = await bedrockAgentClient.send(new CreateKnowledgeBaseCommand({
       name: agent.agentId,
-      roleArn: "arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBaseCluster",
+      roleArn: process.env.AWS_KNOWLEDGE_BASE_ROLE_ARN || "",
       knowledgeBaseConfiguration: {
         type: "VECTOR",
         vectorKnowledgeBaseConfiguration: {
-          embeddingModelArn: "arn:aws:bedrock:us-west-2::foundation-model/cohere.embed-multilingual-v3",
+          embeddingModelArn: process.env.AWS_EMBEDDING_MODEL_ARN || "",
           supplementalDataStorageConfiguration: {
             storageLocations: [
               {
@@ -155,8 +154,8 @@ const POST = async (req: NextRequest) => {
       },
       storageConfiguration: {
         pineconeConfiguration: {
-          connectionString: "https://knowledge-base-ds9oskf.svc.apw5-4e34-81fa.pinecone.io",
-          credentialsSecretArn: "arn:aws:secretsmanager:us-west-2:913870644571:secret:prof/bedrock/pinecone-srLFtk",
+          connectionString: process.env.PINECONE_URI || "",
+          credentialsSecretArn: process.env.AWS_SECRET_ARN_PINECONE_KEY || "",
           fieldMapping: {
             metadataField: "metadata",
             textField: "chunk"
