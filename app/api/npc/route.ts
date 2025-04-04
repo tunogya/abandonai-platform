@@ -1,7 +1,7 @@
 import {NextRequest} from "next/server";
 import {verifyToken} from "@/lib/jwt";
 import {bedrockAgentClient} from "@/lib/bedrockAgent";
-import {CreateAgentCommand, CreateKnowledgeBaseCommand, CreateDataSourceCommand, AssociateAgentKnowledgeBaseCommand} from "@aws-sdk/client-bedrock-agent";
+import {CreateAgentCommand} from "@aws-sdk/client-bedrock-agent";
 import {docClient} from "@/lib/dynamodb";
 import {PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
 
@@ -134,90 +134,90 @@ const POST = async (req: NextRequest) => {
     // create knowledge db
 
     // create knowledge base
-    const {knowledgeBase} = await bedrockAgentClient.send(new CreateKnowledgeBaseCommand({
-      name: agent.agentId,
-      roleArn: "arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBaseCluster",
-      knowledgeBaseConfiguration: {
-        type: "VECTOR",
-        vectorKnowledgeBaseConfiguration: {
-          embeddingModelArn: "arn:aws:bedrock:us-west-2::foundation-model/cohere.embed-multilingual-v3",
-          supplementalDataStorageConfiguration: {
-            storageLocations: [
-              {
-                s3Location: {
-                  uri: `s3://transcribe.abandon.ai/${agent.agentId}`
-                },
-                type: "S3"
-              }
-            ]
-          }
-        }
-      },
-      storageConfiguration: {
-        pineconeConfiguration: {
-          connectionString: "https://knowledge-base-ds9oskf.svc.apw5-4e34-81fa.pinecone.io",
-          credentialsSecretArn: "arn:aws:secretsmanager:us-west-2:913870644571:secret:prof/bedrock/pinecone-srLFtk",
-          fieldMapping: {
-            metadataField: "metadata",
-            textField: "chunk"
-          },
-          namespace: agent.agentId
-        },
-        type: "PINECONE"
-      },
-    }));
-    if (!knowledgeBase?.knowledgeBaseId) {
-      return Response.json({ok: false, msg: "Create knowledge base failed"}, {status: 500});
-    }
+    // const {knowledgeBase} = await bedrockAgentClient.send(new CreateKnowledgeBaseCommand({
+    //   name: agent.agentId,
+    //   roleArn: "arn:aws:iam::913870644571:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBaseCluster",
+    //   knowledgeBaseConfiguration: {
+    //     type: "VECTOR",
+    //     vectorKnowledgeBaseConfiguration: {
+    //       embeddingModelArn: "arn:aws:bedrock:us-west-2::foundation-model/cohere.embed-multilingual-v3",
+    //       supplementalDataStorageConfiguration: {
+    //         storageLocations: [
+    //           {
+    //             s3Location: {
+    //               uri: `s3://transcribe.abandon.ai/${agent.agentId}`
+    //             },
+    //             type: "S3"
+    //           }
+    //         ]
+    //       }
+    //     }
+    //   },
+    //   storageConfiguration: {
+    //     pineconeConfiguration: {
+    //       connectionString: "https://knowledge-base-ds9oskf.svc.apw5-4e34-81fa.pinecone.io",
+    //       credentialsSecretArn: "arn:aws:secretsmanager:us-west-2:913870644571:secret:prof/bedrock/pinecone-srLFtk",
+    //       fieldMapping: {
+    //         metadataField: "metadata",
+    //         textField: "chunk"
+    //       },
+    //       namespace: agent.agentId
+    //     },
+    //     type: "PINECONE"
+    //   },
+    // }));
+    // if (!knowledgeBase?.knowledgeBaseId) {
+    //   return Response.json({ok: false, msg: "Create knowledge base failed"}, {status: 500});
+    // }
     // create dataSource
-    const {dataSource} = await bedrockAgentClient.send(new CreateDataSourceCommand({
-      knowledgeBaseId: knowledgeBase?.knowledgeBaseId,
-      name: "s3",
-      dataSourceConfiguration: {
-        s3Configuration: {
-          bucketArn: "arn:aws:s3:::datasets.abandon.ai",
-          inclusionPrefixes: [
-            agent.agentId
-          ]
-        },
-        type: "S3"
-      },
-      dataDeletionPolicy: "DELETE",
-      vectorIngestionConfiguration: {
-        chunkingConfiguration: {
-          chunkingStrategy: "HIERARCHICAL",
-          hierarchicalChunkingConfiguration: {
-            levelConfigurations: [
-              {
-                "maxTokens": 1500
-              },
-              {
-                "maxTokens": 300
-              }
-            ],
-            overlapTokens: 60
-          }
-        },
-        parsingConfiguration: {
-          bedrockDataAutomationConfiguration: {
-            parsingModality: "MULTIMODAL"
-          },
-          parsingStrategy: "BEDROCK_DATA_AUTOMATION"
-        }
-      }
-    }));
+    // const {dataSource} = await bedrockAgentClient.send(new CreateDataSourceCommand({
+    //   knowledgeBaseId: knowledgeBase?.knowledgeBaseId,
+    //   name: "s3",
+    //   dataSourceConfiguration: {
+    //     s3Configuration: {
+    //       bucketArn: "arn:aws:s3:::datasets.abandon.ai",
+    //       inclusionPrefixes: [
+    //         agent.agentId
+    //       ]
+    //     },
+    //     type: "S3"
+    //   },
+    //   dataDeletionPolicy: "DELETE",
+    //   vectorIngestionConfiguration: {
+    //     chunkingConfiguration: {
+    //       chunkingStrategy: "HIERARCHICAL",
+    //       hierarchicalChunkingConfiguration: {
+    //         levelConfigurations: [
+    //           {
+    //             "maxTokens": 1500
+    //           },
+    //           {
+    //             "maxTokens": 300
+    //           }
+    //         ],
+    //         overlapTokens: 60
+    //       }
+    //     },
+    //     parsingConfiguration: {
+    //       bedrockDataAutomationConfiguration: {
+    //         parsingModality: "MULTIMODAL"
+    //       },
+    //       parsingStrategy: "BEDROCK_DATA_AUTOMATION"
+    //     }
+    //   }
+    // }));
 
-    await bedrockAgentClient.send(new AssociateAgentKnowledgeBaseCommand({
-      agentId: agent.agentId,
-      agentVersion: "DRAFT",
-      knowledgeBaseId: knowledgeBase.knowledgeBaseId,
-      description: "Add knowledge base",
-      knowledgeBaseState: "ENABLED",
-    }))
-    if (!dataSource?.dataSourceId) {
-      return Response.json({ok: false, msg: "Create data source failed"}, {status: 500});
-    }
-    return Response.json({ok: true, npc: agent, knowledgeBase, dataSource}, {status: 200});
+    // await bedrockAgentClient.send(new AssociateAgentKnowledgeBaseCommand({
+    //   agentId: agent.agentId,
+    //   agentVersion: "DRAFT",
+    //   knowledgeBaseId: knowledgeBase.knowledgeBaseId,
+    //   description: "Add knowledge base",
+    //   knowledgeBaseState: "ENABLED",
+    // }))
+    // if (!dataSource?.dataSourceId) {
+    //   return Response.json({ok: false, msg: "Create data source failed"}, {status: 500});
+    // }
+    return Response.json({ok: true, npc: agent}, {status: 200});
   } catch (e) {
     console.log(e);
     return Response.json({ok: false, msg: e}, {status: 500});
