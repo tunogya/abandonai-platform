@@ -1,0 +1,4 @@
+# About ABANDON.AI and ABANDON INC.
+
+
+

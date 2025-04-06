@@ -1,6 +1,6 @@
 # Privacy policy
 
-We at Abandon, Inc. (together with our affiliates, "AbandonAI", "we", "our" or "us") respect your privacy and are
+We at Abandon, Inc. (together with our affiliates, "ABANDON.AI", "we", "our" or "us") respect your privacy and are
 strongly committed to keeping secure any information we obtain from you or about you. This Privacy Policy describes our
 practices with respect to Personal Information we collect from or about you when you use our website, applications, and
 services (collectively, "Services"). This Privacy Policy does not apply to content that we process on behalf of
@@ -95,7 +95,7 @@ required by the law:
   or the law; (iv) to detect or prevent fraud or other illegal activity; (v) to protect the safety, security, and
   integrity of our products, employees, or users, or the public, or (vi) to protect against legal liability.
 * Affiliates: We may disclose Personal Information to our affiliates, meaning an entity that controls, is controlled by,
-  or is under common control with AbandonAI. Our affiliates may use the Personal Information we share in a manner
+  or is under common control with ABANDON.AI. Our affiliates may use the Personal Information we share in a manner
   consistent with this Privacy Policy.
 
 ## 4. Your rights
@@ -112,7 +112,7 @@ relation to their Personal Information. For example, you may have the right to:
 * Object to how we process your Personal Information.
 * Lodge a complaint with your local data protection authority.
 
-You can exercise some of these rights through your AbandonAI account. If you are unable to exercise your rights through
+You can exercise some of these rights through your ABANDON.AI account. If you are unable to exercise your rights through
 your account, please send your request to dsar@abandon.ai.
 
 A note about accuracy: Services like our AI models generate responses by reading a user's request and, in response, predicting
@@ -172,15 +172,15 @@ exercise your rights under applicable local law. To appeal a decision, please se
 
 ## 6. Children
 
-Our Service is not directed to children under the age of 13. AbandonAI does not knowingly collect Personal Information from
+Our Service is not directed to children under the age of 13. ABANDON.AI does not knowingly collect Personal Information from
 children under the age of 13. If you have reason to believe that a child under the age of 13 has provided Personal
-Information to AbandonAI through the Service, please email us at legal@abandon.ai. We will investigate any notification and
+Information to ABANDON.AI through the Service, please email us at legal@abandon.ai. We will investigate any notification and
 if appropriate, delete the Personal Information from our systems. If you are 13 or older, but under 18, you must have
 consent from your parent or guardian to use our Services.
 
 ## 7. Links to other websites
 
-The Service may contain links to other websites not operated or controlled by AbandonAI, including social media services (
+The Service may contain links to other websites not operated or controlled by ABANDON.AI, including social media services (
 "Third Party Sites"). The information that you share with Third Party Sites will be governed by the specific privacy
 policies and terms of service of the Third Party Sites and not by this Privacy Policy. By providing these links we do
 not imply that we endorse or have reviewed these sites. Please contact the Third Party Sites directly for information on
@@ -229,7 +229,7 @@ mechanism. For more information on the appropriate safeguards in place and to ob
 contact us at the details below.
 
 **Data Controller**. For the purposes of the UK and EU General Data Protection Regulation 2018, our data controller is
-AbandonAI OpCo, LLC at 3180 18th Street, San Francisco, CA, United States.
+ABANDON.AI OpCo, LLC at 3180 18th Street, San Francisco, CA, United States.
 
 **Data Protection Officer**. You can contact our data protection officer at privacy@abandon.ai in matters related to
 Personal Information processing.

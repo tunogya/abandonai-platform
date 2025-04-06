@@ -1,6 +1,6 @@
 # Terms of use
 
-Thank you for using AbandonAI!
+Thank you for using ABANDON.AI!
 
 These Terms of Use apply when you use the services of Abandon, Inc. or our affiliates, including our application
 programming interface, software, tools, developer services, data, documentation, and websites ("Services").
@@ -34,14 +34,14 @@ If you provide any of these things, we may use it without restriction or compens
 You may not (i) use the Services in a way that infringes, misappropriates or violates any person's
 rights; (ii) reverse assemble, reverse compile, decompile, translate or otherwise attempt to discover the source code or
 underlying components of models, algorithms, and systems of the Services (except to the extent such restrictions are
-contrary to applicable law); (iii) use output from the Services to develop models that compete with AbandonAI; (iv)
+contrary to applicable law); (iii) use output from the Services to develop models that compete with ABANDON.AI; (iv)
 except
 as permitted through the API, use any automated or programmatic method to extract data or output from the Services,
 including scraping, web harvesting, or web data extraction; (v) represent that output from the Services was
 human-generated when it is not or otherwise violate our Usage Policies; (vi) buy, sell, or transfer API keys without our
 prior consent; or (vii), send us any personal information of children under 13 or the applicable age of digital consent.
 You will comply with any rate limits and other requirements in our documentation. You may use Services only in
-geographies currently supported by AbandonAI.
+geographies currently supported by ABANDON.AI.
 
 (d) Third Party Services.
 Any third party software, services, or other products you use in connection with the Services
@@ -54,15 +54,15 @@ You may provide input to the Services ("Input"), and receive output generated an
 Services based on the Input ("Output").
 Input and Output are collectively "Content." As between the parties and to the extent permitted by applicable law, you
 own all Input.
-Subject to your compliance with these Terms, AbandonAI hereby
+Subject to your compliance with these Terms, ABANDON.AI hereby
 assigns to you all its right, title and interest in and to Output. This means you can use Content for any purpose,
-including commercial purposes such as sale or publication, if you comply with these Terms. AbandonAI may use Content to
+including commercial purposes such as sale or publication, if you comply with these Terms. ABANDON.AI may use Content to
 provide and maintain the Services, comply with applicable law, and enforce our policies. You are responsible for
 Content, including for ensuring that it does not violate any applicable law or these Terms.
 
 (b) Similarity of Content.
 Due to the nature of machine learning, Output may not be unique across users and the Services
-may generate the same or similar output for AbandonAI or a third party. For example, you may provide input to a model
+may generate the same or similar output for ABANDON.AI or a third party. For example, you may provide input to a model
 such
 as "What color is the sky?" and receive output such as "The sky is blue." Other users may also ask similar questions and
 receive the same response. Responses that are requested by and generated for other users are not considered your
@@ -91,7 +91,7 @@ You will pay all fees charged to your account ("Fees") according to the prices a
 applicable pricing page, or as otherwise agreed between us in writing. We have the right to correct pricing errors or
 mistakes even if we have already issued an invoice or received payment. You will provide complete and accurate billing
 information including a valid and authorized payment method. We will charge your payment method on an agreed-upon
-periodic basis, but may reasonably change the date on which the charge is posted. You authorize AbandonAI and its
+periodic basis, but may reasonably change the date on which the charge is posted. You authorize ABANDON.AI and its
 affiliates, and our third-party payment processor(s), to charge your payment method for the Fees. If your payment cannot
 be completed, we will provide you written notice and may suspend access to the Services until payment is received. Fees
 are payable in U.S. dollars and are due upon invoice issuance. Payments are nonrefundable except as provided in this
@@ -101,7 +101,7 @@ Agreement.
 Unless otherwise stated, Fees do not include federal, state, local, and foreign taxes, duties, and other
 similar assessments ("Taxes"). You are responsible for all Taxes associated with your purchase, excluding Taxes based on
 our net income, and we may invoice you for such Taxes. You agree to timely pay such Taxes and provide us with
-documentation showing the payment, or additional evidence that we may reasonably require. AbandonAI uses the name and
+documentation showing the payment, or additional evidence that we may reasonably require. ABANDON.AI uses the name and
 address in your account registration as the place of supply for tax purposes, so you must keep this information accurate
 and up-to-date.
 
@@ -126,13 +126,13 @@ access to the Services.
 ## 5. Confidentiality, Security and Data Protection
 
 (a) Confidentiality.
-You may be given access to Confidential Information of AbandonAI, its affiliates and other third
+You may be given access to Confidential Information of ABANDON.AI, its affiliates and other third
 parties.
 You may use Confidential Information only as needed to use the Services as permitted under these Terms.
 You may
 not disclose Confidential Information to any third party, and you will protect Confidential Information in the same
 manner that you protect your own confidential information of a similar nature, using at least reasonable care.
-Confidential Information means nonpublic information that AbandonAI or its affiliates or third parties designate as
+Confidential Information means nonpublic information that ABANDON.AI or its affiliates or third parties designate as
 confidential or should reasonably be considered confidential under the circumstances, including software,
 specifications, and other nonpublic business information.
 Confidential Information does not include information that: (i) is or becomes generally available to the public through
@@ -141,20 +141,20 @@ confidentiality obligations when you received it under these Terms; (iii) is rig
 party without any confidentiality obligations; or (iv) you independently developed without using Confidential
 Information.
 You may disclose Confidential Information when required by law or the valid order of a court or other
-governmental authority if you give reasonable prior written notice to AbandonAI and use reasonable efforts to limit the
+governmental authority if you give reasonable prior written notice to ABANDON.AI and use reasonable efforts to limit the
 scope of disclosure, including assisting us with challenging the disclosure requirement, in each case where possible.
 
 (b) Security.
 You must implement reasonable and appropriate measures designed to help secure your access to and use of
 the Services.
 If you discover any vulnerabilities or breaches related to your use of the Services, you must promptly
-contact AbandonAI and provide details of the vulnerability or breach.
+contact ABANDON.AI and provide details of the vulnerability or breach.
 
 (c) Processing of Personal Data.
 If you use the Services to process personal data, you must provide legally adequate
 privacy notices and obtain necessary consents for the processing of such data, and you represent to us that you are
 processing such data in accordance with applicable law.
-If you will be using the AbandonAI API for the processing of
+If you will be using the ABANDON.AI API for the processing of
 "personal data" as defined in the GDPR or "Personal Information" as defined in CCPA, please fill out this form to
 request to execute our Data Processing Addendum.
 
@@ -206,14 +206,14 @@ MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW.
 YOU AGREE TO THE FOLLOWING MANDATORY ARBITRATION AND CLASS ACTION WAIVER PROVISIONS:
 
 (a) MANDATORY ARBITRATION.
-You and AbandonAI agree to resolve any past or present claims relating to these Terms or our
+You and ABANDON.AI agree to resolve any past or present claims relating to these Terms or our
 Services through final and binding arbitration, except that you have the right to opt out of these arbitration terms,
 and future changes to these arbitration terms, by filling out this form within 30 days of agreeing to these arbitration
 terms or the relevant changes.
 
 (b) Informal Dispute Resolution.
 We would like to understand and try to address your concerns prior to formal legal action.
-Before filing a claim against AbandonAI, you agree to try to resolve the dispute informally by sending us notice
+Before filing a claim against ABANDON.AI, you agree to try to resolve the dispute informally by sending us notice
 at dispute-resolution@abandon.ai of your name, a description of the dispute, and the relief you seek.
 If we are unable to resolve a dispute within 60 days, you may bring a formal proceeding.
 Any statute of limitations will be tolled during the 60-day resolution process.
@@ -224,7 +224,7 @@ resolution platform, which you can access at https://ec.europa.eu/consumers/odr.
 Either party may commence binding arbitration through ADR Services, an alternative dispute
 resolution provider.
 The parties will pay equal shares of the arbitration fees. If the arbitrator finds that you cannot
-afford to pay the arbitration fees and cannot obtain a waiver, AbandonAI will pay them for you. AbandonAI will not seek
+afford to pay the arbitration fees and cannot obtain a waiver, ABANDON.AI will pay them for you. ABANDON.AI will not seek
 its
 attorneys' fees and costs in arbitration unless the arbitrator determines that your claim is frivolous.
 
@@ -251,7 +251,7 @@ jury in any action, proceeding, or counterclaim. This does not prevent either pa
 settlement of claims.
 
 (g) Mass Filings.
-If, at any time, 30 or more similar demands for arbitration are asserted against AbandonAI or related
+If, at any time, 30 or more similar demands for arbitration are asserted against ABANDON.AI or related
 parties by the same or coordinated counsel or entities ("Mass Filing"), ADR Services will randomly assign sequential
 numbers to each of the Mass Filings. Claims numbered 1-10 will be the "Initial Test Cases" and will proceed to
 arbitration first. The arbitrators will render a final award for the Initial Test Cases within 120 days of the initial
@@ -274,12 +274,12 @@ on the substance of such claim from the arbitrator.
 
 (a) Relationship of the Parties.
 These Terms do not create a partnership, joint venture or agency relationship between
-you and AbandonAI or any of AbandonAI's affiliates. AbandonAI and you are independent contractors and neither party will
+you and ABANDON.AI or any of ABANDON.AI's affiliates. ABANDON.AI and you are independent contractors and neither party will
 have the
 power to bind the other or to incur obligations on the other's behalf without the other party's prior written consent.
 
 (b) Use of Brands.
-You may not use AbandonAI's or any of its affiliates' names, logos, or trademarks, without our prior
+You may not use ABANDON.AI's or any of its affiliates' names, logos, or trademarks, without our prior
 written consent.
 
 (c) U.S. Federal Agency Entities.
@@ -331,12 +331,12 @@ We may notify you using the registration information you provided or the
 email address associated with your use of the Services.
 Service will be deemed given on the date of receipt if delivered
 by email or on the date sent via courier if delivered by post.
-AbandonAI accepts service of process at this address:
+ABANDON.AI accepts service of process at this address:
 Abandon, Inc., 3180 18th Street, San Francisco, CA 94110, Attn: contract-notices@abandon.ai.
 
 (h) Waiver and Severability.
-If you do not comply with these Terms, and AbandonAI does not take action right away, this
-does not mean AbandonAI is giving up any of our rights.
+If you do not comply with these Terms, and ABANDON.AI does not take action right away, this
+does not mean ABANDON.AI is giving up any of our rights.
 Except as provided in Section 8, if any part of these Terms is
 determined to be invalid or unenforceable by a court of competent jurisdiction, that term will be enforced to the
 maximum extent permissible and it will not affect the enforceability of any other terms.
@@ -355,15 +355,15 @@ directly.
 
 (j) Equitable Remedies.
 You acknowledge that if you violate or breach these Terms, it may cause irreparable harm to
-AbandonAI and its affiliates, and AbandonAI shall have the right to seek injunctive relief against you in addition to
+ABANDON.AI and its affiliates, and ABANDON.AI shall have the right to seek injunctive relief against you in addition to
 any
 other legal remedies.
 
 (k) Entire Agreement.
 These Terms and any policies incorporated in these Terms contain the entire agreement between you
-and AbandonAI regarding the use of the Services and, other than any Service specific terms of use or any applicable
+and ABANDON.AI regarding the use of the Services and, other than any Service specific terms of use or any applicable
 enterprise agreements, supersedes any prior or contemporaneous agreements, communications, or understandings between you
-and AbandonAI on that subject.
+and ABANDON.AI on that subject.
 
 (l) Jurisdiction, Venue and Choice of Law.
 These Terms will be governed by the laws of the State of Delaware,
