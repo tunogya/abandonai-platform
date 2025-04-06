@@ -13,7 +13,7 @@ const Page = async () => {
           height={360}
           alt={"banner"}
           src={"/50FB3804-536E-4012-BE9A-FA869F925AF8.png"}/>
-        <div className={"w-[360px] flex flex-col gap-4 justify-center items-center"}>
+        <div className={"w-[360px] flex flex-col gap-4 justify-center items-center p-4"}>
           <div className={"mb-20"}>
             <Image width={200} height={200} alt={"logo"} src={"/logo.svg"} className={"bg-black"}/>
           </div>
