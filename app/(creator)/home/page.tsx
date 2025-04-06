@@ -1,17 +1,22 @@
-import {auth0} from "@/lib/auth0";
+import {auth0} from "@/app/_lib/auth0";
 import {QuestionMarkCircleIcon} from "@heroicons/react/16/solid";
 import {CheckBadgeIcon} from "@heroicons/react/24/outline";
+import {unauthorized} from "next/navigation";
 
 const Page = async () => {
   const session = await auth0.getSession()
+
+  if (!session) {
+    unauthorized();
+  }
 
   return (
     <div className={"max-w-screen-lg mx-auto py-20 flex flex-col gap-8"}>
       <div className={"flex flex-col gap-1"}>
         <div className={"text-gray-500 text-xs flex items-center gap-1"}>
-          {session?.user?.email}
+          {session.user?.email}
           {
-            session?.user.email_verified ? (
+            session.user.email_verified ? (
               <CheckBadgeIcon className={"w-4 h-4"}/>
             ) : (
               <QuestionMarkCircleIcon className={"w-4 h-4"} />

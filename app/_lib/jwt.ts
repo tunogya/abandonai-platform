@@ -19,7 +19,10 @@ const getKey = (header: any, callback: any) => {
   });
 };
 
-export const verifyToken = (token: string): Promise<JwtPayload> => {
+export const verifyToken = (token: string | undefined): Promise<JwtPayload> => {
+  if (!token) {
+    return Promise.reject(new Error("No token provided"));
+  }
   return new Promise((resolve, reject) => {
     jwt.verify(
       token,

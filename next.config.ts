@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    // https://nextjs.org/docs/app/api-reference/functions/unauthorized
+    authInterrupts: true,
+  },
 };
 
 export default nextConfig;

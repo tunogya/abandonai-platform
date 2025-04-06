@@ -1,8 +1,8 @@
 import {NextRequest} from "next/server";
-import {verifyToken} from "@/lib/jwt";
-import {bedrockAgentClient} from "@/lib/bedrockAgent";
+import {verifyToken} from "@/app/_lib/jwt";
+import {bedrockAgentClient} from "@/app/_lib/bedrockAgent";
 import {CreateAgentCommand, CreateKnowledgeBaseCommand, CreateDataSourceCommand, AssociateAgentKnowledgeBaseCommand} from "@aws-sdk/client-bedrock-agent";
-import {docClient} from "@/lib/dynamodb";
+import {docClient} from "@/app/_lib/dynamodb";
 import {PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
 
 // Get the list of NPCs under my name

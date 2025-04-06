@@ -1,5 +1,3 @@
-import TheNavigation from "@/components/TheNavigation";
-
 const Layout = ({
                   children,
                 }: Readonly<{
@@ -7,7 +5,6 @@ const Layout = ({
 }>) => {
   return (
     <div className={"relative"}>
-      <TheNavigation />
       <div className={"w-full pl-64"}>
         <div>
           {children}

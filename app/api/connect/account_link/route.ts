@@ -1,20 +1,15 @@
 import {NextRequest} from "next/server";
-import stripe from "@/lib/stripe";
-import {verifyToken} from "@/lib/jwt";
+import stripe from "@/app/_lib/stripe";
+import {verifyToken} from "@/app/_lib/jwt";
+import {unauthorized} from "next/navigation";
 
 const POST = async (req: NextRequest) => {
-  let decodedToken;
   try {
     const accessToken = req.headers.get("authorization")?.split(" ")?.[1];
-    if (!accessToken) {
-      return Response.json({ok: false, msg: "Need Authorization"}, {status: 403});
-    }
-    decodedToken = await verifyToken(accessToken);
-    if (!decodedToken) {
-      return Response.json({ok: false, msg: "Invalid Authorization"}, {status: 403});
-    }
+    await verifyToken(accessToken);
   } catch (e) {
-    return Response.json({ok: false, msg: e}, {status: 403});
+    console.log(e)
+    unauthorized()
   }
 
   try {
@@ -26,13 +21,13 @@ const POST = async (req: NextRequest) => {
       type: "account_onboarding",
     });
 
-    return Response.json({ ok: true, url: accountLink.url });
+    return Response.json({ url: accountLink.url });
   } catch (e) {
     console.error(
       "An error occurred when calling the Stripe API to create an account link:",
       e
     );
-    return Response.json({ ok: false, msg: e }, {status: 500});
+    return Response.json({ error: e }, {status: 500});
   }
 }
 

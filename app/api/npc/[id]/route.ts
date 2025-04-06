@@ -1,10 +1,10 @@
 import {NextRequest} from "next/server";
-import {verifyToken} from "@/lib/jwt";
-import {bedrockAgentClient} from "@/lib/bedrockAgent";
+import {verifyToken} from "@/app/_lib/jwt";
+import {bedrockAgentClient} from "@/app/_lib/bedrockAgent";
 import {DeleteAgentCommand, GetAgentCommand, PrepareAgentCommand} from "@aws-sdk/client-bedrock-agent";
-import {docClient} from "@/lib/dynamodb";
+import {docClient} from "@/app/_lib/dynamodb";
 import {UpdateCommand} from "@aws-sdk/lib-dynamodb";
-import {pc} from "@/lib/pinecone";
+import {pc} from "@/app/_lib/pinecone";
 
 const GET = async (req: NextRequest, { params }: any) => {
   let decodedToken;

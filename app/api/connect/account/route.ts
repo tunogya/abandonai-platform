@@ -1,24 +1,20 @@
 import {NextRequest} from "next/server";
-import stripe from "@/lib/stripe";
-import {verifyToken} from "@/lib/jwt";
-import {docClient} from "@/lib/dynamodb";
+import stripe from "@/app/_lib/stripe";
+import {verifyToken} from "@/app/_lib/jwt";
+import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
+import {unauthorized} from "next/navigation";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
 const GET = async (req: NextRequest) => {
-  let decodedToken;
+  let session;
   try {
     const accessToken = req.headers.get("authorization")?.split(" ")?.[1];
-    if (!accessToken) {
-      return Response.json({ok: false, msg: "Need Authorization"}, {status: 403});
-    }
-    decodedToken = await verifyToken(accessToken);
-    if (!decodedToken) {
-      return Response.json({ok: false, msg: "Invalid Authorization"}, {status: 403});
-    }
+    session = await verifyToken(accessToken);
   } catch (e) {
-    return Response.json({ok: false, msg: e}, {status: 403});
+    console.log(e)
+    unauthorized()
   }
 
   try {
@@ -26,7 +22,7 @@ const GET = async (req: NextRequest) => {
     const { Item } = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
-        PK: decodedToken.sub,
+        PK: session.sub,
         SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
       },
       ProjectionExpression: "id",
