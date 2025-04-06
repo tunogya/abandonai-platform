@@ -3,6 +3,7 @@ import Image from "next/image"
 import {useUser} from "@auth0/nextjs-auth0";
 import {usePathname, useRouter} from "next/navigation";
 import clsx from "clsx";
+import Link from "next/link";
 
 const TheNavigation = () => {
   const {user} = useUser();
@@ -154,21 +155,13 @@ const TheNavigation = () => {
       </svg>,
       path: "/payouts",
     },
-    {
-      name: "主页",
-      icon: user?.picture ? <Image src={user?.picture} width={24} height={24} alt={""} className={"rounded-full"}/> :
-        <div/>,
-      activeIcon: user?.picture ?
-        <Image src={user?.picture} width={24} height={24} alt={""} className={"rounded-full"}/> : <div/>,
-      path: "/profile",
-    },
   ]
 
   return (
     <div className={"absolute left-0 w-[245px] border-r h-[100%] px-3 pt-2 pb-4"}>
-      <div className={"mb-auto pt-[25px] px-3 pb-4 h-[92px]"}>
+      <Link href={"/"} className={"mb-auto pt-[25px] px-3 pb-4 h-[92px]"}>
         <Image width={120} height={29} src={"/logo.svg"} alt={"LOGO"}/>
-      </div>
+      </Link>
       <div>
         {
           menu.map((item, index) => {
@@ -176,7 +169,7 @@ const TheNavigation = () => {
               <button
                 key={index}
                 className={clsx([
-                  "w-full h-12 hover:bg-black/5 cursor-pointer rounded-lg my-1 p-3 gap-4 flex items-center",
+                  "w-full h-12 hover:bg-black/5 cursor-pointer rounded-lg my-1 p-3 gap-4 flex items-center group",
                   pathname.startsWith(item.path) && "font-bold",
                 ])}
                 onClick={() => {
