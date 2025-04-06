@@ -1,15 +1,14 @@
+import TheNavigation from "@/app/_components/TheNavigation";
+
 const Layout = ({
                   children,
                 }: Readonly<{
   children: React.ReactNode;
 }>) => {
   return (
-    <div className={"relative"}>
-      <div className={"w-full pl-64"}>
-        <div>
-          {children}
-        </div>
-      </div>
+    <div className={"relative h-full"}>
+      <TheNavigation />
+      {children}
     </div>
   )
 }
