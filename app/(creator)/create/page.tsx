@@ -9,7 +9,8 @@ const Page = () => {
       </div>
       <div className={"flex gap-8 mt-8 mb-[72px] justify-center"}>
         <div className={"w-full max-w-[600px] min-w-[300px]"}>
-          <button className={"border border-[#DBDBDB] rounded-xl border-dashed w-full aspect-square flex flex-col items-center justify-center"}>
+          <button
+            className={"border border-[#DBDBDB] rounded-xl border-dashed w-full aspect-square flex flex-col items-center justify-center"}>
             <div className={"font-bold"}>
               拖放媒体
             </div>
@@ -65,7 +66,8 @@ const Page = () => {
             />
           </div>
           <div className={"flex flex-row-reverse"}>
-            <button className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
+            <button
+              className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
               Create
             </button>
           </div>
@@ -75,4 +77,4 @@ const Page = () => {
   )
 }
 
-      export default Page;
+export default Page;
