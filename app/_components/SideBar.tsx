@@ -162,7 +162,7 @@ const SideBar = () => {
       <div>
         <div className={"mb-auto px-3 pb-4 h-[92px] pt-[25px]"}>
           <Link href={"/"} prefetch>
-            <Image width={120} height={29} src={"/logo.svg"} alt={"LOGO"}/>
+            <Image width={132} height={32} src={"/logo.svg"} alt={"LOGO"}/>
           </Link>
         </div>
         <div className={"flex flex-col"}>

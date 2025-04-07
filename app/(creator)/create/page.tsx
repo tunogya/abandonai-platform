@@ -1,51 +1,73 @@
+"use client";
+
 const Page = () => {
+
   return (
     <div className={"mx-auto p-8 relative min-h-screen w-full"}>
-      <div className={"text-3xl font-bold"}>Create a item</div>
-      <div className={"flex gap-8 mt-8"}>
-        <div className={"w-full max-w-[600px] max-h-[600px] border rounded-3xl"}>
-
-        </div>
-        <div className={"w-full flex flex-col gap-[32px]"}>
-          <div>
+      <div className={"flex gap-8 mt-8 mb-[72px] justify-center"}>
+        <div className={"w-full max-w-[600px]"}>
+          <div className={"text-3xl font-bold h-16"}>Create a new item</div>
+          <button className={"border border-[#DBDBDB] rounded-xl border-dashed w-full max-h-[600px] h-full flex flex-col items-center justify-center"}>
             <div className={"font-bold"}>
-              Collection
+              拖放媒体
             </div>
             <div>
-              Not all collections are eligible.
+              JPG、PNG、GIF、SVG、MP4
+            </div>
+          </button>
+        </div>
+        <div className={"w-full flex flex-col gap-[32px] max-w-[600px] mt-16"}>
+          <div>
+            <div className={"font-bold mb-3"}>
+              Box*
+            </div>
+            <div className={"bg-[#1212120A] p-4 rounded-xl flex items-center gap-4"}>
+              <div className={"w-16 h-16 bg-[#1212120B] rounded-xl flex items-center justify-center text-xl"}>
+                +
+              </div>
+              <div className={"font-bold"}>
+                Create a new Box
+              </div>
             </div>
           </div>
           <div>
-            <div className={"font-bold"}>
-              Name
+            <div className={"font-bold mb-3"}>
+              Name*
             </div>
+            <input
+              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
+            />
           </div>
           <div>
-            <div className={"font-bold"}>
-              Supply
+            <div className={"font-bold mb-3"}>
+              Supply*
             </div>
+            <input
+              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
+            />
           </div>
           <div>
-            <div className={"font-bold"}>
+            <div className={"font-bold mb-3"}>
               Description
             </div>
+            <input
+              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
+            />
           </div>
           <div>
-            <div className={"font-bold"}>
+            <div className={"font-bold mb-3"}>
               External link
             </div>
+            <input
+              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
+            />
           </div>
-          <div>
-            <div className={"font-bold"}>
-              Traits
-            </div>
+          <div className={"flex flex-row-reverse"}>
+            <button className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
+              Create
+            </button>
           </div>
         </div>
-      </div>
-      <div className={"border-t border-[#DBDBDB] absolute bottom-0 left-0 w-full px-8 py-3 flex flex-row-reverse"}>
-        <button className={"hover:bg-foreground hover:text-background px-5 py-2.5 font-bold rounded-full border border-[#DBDBDB]"}>
-          Create
-        </button>
       </div>
     </div>
   )
