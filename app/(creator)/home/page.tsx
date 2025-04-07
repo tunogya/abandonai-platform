@@ -8,7 +8,14 @@ const Page = () => {
   return (
     <div className={"flex flex-col w-full h-screen"}>
       <div className={"flex flex-1 flex-col grow overflow-hidden"}>
-        <div className={"pb-9 mt-1.5"}>
+        <div className={"pb-9 mt-1.5 h-full overflow-y-auto"}>
+          {
+            messages.length === 0 && (
+              <div className={"text-center text-2xl font-semibold h-full flex items-center justify-center"}>
+                有什么可以帮忙的？
+              </div>
+            )
+          }
           {messages.map(message => (
             <div key={message.id} className={"px-6 my-2.5"}>
               <div
