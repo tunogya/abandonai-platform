@@ -20,9 +20,9 @@ const Page = async () => {
   const connectedAccountId = Item?.id;
 
   return (
-    <div className={"w-[893px] mx-auto"}>
+    <div className={"md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem] mx-auto"}>
       <div className={"py-9"}>
-        <div className={"text-[21px] font-bold pb-2"}>
+        <div className={"text-xl font-bold pb-2"}>
           专业账户管理界面
         </div>
         <div className={"flex gap-2 py-4 border-b border-[#DBDBDB]"}>

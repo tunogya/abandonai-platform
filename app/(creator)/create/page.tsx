@@ -1,6 +1,6 @@
 const Page = () => {
   return (
-    <div>
+    <div className={"md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem] mx-auto"}>
       <div>Create an blind box</div>
       <div>
 
