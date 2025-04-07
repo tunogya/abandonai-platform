@@ -1,35 +1,26 @@
-"use client";
+import {auth0} from "@/app/_lib/auth0";
+import {unauthorized} from "next/navigation";
+import {docClient} from "@/app/_lib/dynamodb";
+import {GetCommand} from "@aws-sdk/lib-dynamodb";
+import CreateConnectAccount from "@/app/_components/CreateConnectAccount";
+import ManageConnectAccount from "@/app/_components/ManageConnectAccount";
 
-import {useEffect, useState} from "react";
-import {getAccessToken} from "@auth0/nextjs-auth0";
-import useSWR from 'swr'
+const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
-const Page = () => {
-  const [accountCreatePending, setAccountCreatePending] = useState(false);
-  const [accountLinkCreatePending, setAccountLinkCreatePending] = useState(false);
-  const [connectedAccountId, setConnectedAccountId] = useState();
-  const [accessToken, setAccessToken] = useState(undefined);
-  const {data, isLoading} = useSWR(accessToken ? "/api/connect/account" : null, (url) => fetch(url, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+const Page = async () => {
+  const session = await auth0.getSession();
+  if (!session) {
+    unauthorized();
+  }
+  const { Item } = await docClient.send(new GetCommand({
+    TableName: "abandon",
+    Key: {
+      PK: session.user.sub,
+      SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
     },
-  }).then((res) => res.json()), {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false
-  });
-
-  useEffect(() => {
-    (async () => {
-      const accessToken = await getAccessToken();
-      setAccessToken(accessToken);
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (data && data?.account) {
-      setConnectedAccountId(data.account);
-    }
-  }, [data]);
+    ProjectionExpression: "id",
+  }));
+  const connectedAccountId = Item?.id;
 
   return (
     <div className={"w-[893px] mx-auto"}>
@@ -41,64 +32,13 @@ const Page = () => {
           <div className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center bg-[#EFEFEF]"}>
             成效分析
           </div>
-          {!isLoading && !connectedAccountId && (
-            <button
-              className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
-              disabled={isLoading || accountCreatePending}
-              onClick={async () => {
-                setAccountCreatePending(true);
-                fetch("/api/connect/account", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                  },
-                })
-                  .then((response) => response.json())
-                  .then((json) => {
-                    setAccountCreatePending(false);
-
-                    const {account} = json;
-
-                    if (account) {
-                      setConnectedAccountId(account);
-                    }
-                  });
-              }}
-            >
-              Create an account
-            </button>
-          )}
-          {!isLoading && connectedAccountId && (
-            <button
-              disabled={isLoading || accountLinkCreatePending}
-              className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
-              onClick={async () => {
-                setAccountLinkCreatePending(true);
-                fetch("/api/connect/account_link", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                  },
-                  body: JSON.stringify({
-                    account: connectedAccountId,
-                  }),
-                })
-                  .then((response) => response.json())
-                  .then((json) => {
-                    setAccountLinkCreatePending(false);
-
-                    const {url} = json;
-                    if (url) {
-                      window.location.href = url;
-                    }
-                  });
-              }}
-            >
-              Manage Account
-            </button>
-          )}
+          {
+            connectedAccountId ? (
+              <ManageConnectAccount connectedAccountId={connectedAccountId} />
+            ) : (
+              <CreateConnectAccount />
+            )
+          }
         </div>
       </div>
     </div>
