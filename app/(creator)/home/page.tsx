@@ -9,7 +9,8 @@ const Page = async () => {
   }
 
   return (
-    <div className={"max-w-screen-lg mx-auto py-20 flex flex-col gap-8"}>
+    <div className={""}>
+      <div>Home</div>
     </div>
   )
 }

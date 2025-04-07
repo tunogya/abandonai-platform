@@ -1,14 +1,11 @@
 "use client";
 import Image from "next/image"
-import {useUser} from "@auth0/nextjs-auth0";
-import {usePathname, useRouter} from "next/navigation";
+import {usePathname} from "next/navigation";
 import clsx from "clsx";
 import Link from "next/link";
 
-const TheNavigation = () => {
-  const {user} = useUser();
+const SideBar = () => {
   const pathname = usePathname();
-  const router = useRouter();
 
   const menu = [
     {
@@ -153,40 +150,42 @@ const TheNavigation = () => {
         <path
           d="M18.44 1H5.56A4.566 4.566 0 0 0 1 5.56v12.88A4.566 4.566 0 0 0 5.56 23h12.88A4.566 4.566 0 0 0 23 18.44V5.56A4.566 4.566 0 0 0 18.44 1ZM9 16a1 1 0 1 1-2 0v-3a1 1 0 1 1 2 0v3Zm4 0a1 1 0 1 1-2 0V8a1 1 0 1 1 2 0v8Zm4 0a1 1 0 1 1-2 0v-6a1 1 0 1 1 2 0v6Z"></path>
       </svg>,
-      path: "/payouts",
+      path: "/accounts",
     },
   ]
 
   return (
-    <div className={"absolute left-0 w-[245px] border-r h-[100%] px-3 pt-2 pb-4"}>
-      <Link href={"/"} className={"mb-auto pt-[25px] px-3 pb-4 h-[92px]"}>
-        <Image width={120} height={29} src={"/logo.svg"} alt={"LOGO"}/>
-      </Link>
+    <aside className={"fixed left-0 top-0 w-[245px] h-screen border-[#DBDBDB] border-r px-3 pt-2 pb-4 z-10 bg-background"}>
       <div>
-        {
-          menu.map((item, index) => {
-            return (
-              <button
-                key={index}
-                className={clsx([
-                  "w-full h-12 hover:bg-black/5 cursor-pointer rounded-lg my-1 p-3 gap-4 flex items-center group",
-                  pathname.startsWith(item.path) && "font-bold",
-                ])}
-                onClick={() => {
-                  router.push(item.path)
-                }}
-              >
-                {pathname.startsWith(item.path) ? item.activeIcon : item.icon}
-                <div className={"text-[17px]"}>
-                  {item.name}
-                </div>
-              </button>
-            )
-          })
-        }
+        <div className={"mb-auto px-3 pb-4 h-[92px] pt-[25px]"}>
+          <Link href={"/"}>
+            <Image width={120} height={29} src={"/logo.svg"} alt={"LOGO"}/>
+          </Link>
+        </div>
+        <div className={"flex flex-col"}>
+          {
+            menu.map((item, index) => {
+              return (
+                <Link
+                  href={item.path}
+                  key={index}
+                  className={clsx([
+                    "w-full h-12 hover:bg-black/5 cursor-pointer rounded-lg p-3 gap-4 flex items-center group my-1",
+                    pathname.startsWith(item.path) && "font-bold",
+                  ])}
+                >
+                  {pathname.startsWith(item.path) ? item.activeIcon : item.icon}
+                  <div className={"text-[18px] leading-5"}>
+                    {item.name}
+                  </div>
+                </Link>
+              )
+            })
+          }
+        </div>
       </div>
-    </div>
+    </aside>
   )
 }
 
-export default TheNavigation
+export default SideBar

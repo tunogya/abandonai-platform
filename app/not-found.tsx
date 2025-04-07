@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function NotFound() {
   return (
-    <div className={"flex flex-col items-center justify-center h-full"}>
+    <div className={"flex flex-col items-center justify-center h-screen"}>
       <div className={"flex flex-col"}>
         <svg width="280" height="120" viewBox="0 0 61 28" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M18.7734 18.5625L17.2266 18.5977L16.9102 26.1914L8.96484 26.8945L9.38672 18.7734L0 18.9844L2.60156 3.55078H9.24609L7.3125 14.3086L9.63281 14.2383L10.3008 0.914062H17.9297L17.4023 13.957L18.7734 13.8867V18.5625Z" fill="black"/>
