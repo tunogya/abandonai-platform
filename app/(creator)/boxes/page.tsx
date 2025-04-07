@@ -1,8 +1,13 @@
 const Page = () => {
   return (
     <div>
-      <h1>Page</h1>
-      <p>This is a page</p>
+      <div>Collections</div>
+      <div>
+        You haven’t created any collections yet.
+      </div>
+      <button>
+        Create
+      </button>
     </div>
   )
 }

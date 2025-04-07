@@ -134,7 +134,7 @@ const SideBar = () => {
         <path d="M12.0029 6.54504V17.455" stroke="white" strokeWidth="2" strokeLinecap="round"
               strokeLinejoin="round"/>
       </svg>,
-      path: "/studio",
+      path: "/create",
     },
     {
       name: "管理界面",
