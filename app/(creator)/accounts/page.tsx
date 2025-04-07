@@ -1,9 +1,8 @@
 import {auth0} from "@/app/_lib/auth0";
-import {unauthorized} from "next/navigation";
+import {redirect, unauthorized} from "next/navigation";
 import {docClient} from "@/app/_lib/dynamodb";
-import {GetCommand} from "@aws-sdk/lib-dynamodb";
-import CreateConnectAccount from "@/app/_components/CreateConnectAccount";
-import ManageConnectAccount from "@/app/_components/ManageConnectAccount";
+import {GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
+import stripe from "@/app/_lib/stripe";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
@@ -32,9 +31,59 @@ const Page = async () => {
           </div>
           {
             connectedAccountId ? (
-              <ManageConnectAccount connectedAccountId={connectedAccountId} />
+              <form action={async () => {
+                "use server";
+                const accountLink = await stripe.accountLinks.create({
+                  account: connectedAccountId,
+                  refresh_url: `${process.env.APP_BASE_URL}/accounts/refresh/${connectedAccountId}`,
+                  return_url: `${process.env.APP_BASE_URL}/accounts`,
+                  type: "account_onboarding",
+                });
+                redirect(accountLink.url);
+              }}>
+                <button
+                  className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
+                  type={"submit"}
+                >
+                  Manage Account
+                </button>
+              </form>
             ) : (
-              <CreateConnectAccount />
+              <form action={async () => {
+                "use server";
+                const account = await stripe.accounts.create({
+                  controller: {
+                    stripe_dashboard: {
+                      type: "express",
+                    },
+                    fees: {
+                      payer: "application"
+                    },
+                    losses: {
+                      payments: "application"
+                    },
+                  },
+                });
+                // save connect id to dynamodb
+                await docClient.send(new PutCommand({
+                  TableName: "abandon",
+                  Item: {
+                    PK: session.user.sub,
+                    SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
+                    id: account.id,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    type: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
+                  },
+                }));
+              }}>
+                <button
+                  className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
+                  type={"submit"}
+                >
+                  Create an account
+                </button>
+              </form>
             )
           }
         </div>

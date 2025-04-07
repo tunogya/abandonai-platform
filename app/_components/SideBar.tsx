@@ -167,6 +167,7 @@ const SideBar = () => {
             menu.map((item, index) => {
               return (
                 <Link
+                  prefetch
                   href={item.path}
                   key={index}
                   className={clsx([
