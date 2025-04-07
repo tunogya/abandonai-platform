@@ -28,14 +28,14 @@ const Page = async () => {
                   </div>
                   <a
                     href={"/auth/logout"}
-                    className={"cursor-pointer text-xs font-medium px-2 py-0.5 text-[#737373] border border-[#737373] rounded-full hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"}
+                    className={"cursor-pointer text-xs font-bold text-red-500 transition-all underline underline-offset-4 hover:bg-red-500 hover:text-white"}
                   >
                     Log out
                   </a>
                 </div>
                 <Link
                   href={"/home"}
-                  className={"border border-black px-4 h-12 hover:bg-black hover:text-white transition-all w-full font-bold flex items-center justify-center"}
+                  className={"border border-black px-4 h-12 hover:bg-black hover:text-white transition-all w-full font-bold flex items-center justify-center rounded-full"}
                 >
                   Let&#39;s create a blind box!
                 </Link>

@@ -26,7 +26,7 @@ const Page = async () => {
           专业账户管理界面
         </div>
         <div className={"flex gap-2 py-4 border-b border-[#DBDBDB]"}>
-          <div className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center bg-[#EFEFEF]"}>
+          <div className={"px-4 rounded-full h-11 font-semibold flex items-center bg-[#EFEFEF]"}>
             成效分析
           </div>
           {
@@ -42,7 +42,7 @@ const Page = async () => {
                 redirect(accountLink.url);
               }}>
                 <button
-                  className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
+                  className={"px-4 rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
                   type={"submit"}
                 >
                   Manage Account
