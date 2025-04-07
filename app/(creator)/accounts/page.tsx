@@ -9,9 +9,7 @@ const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
 const Page = async () => {
   const session = await auth0.getSession();
-  if (!session) {
-    unauthorized();
-  }
+  if (!session) {unauthorized();}
   const { Item } = await docClient.send(new GetCommand({
     TableName: "abandon",
     Key: {

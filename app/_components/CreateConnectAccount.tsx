@@ -1,28 +1,52 @@
-"use client";
+import stripe from "@/app/_lib/stripe";
+import {docClient} from "@/app/_lib/dynamodb";
+import {PutCommand} from "@aws-sdk/lib-dynamodb";
+import {auth0} from "@/app/_lib/auth0";
+import {unauthorized} from "next/navigation";
 
-import {useState} from "react";
+const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
-const CreateConnectAccount = () => {
-  const [accountCreatePending, setAccountCreatePending] = useState(false);
+const CreateConnectAccount = async () => {
+  const session = await auth0.getSession();
+  if (!session) {unauthorized();}
 
   return (
-    <button
-      className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
-      disabled={accountCreatePending}
-      onClick={async () => {
-        setAccountCreatePending(true);
-        fetch("/api/connect/account", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // Authorization: `Bearer ${accessToken}`,
+    <form action={async () => {
+      "use server";
+      const account = await stripe.accounts.create({
+        controller: {
+          stripe_dashboard: {
+            type: "express",
           },
-        })
-          .then((response) => response.json())
-      }}
-    >
-      Create an account
-    </button>
+          fees: {
+            payer: "application"
+          },
+          losses: {
+            payments: "application"
+          },
+        },
+      });
+      // save connect id to dynamodb
+      await docClient.send(new PutCommand({
+        TableName: "abandon",
+        Item: {
+          PK: session.user.sub,
+          SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
+          id: account.id,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          type: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
+        },
+      }));
+    }}>
+      <button
+        className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
+        type={"submit"}
+      >
+        Create an account
+      </button>
+    </form>
+
   )
 }
 
