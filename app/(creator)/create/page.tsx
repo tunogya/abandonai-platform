@@ -4,10 +4,12 @@ const Page = () => {
 
   return (
     <div className={"mx-auto p-8 relative min-h-screen w-full"}>
+      <div className={"max-w-[1232px] mx-auto h-12"}>
+        <div className={"text-3xl font-bold"}>Create a new item</div>
+      </div>
       <div className={"flex gap-8 mt-8 mb-[72px] justify-center"}>
-        <div className={"w-full max-w-[600px]"}>
-          <div className={"text-3xl font-bold h-16"}>Create a new item</div>
-          <button className={"border border-[#DBDBDB] rounded-xl border-dashed w-full max-h-[600px] h-full flex flex-col items-center justify-center"}>
+        <div className={"w-full max-w-[600px] min-w-[300px]"}>
+          <button className={"border border-[#DBDBDB] rounded-xl border-dashed w-full aspect-square flex flex-col items-center justify-center"}>
             <div className={"font-bold"}>
               拖放媒体
             </div>
@@ -16,7 +18,7 @@ const Page = () => {
             </div>
           </button>
         </div>
-        <div className={"w-full flex flex-col gap-[32px] max-w-[600px] mt-16"}>
+        <div className={"w-full flex flex-col gap-[32px] max-w-[600px] min-w-[300px]"}>
           <div>
             <div className={"font-bold mb-3"}>
               Box*
@@ -73,4 +75,4 @@ const Page = () => {
   )
 }
 
-export default Page;
+      export default Page;
