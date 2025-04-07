@@ -13,7 +13,10 @@ const Page = () => {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-  }).then((res) => res.json()));
+  }).then((res) => res.json()), {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false
+  });
 
   useEffect(() => {
     (async () => {
@@ -63,7 +66,7 @@ const Page = () => {
                   });
               }}
             >
-              { accountCreatePending ? "Create an account..." : "Create an account" }
+              Create an account
             </button>
           )}
           {!isLoading && connectedAccountId && (
@@ -93,7 +96,7 @@ const Page = () => {
                   });
               }}
             >
-              { accountLinkCreatePending ? "Manage Account..." : "Manage Account"}
+              Manage Account
             </button>
           )}
         </div>

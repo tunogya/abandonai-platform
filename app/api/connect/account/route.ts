@@ -26,7 +26,7 @@ const GET = async (req: NextRequest) => {
         SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
       },
       ProjectionExpression: "id",
-    }))
+    }));
     return Response.json({ok: true, account: Item?.id});
   } catch (e) {
     console.error('An error occurred when calling the DynamoDB API to get the connected account:', e);
@@ -35,18 +35,13 @@ const GET = async (req: NextRequest) => {
 }
 
 const POST = async (req: NextRequest) => {
-  let decodedToken;
+  let session;
   try {
     const accessToken = req.headers.get("authorization")?.split(" ")?.[1];
-    if (!accessToken) {
-      return Response.json({ok: false, msg: "Need Authorization"}, {status: 403});
-    }
-    decodedToken = await verifyToken(accessToken);
-    if (!decodedToken) {
-      return Response.json({ok: false, msg: "Invalid Authorization"}, {status: 403});
-    }
+    session = await verifyToken(accessToken);
   } catch (e) {
-    return Response.json({ok: false, msg: e}, {status: 403});
+    console.log(e)
+    unauthorized()
   }
 
   try {
@@ -68,7 +63,7 @@ const POST = async (req: NextRequest) => {
     await docClient.send(new PutCommand({
       TableName: "abandon",
       Item: {
-        PK: decodedToken.sub,
+        PK: session.sub,
         SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
         id: account.id,
         createdAt: new Date().toISOString(),

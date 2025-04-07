@@ -158,7 +158,7 @@ const SideBar = () => {
     <aside className={"fixed left-0 top-0 w-[245px] h-screen border-[#DBDBDB] border-r px-3 pt-2 pb-4 z-10 bg-background"}>
       <div>
         <div className={"mb-auto px-3 pb-4 h-[92px] pt-[25px]"}>
-          <Link href={"/"}>
+          <Link href={"/"} prefetch>
             <Image width={120} height={29} src={"/logo.svg"} alt={"LOGO"}/>
           </Link>
         </div>
