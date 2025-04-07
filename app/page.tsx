@@ -8,14 +8,16 @@ const Page = async () => {
   return (
     <div className={"min-w-screen min-h-screen flex flex-col"}>
       <div className={"flex-1 flex items-center justify-center py-20 gap-20 flex-col md:flex-row"}>
-        <Image
-          width={360}
-          height={360}
-          alt={"banner"}
-          src={"/50FB3804-536E-4012-BE9A-FA869F925AF8.png"}/>
+        <div>
+          <Image
+            width={360}
+            height={360}
+            alt={"banner"}
+            src={"/50FB3804-536E-4012-BE9A-FA869F925AF8.png"}/>
+        </div>
         <div className={"w-[360px] flex flex-col gap-4 justify-center items-center p-4"}>
           <div className={"mb-20"}>
-            <Image width={200} height={200} alt={"logo"} src={"/logo.svg"} className={"bg-black"}/>
+            <Image width={200} height={50} alt={"logo"} src={"/logo.svg"}/>
           </div>
           {
             session ? (
