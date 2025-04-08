@@ -5,7 +5,7 @@ const Page = () => {
   return (
     <div className={"mx-auto p-8 relative min-h-screen w-full"}>
       <div className={"max-w-[1232px] mx-auto h-12"}>
-        <div className={"text-3xl font-bold"}>Create a new item</div>
+        <div className={"text-3xl font-bold"}>Create a new box</div>
       </div>
       <div className={"flex gap-8 mt-8 mb-[72px] justify-center"}>
         <div className={"w-full max-w-[600px] min-w-[300px]"}>
@@ -22,14 +22,14 @@ const Page = () => {
         <div className={"w-full flex flex-col gap-[32px] max-w-[600px] min-w-[300px]"}>
           <div>
             <div className={"font-bold mb-3"}>
-              Box*
+              Series*
             </div>
             <div className={"bg-[#1212120A] p-4 rounded-xl flex items-center gap-4"}>
               <div className={"w-16 h-16 bg-[#1212120B] rounded-xl flex items-center justify-center text-xl"}>
                 +
               </div>
               <div className={"font-bold"}>
-                Create a new Box
+                Create a new series
               </div>
             </div>
           </div>
