@@ -1,4 +1,22 @@
 {
+  "Root": {
+    "About": "About",
+    "Careers": "Careers",
+    "Help": "Help",
+    "API": "API",
+    "MCP": "MCP",
+    "Privacy Policy": "Privacy Policy",
+    "Safety": "Safety",
+    "Terms of Use": "Terms of Use",
+    "Copyright": "Copyright",
+    "All rights reserved": "All rights reserved.",
+    "Hello": "Hello",
+    "Log out": "Log out",
+    "$$$ Earn money while you sleep $$$": "$$$ Earn money while you sleep $$$",
+    "Start ABANDON": "Start ABANDON",
+    "Sign up and see where your creativity takes you!": "Sign up and see where your creativity takes you!",
+    "Let's create a blind box!": "Let's create a blind box!"
+  },
   "Menu": {
     "Messages": "Messages",
     "Series": "Series",

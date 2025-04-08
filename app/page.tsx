@@ -1,9 +1,11 @@
 import {auth0} from "@/app/_lib/auth0";
 import Image from "next/image";
 import Link from "next/link";
+import {getTranslations} from "next-intl/server";
 
 const Page = async () => {
   const session = await auth0.getSession();
+  const t = await getTranslations('Root');
 
   return (
     <div className={"min-w-screen min-h-screen flex flex-col"}>
@@ -24,22 +26,22 @@ const Page = async () => {
               <>
                 <div className={"flex gap-4 items-center"}>
                   <div>
-                    Hello, {session.user.email}
+                    {t("Hello")}, {session.user.email}
                   </div>
                   <a
                     href={"/auth/logout"}
                     className={"cursor-pointer text-xs font-bold text-red-500 transition-all underline underline-offset-4 hover:bg-red-500 hover:text-white"}
                   >
-                    Log out
+                    {t("Log out")}
                   </a>
                 </div>
                 <Link
                   href={"/home"}
                   className={"border border-black px-4 h-12 hover:bg-black hover:text-white transition-all w-full font-bold flex items-center justify-center rounded-full"}
                 >
-                  Let&#39;s create a blind box!
+                  {t("Let's create a blind box!")}
                 </Link>
-                <div className={"text-xs text-[#737373]"}>$$$ Earn money while you sleep $$$</div>
+                <div className={"text-xs text-[#737373]"}>{t("$$$ Earn money while you sleep $$$")}</div>
               </>
             ) : (
               <>
@@ -47,9 +49,9 @@ const Page = async () => {
                   href={"/auth/login?returnTo=/home&audience=https://abandon.ai/api"}
                   className={"border border-black px-4 h-12 hover:bg-black hover:text-white transition-all w-full font-bold flex items-center justify-center"}
                 >
-                  Start ABANDON
+                  {t("Start ABANDON")}
                 </a>
-                <div className={"text-xs text-[#737373]"}>Sign up and see where your creativity takes you!</div>
+                <div className={"text-xs text-[#737373]"}>{t("Sign up and see where your creativity takes you!")}</div>
               </>
             )
           }
@@ -58,35 +60,35 @@ const Page = async () => {
       <div className={"h-[135px] px-4 flex justify-start items-center flex-col text-[13px] text-[#737373]"}>
         <div className={"flex gap-4 mt-4 w-screen overflow-scroll px-4 md:w-fit"}>
           <Link href={"/about.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-            About
+            {t("About")}
           </Link>
           <Link href={"https://x.com/abandonai"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
             X.com
           </Link>
           <Link href={"/careers.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-            Careers
+            {t("Careers")}
           </Link>
           <Link href={"/help.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-            Help
+            {t("Help")}
           </Link>
           <Link href={"/api.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-            API
+            {t("API")}
           </Link>
           <Link href={"/mcp.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-            MCP
+            {t("MCP")}
           </Link>
           <Link href={"/privacy-policy.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-            Privacy Policy
+            {t("Privacy Policy")}
           </Link>
           <Link href={"/safety.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-            Safety
+            {t("Safety")}
           </Link>
           <Link href={"/terms-of-use.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-            Terms of Use
+            {t("Terms of Use")}
           </Link>
         </div>
         <div className={"py-3"}>
-          Copyright © {new Date().getFullYear()} Abandon Inc. All rights reserved.
+          {t("Copyright")} © {new Date().getFullYear()} Abandon Inc. {t("All rights reserved")}
         </div>
       </div>
 
