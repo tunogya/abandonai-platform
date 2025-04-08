@@ -33,5 +33,10 @@
     "Insights": "Insights",
     "Manage account": "Manage account",
     "Create an account": "Create an account"
+  },
+  "Series": {
+    "Series": "Series",
+    "You haven’t created any series yet": "You haven’t created any series yet.",
+    "Create": "Create"
   }
 }
