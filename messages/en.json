@@ -25,7 +25,7 @@
     "Dashboard": "Dashboard"
   },
   "Home": {
-    "title": "Can i help you?",
+    "title": "What can i do for you?",
     "tips": "AI may also make mistakes. Please verify important information."
   },
   "Dashboard": {
@@ -38,5 +38,8 @@
     "Series": "Series",
     "You haven’t created any series yet": "You haven’t created any series yet.",
     "Create": "Create"
+  },
+  "Notifications": {
+    "Notifications": "Notifications"
   }
 }
