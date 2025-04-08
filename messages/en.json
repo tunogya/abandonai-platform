@@ -27,5 +27,11 @@
   "Home": {
     "title": "Can i help you?",
     "tips": "AI may also make mistakes. Please verify important information."
+  },
+  "Dashboard": {
+    "Professional dashboard": "Professional dashboard",
+    "Insights": "Insights",
+    "Manage account": "Manage account",
+    "Create an account": "Create an account"
   }
 }

@@ -3,6 +3,7 @@ import {redirect, unauthorized} from "next/navigation";
 import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
 import stripe from "@/app/_lib/stripe";
+import {getTranslations} from "next-intl/server";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
@@ -18,16 +19,17 @@ const Page = async () => {
     ProjectionExpression: "id",
   }));
   const connectedAccountId = Item?.id;
+  const t = await getTranslations('Dashboard');
 
   return (
     <div className={"md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem] mx-auto"}>
       <div className={"py-9"}>
         <div className={"text-xl font-bold pb-2"}>
-          专业账户管理界面
+          {t("Professional dashboard")}
         </div>
         <div className={"flex gap-2 py-4 border-b border-[#DBDBDB]"}>
           <div className={"px-4 rounded-full h-11 font-semibold flex items-center bg-[#EFEFEF]"}>
-            成效分析
+            {t("Insights")}
           </div>
           {
             connectedAccountId ? (
@@ -35,8 +37,8 @@ const Page = async () => {
                 "use server";
                 const accountLink = await stripe.accountLinks.create({
                   account: connectedAccountId,
-                  refresh_url: `${process.env.APP_BASE_URL}/accounts/refresh/${connectedAccountId}`,
-                  return_url: `${process.env.APP_BASE_URL}/accounts`,
+                  refresh_url: `${process.env.APP_BASE_URL}/dashboard`,
+                  return_url: `${process.env.APP_BASE_URL}/dashboard`,
                   type: "account_onboarding",
                 });
                 redirect(accountLink.url);
@@ -45,7 +47,7 @@ const Page = async () => {
                   className={"px-4 rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
                   type={"submit"}
                 >
-                  Manage Account
+                  {t("Manage account")}
                 </button>
               </form>
             ) : (
@@ -81,7 +83,7 @@ const Page = async () => {
                   className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
                   type={"submit"}
                 >
-                  Create an account
+                  {t("Create an account")}
                 </button>
               </form>
             )
