@@ -1,9 +1,11 @@
 "use client";
 import {useChat} from '@ai-sdk/react';
 import clsx from "clsx";
+import {useTranslations} from "next-intl";
 
 const Page = () => {
   const {messages, input, handleSubmit, handleInputChange, status} = useChat();
+  const t = useTranslations("Home");
 
   return (
     <div className={"flex flex-col w-full h-screen"}>
@@ -12,7 +14,7 @@ const Page = () => {
           {
             messages.length === 0 && (
               <div className={"text-center text-2xl font-semibold h-full flex items-center justify-center"}>
-                有什么可以帮忙的？
+                {t("title")}
               </div>
             )
           }
@@ -55,7 +57,7 @@ const Page = () => {
         </div>
         <div
           className={"text-[#65676B] relative mt-auto flex min-h-8 w-full items-center justify-center p-2 text-center text-xs md:px-[60px]"}>
-          AI 也可能会犯错。请核查重要信息。
+          {t("tips")}
         </div>
       </div>
     </div>

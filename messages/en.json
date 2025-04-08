@@ -23,5 +23,9 @@
     "Notifications": "Notifications",
     "Create": "Create",
     "Dashboard": "Dashboard"
+  },
+  "Home": {
+    "title": "Can i help you?",
+    "tips": "AI may also make mistakes. Please verify important information."
   }
 }
