@@ -1,8 +1,10 @@
 import type {Metadata, Viewport} from "next";
 import "./globals.css";
-import { GoogleAnalytics } from '@next/third-parties/google'
+import {GoogleAnalytics} from '@next/third-parties/google'
 import {ReactNode} from "react";
 import BreakpointIndicator from "@/app/_components/BreakpointIndicator";
+import {getLocale} from 'next-intl/server';
+import {NextIntlClientProvider} from 'next-intl';
 
 export const metadata: Metadata = {
   title: "ABANDON",
@@ -18,15 +20,17 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default async function RootLayout({children}: Readonly<{ children: ReactNode }>) {
+  const locale = await getLocale();
+
   return (
-    <html lang="en">
-    <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
+    <html lang={locale}>
+    <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""}/>
     <body
       className={`antialiased`}
     >
-    {children}
-    <BreakpointIndicator />
+    <NextIntlClientProvider>{children}</NextIntlClientProvider>
+    <BreakpointIndicator/>
     </body>
     </html>
   );

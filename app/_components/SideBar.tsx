@@ -3,15 +3,17 @@ import Image from "next/image"
 import {usePathname} from "next/navigation";
 import clsx from "clsx";
 import Link from "next/link";
+import {useTranslations} from 'next-intl';
 
 const SideBar = () => {
   const pathname = usePathname();
+  const t = useTranslations('Menu');
 
   const menu = [
     {
-      name: "首页",
+      name: t("Messages"),
       icon: <svg aria-label="Messenger" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img"
-                 viewBox="0 0 24 24" width="24"><title>Messenger</title>
+                 viewBox="0 0 24 24" width="24">
         <path
           d="M12.003 2.001a9.705 9.705 0 1 1 0 19.4 10.876 10.876 0 0 1-2.895-.384.798.798 0 0 0-.533.04l-1.984.876a.801.801 0 0 1-1.123-.708l-.054-1.78a.806.806 0 0 0-.27-.569 9.49 9.49 0 0 1-3.14-7.175 9.65 9.65 0 0 1 10-9.7Z"
           fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="1.739"></path>
@@ -20,7 +22,7 @@ const SideBar = () => {
           fillRule="evenodd"></path>
       </svg>,
       activeIcon: <svg aria-label="Messenger" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
-                       role="img" viewBox="0 0 24 24" width="24"><title>Messenger</title>
+                       role="img" viewBox="0 0 24 24" width="24">
         <path
           d="M12.003 1.131a10.487 10.487 0 0 0-10.87 10.57 10.194 10.194 0 0 0 3.412 7.771l.054 1.78a1.67 1.67 0 0 0 2.342 1.476l1.935-.872a11.767 11.767 0 0 0 3.127.416 10.488 10.488 0 0 0 10.87-10.57 10.487 10.487 0 0 0-10.87-10.57Zm5.786 9.001-2.566 3.983a1.577 1.577 0 0 1-2.278.42l-2.452-1.84a.63.63 0 0 0-.759.002l-2.556 2.049a.659.659 0 0 1-.96-.874L8.783 9.89a1.576 1.576 0 0 1 2.277-.42l2.453 1.84a.63.63 0 0 0 .758-.003l2.556-2.05a.659.659 0 0 1 .961.874Z"></path>
       </svg>,
@@ -80,7 +82,7 @@ const SideBar = () => {
     //   path: "",
     // },
     {
-      name: "系列",
+      name: t("Series"),
       icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M2 12.001V15.45C2 18.299 2.698 19.456 3.606 20.395C4.546 21.303 5.704 22.002 8.552 22.002H15.448C18.296 22.002 19.454 21.303 20.394 20.395C21.302 19.456 22 18.299 22 15.45V8.552C22 5.704 21.302 4.546 20.394 3.607C19.454 2.699 18.296 2 15.448 2H8.552C5.704 2 4.546 2.699 3.606 3.607C2.698 4.546 2 5.704 2 8.552V12.001Z"
@@ -102,23 +104,23 @@ const SideBar = () => {
       path: "/series",
     },
     {
-      name: "通知",
-      icon: <svg aria-label="通知" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img"
-                 viewBox="0 0 24 24" width="24"><title>通知</title>
+      name: t("Notifications"),
+      icon: <svg className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img"
+                 viewBox="0 0 24 24" width="24">
         <path
           d="M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938m0-2a6.04 6.04 0 0 0-4.797 2.127 6.052 6.052 0 0 0-4.787-2.127A6.985 6.985 0 0 0 .5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 0 0 3.518 3.018 2 2 0 0 0 2.174 0 45.263 45.263 0 0 0 3.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 0 0-6.708-7.218Z"></path>
       </svg>,
-      activeIcon: <svg aria-label="通知" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
-                       role="img" viewBox="0 0 24 24" width="24"><title>通知</title>
+      activeIcon: <svg className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
+                       role="img" viewBox="0 0 24 24" width="24">
         <path
           d="M17.075 1.987a5.852 5.852 0 0 0-5.07 2.66l-.008.012-.01-.014a5.878 5.878 0 0 0-5.062-2.658A6.719 6.719 0 0 0 .5 8.952c0 3.514 2.581 5.757 5.077 7.927.302.262.607.527.91.797l1.089.973c2.112 1.89 3.149 2.813 3.642 3.133a1.438 1.438 0 0 0 1.564 0c.472-.306 1.334-1.07 3.755-3.234l.978-.874c.314-.28.631-.555.945-.827 2.478-2.15 5.04-4.372 5.04-7.895a6.719 6.719 0 0 0-6.425-6.965Z"></path>
       </svg>,
       path: "/notifications",
     },
     {
-      name: "创建",
-      icon: <svg aria-label="新帖子" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img"
-                 viewBox="0 0 24 24" width="24"><title>新帖子</title>
+      name: t("Create"),
+      icon: <svg className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24" role="img"
+                 viewBox="0 0 24 24" width="24">
         <path
           d="M2 12v3.45c0 2.849.698 4.005 1.606 4.944.94.909 2.098 1.608 4.946 1.608h6.896c2.848 0 4.006-.7 4.946-1.608C21.302 19.455 22 18.3 22 15.45V8.552c0-2.849-.698-4.006-1.606-4.945C19.454 2.7 18.296 2 15.448 2H8.552c-2.848 0-4.006.699-4.946 1.607C2.698 4.547 2 5.703 2 8.552Z"
           fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
@@ -139,16 +141,16 @@ const SideBar = () => {
       path: "/create",
     },
     {
-      name: "管理界面",
-      icon: <svg aria-label="专业账户管理界面" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
-                 role="img" viewBox="0 0 24 24" width="24"><title>专业账户管理界面</title>
+      name: t("Dashboard"),
+      icon: <svg className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
+                 role="img" viewBox="0 0 24 24" width="24">
         <path
           d="M8 12a1 1 0 0 0-1 1v3a1 1 0 1 0 2 0v-3a1 1 0 0 0-1-1Zm8-3a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0v-6a1 1 0 0 0-1-1Zm-4-2a1 1 0 0 0-1 1v8a1 1 0 1 0 2 0V8a1 1 0 0 0-1-1Z"></path>
         <path
           d="M18.44 1H5.567a4.565 4.565 0 0 0-4.56 4.56v12.873a4.565 4.565 0 0 0 4.56 4.56H18.44a4.565 4.565 0 0 0 4.56-4.56V5.56A4.565 4.565 0 0 0 18.44 1ZM21 18.433a2.563 2.563 0 0 1-2.56 2.56H5.567a2.563 2.563 0 0 1-2.56-2.56V5.56A2.563 2.563 0 0 1 5.568 3H18.44A2.563 2.563 0 0 1 21 5.56v12.873Z"></path>
       </svg>,
-      activeIcon: <svg aria-label="专业账户管理界面" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor"
-                       height="24" role="img" viewBox="0 0 24 24" width="24"><title>专业账户管理界面</title>
+      activeIcon: <svg className="x1lliihq x1n2onr6 x5n08af" fill="currentColor"
+                       height="24" role="img" viewBox="0 0 24 24" width="24">
         <path
           d="M18.44 1H5.56A4.566 4.566 0 0 0 1 5.56v12.88A4.566 4.566 0 0 0 5.56 23h12.88A4.566 4.566 0 0 0 23 18.44V5.56A4.566 4.566 0 0 0 18.44 1ZM9 16a1 1 0 1 1-2 0v-3a1 1 0 1 1 2 0v3Zm4 0a1 1 0 1 1-2 0V8a1 1 0 1 1 2 0v8Zm4 0a1 1 0 1 1-2 0v-6a1 1 0 1 1 2 0v6Z"></path>
       </svg>,

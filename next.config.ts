@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
@@ -11,9 +11,10 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    // https://nextjs.org/docs/app/api-reference/functions/unauthorized
     authInterrupts: true,
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin();
+
+export default withNextIntl(nextConfig);
