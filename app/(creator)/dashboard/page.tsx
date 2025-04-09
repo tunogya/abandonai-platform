@@ -14,7 +14,7 @@ const Page = async () => {
     TableName: "abandon",
     Key: {
       PK: session.user.sub,
-      SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
+      SK: isTestMode ? "connect_account_test" : "connect_account",
     },
     ProjectionExpression: "id",
   }));
@@ -71,11 +71,11 @@ const Page = async () => {
                   TableName: "abandon",
                   Item: {
                     PK: session.user.sub,
-                    SK: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
+                    SK: isTestMode ? "connect_account_test" : "connect_account",
                     id: account.id,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
-                    type: isTestMode ? "CONNECT_ACCOUNT_TEST" : "CONNECT_ACCOUNT",
+                    object: isTestMode ? "connect_account_test" : "connect_account",
                   },
                 }));
               }}>

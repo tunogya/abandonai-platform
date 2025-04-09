@@ -2,13 +2,18 @@
 
 import {useState} from "react";
 import {createSeries} from "@/app/_lib/actions";
+import {useUser} from "@auth0/nextjs-auth0";
 
 const Page = () => {
-  const [series, setSeries] = useState({
+  const { user } = useUser();
+  const [series, setSeries] = useState<{
+    name: string,
+    price: string,
+    description?: string,
+  }>({
     name: "",
     price: "",
     description: "",
-    externalLink: "",
   })
 
   return (
@@ -42,10 +47,11 @@ const Page = () => {
           </div>
           <div>
             <div className={"font-bold mb-3"}>
-              Price*
+              Price(usd)*
             </div>
             <input
               value={series.price}
+              type={"number"}
               onChange={(e) => setSeries({...series, price: e.target.value})}
               placeholder={"Price"}
               className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
@@ -62,21 +68,18 @@ const Page = () => {
               className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
             />
           </div>
-          <div>
-            <div className={"font-bold mb-3"}>
-              External link
-            </div>
-            <input
-              value={series.externalLink}
-              onChange={(e) => setSeries({...series, externalLink: e.target.value})}
-              placeholder={"External link"}
-              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
-            />
-          </div>
           <div className={"flex flex-row-reverse"}>
             <button
               onClick={async () => {
-                await createSeries()
+                if (!user) return
+                await createSeries({
+                  ...series,
+                  owner: user.sub,
+                  price: {
+                    unit_amount: Math.floor(Number(series.price) * 100),
+                    currency: "usd",
+                  }
+                })
               }}
               className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
               Create

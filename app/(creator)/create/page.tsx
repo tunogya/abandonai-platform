@@ -5,12 +5,12 @@ import {createBox} from "@/app/_lib/actions";
 
 const Page = () => {
   const [box, setBox] = useState({
-    name: "",
     supply: "",
     description: "",
     externalLink: "",
     series: "",
     image: "",
+    name: "",
   });
 
   return (
