@@ -3,6 +3,7 @@
 import {useState} from "react";
 import {createSeries} from "@/app/_lib/actions";
 import {useUser} from "@auth0/nextjs-auth0";
+import {redirect} from "next/navigation";
 
 const Page = () => {
   const { user } = useUser();
@@ -72,14 +73,20 @@ const Page = () => {
             <button
               onClick={async () => {
                 if (!user) return
-                await createSeries({
-                  ...series,
-                  owner: user.sub,
-                  price: {
-                    unit_amount: Math.floor(Number(series.price) * 100),
-                    currency: "usd",
-                  }
-                })
+                try {
+                  await createSeries({
+                    ...series,
+                    owner: user.sub,
+                    price: {
+                      unit_amount: Math.floor(Number(series.price) * 100),
+                      currency: "usd",
+                    }
+                  })
+                  redirect("/series/create/success")
+                } catch (e) {
+                 console.log(e)
+                  redirect("/series/create/error")
+                }
               }}
               className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
               Create

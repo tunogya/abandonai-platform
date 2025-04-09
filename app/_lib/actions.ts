@@ -6,7 +6,7 @@ import {GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
-export const createSeries = async (series: {
+export const createSeries= async (series: {
   owner: string,
   name: string,
   price: {
