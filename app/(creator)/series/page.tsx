@@ -13,7 +13,7 @@ const Page = async () => {
         <div className={""}>
           {t("You haven’t created any series yet")}
         </div>
-        <Link href={"/create"} prefetch className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
+        <Link href={"/series/create"} prefetch className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
           {t("Create")}
         </Link>
       </div>

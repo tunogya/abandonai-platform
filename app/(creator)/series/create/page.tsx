@@ -1,22 +1,20 @@
 "use client";
 
 import {useState} from "react";
-import {createBox} from "@/app/_lib/actions";
+import {createSeries} from "@/app/_lib/actions";
 
 const Page = () => {
-  const [box, setBox] = useState({
+  const [series, setSeries] = useState({
     name: "",
-    supply: "",
+    price: "",
     description: "",
     externalLink: "",
-    series: "",
-    image: "",
-  });
+  })
 
   return (
     <div className={"mx-auto p-8 relative min-h-screen w-full"}>
       <div className={"max-w-[1232px] mx-auto h-12"}>
-        <div className={"text-3xl font-bold"}>Create a new box</div>
+        <div className={"text-3xl font-bold"}>Create a new series</div>
       </div>
       <div className={"flex gap-8 mt-8 mb-[72px] justify-center"}>
         <div className={"w-full max-w-[600px] min-w-[300px]"}>
@@ -33,46 +31,23 @@ const Page = () => {
         <div className={"w-full flex flex-col gap-[32px] max-w-[600px] min-w-[300px]"}>
           <div>
             <div className={"font-bold mb-3"}>
-              Series*
-            </div>
-            <div className={"bg-[#1212120A] p-4 rounded-xl flex items-center gap-4"}>
-              <div className={"w-16 h-16 bg-[#1212120B] rounded-xl flex items-center justify-center text-xl"}>
-                +
-              </div>
-              <div className={"font-bold"}>
-                Create a new series
-              </div>
-            </div>
-          </div>
-          <div>
-            <div className={"font-bold mb-3"}>
               Name*
             </div>
             <input
-              value={box.name}
-              onChange={(e) => {
-                setBox({
-                  ...box,
-                  name: e.target.value,
-                })
-              }}
-              placeholder={"Box name"}
+              value={series.name}
+              onChange={(e) => setSeries({...series, name: e.target.value})}
+              placeholder={"Series name"}
               className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
             />
           </div>
           <div>
             <div className={"font-bold mb-3"}>
-              Supply*
+              Price*
             </div>
             <input
-              value={box.supply}
-              onChange={(e) => {
-                setBox({
-                  ...box,
-                  supply: e.target.value,
-                })
-              }}
-              placeholder={"Supply"}
+              value={series.price}
+              onChange={(e) => setSeries({...series, price: e.target.value})}
+              placeholder={"Price"}
               className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
             />
           </div>
@@ -81,13 +56,8 @@ const Page = () => {
               Description
             </div>
             <input
-              value={box.description}
-              onChange={(e) => {
-                setBox({
-                  ...box,
-                  description: e.target.value,
-                })
-              }}
+              value={series.description}
+              onChange={(e) => setSeries({...series, description: e.target.value})}
               placeholder={"Description"}
               className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
             />
@@ -97,13 +67,8 @@ const Page = () => {
               External link
             </div>
             <input
-              value={box.externalLink}
-              onChange={(e) => {
-                setBox({
-                  ...box,
-                  externalLink: e.target.value,
-                })
-              }}
+              value={series.externalLink}
+              onChange={(e) => setSeries({...series, externalLink: e.target.value})}
               placeholder={"External link"}
               className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
             />
@@ -111,7 +76,7 @@ const Page = () => {
           <div className={"flex flex-row-reverse"}>
             <button
               onClick={async () => {
-                await createBox();
+                await createSeries()
               }}
               className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
               Create
