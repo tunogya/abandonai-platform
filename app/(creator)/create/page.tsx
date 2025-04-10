@@ -4,9 +4,10 @@ import {useEffect, useState} from "react";
 import {createBox} from "@/app/_lib/actions";
 import Link from "next/link";
 import useSWR from "swr";
-import {getAccessToken} from "@auth0/nextjs-auth0";
+import {getAccessToken, useUser} from "@auth0/nextjs-auth0";
 
 const Page = () => {
+  const { user } = useUser();
   const [box, setBox] = useState({
     supply: "",
     description: "",
@@ -20,6 +21,7 @@ const Page = () => {
       "Authorization": `Bearer ${accessToken}`
     }
   }).then((res) => res.json()));
+  const [status, setStatus] = useState("idle");
 
   useEffect(() => {
     (async () => {
@@ -60,13 +62,9 @@ const Page = () => {
               }}
               className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full mr-2"}
             >
-              {
-                isLoading && (
-                  <option value={""}>
-                    Loading...
-                  </option>
-                )
-              }
+              <option value={""}>
+                {isLoading ? "Loading..." : "Select a series"}
+              </option>
               {
                 !isLoading && data?.Count > 0 && data?.Items?.map((item: any) => {
                   return (
@@ -140,8 +138,36 @@ const Page = () => {
           </div>
           <div className={"flex flex-row-reverse"}>
             <button
+              disabled={status === "loading" || !user || !user?.sub || !box.series || !box.supply || !box.name}
               onClick={async () => {
-                await createBox();
+                if (!user || !user?.sub || !box.series || !box.supply || !box.name) {
+                  return;
+                }
+                try {
+                  setStatus("loading");
+                  await createBox({
+                    ...box,
+                    owner: user.sub,
+                    supply: Math.floor(Number(box.supply)),
+                  });
+                  setStatus("success");
+                  setBox({
+                    supply: "",
+                    description: "",
+                    series: "",
+                    image: "",
+                    name: "",
+                  });
+                  setTimeout(() => {
+                    setStatus("idle");
+                  }, 3000);
+                }catch (e) {
+                  console.log(e)
+                  setStatus("error");
+                  setTimeout(() => {
+                    setStatus("idle");
+                  }, 3000);
+                }
               }}
               className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
               Create

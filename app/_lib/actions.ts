@@ -3,6 +3,7 @@
 import stripe from "@/app/_lib/stripe";
 import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
+import {v4 as uuidv4} from "uuid";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
@@ -58,6 +59,28 @@ export const createSeries = async (series: {
   }));
 }
 
-export const createBox = async () => {
-  console.log("createBox");
+export const createBox = async (box: {
+  owner: string,
+  supply: number,
+  description: string,
+  series: string,
+  image: string,
+  name: string,
+}) => {
+  await docClient.send(new PutCommand({
+    TableName: "abandon",
+    Item: {
+      PK: box.series,
+      SK: uuidv4(),
+      name: box.name,
+      description: box.description,
+      image: box.image,
+      owner: box.owner,
+      object: "box",
+      supply: box.supply,
+      available: box.supply,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  }));
 }
