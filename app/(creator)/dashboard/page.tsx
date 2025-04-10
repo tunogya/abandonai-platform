@@ -23,14 +23,11 @@ const Page = async () => {
 
   return (
     <div className={"md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem] mx-auto"}>
-      <div className={"py-9"}>
+      <div className={"py-20"}>
         <div className={"text-xl font-bold pb-2"}>
           {t("Professional dashboard")}
         </div>
-        <div className={"flex gap-2 py-4 border-b border-[#DBDBDB]"}>
-          <div className={"px-4 rounded-full h-11 font-semibold flex items-center bg-[#EFEFEF]"}>
-            {t("Insights")}
-          </div>
+        <div className={"flex gap-2 py-4"}>
           {
             connectedAccountId ? (
               <form action={async () => {
@@ -42,7 +39,7 @@ const Page = async () => {
                   className={"px-4 rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
                   type={"submit"}
                 >
-                  {t("Manage account")}
+                  {t("Manage Payout Account")}
                 </button>
               </form>
             ) : (
