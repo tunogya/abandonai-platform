@@ -23,7 +23,7 @@ const Page = async () => {
 
   return (
     <div className={"flex justify-center"}>
-      <div className={"w-[482px] flex flex-col gap-8 mt-9"}>
+      <div className={"w-[482px] flex flex-col gap-8 my-9"}>
         {Items?.map((item, index) => {
           return (
             <div key={index} className={"flex flex-col w-[468px] mx-auto"}>
@@ -59,7 +59,7 @@ const Page = async () => {
         }
       </div>
       <div className={"w-[384px] pl-16"}>
-        <div className={"flex gap-3 items-center mb-6 mt-9"}>
+        <div className={"flex gap-3 items-center mb-6 my-9"}>
           <div className={"p-1.5"}>
             {
               session.user.picture ? (
