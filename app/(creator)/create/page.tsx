@@ -2,8 +2,10 @@
 
 import {useState} from "react";
 import {createBox} from "@/app/_lib/actions";
+import {useUser} from "@auth0/nextjs-auth0";
 
 const Page = () => {
+  const { user } = useUser();
   const [box, setBox] = useState({
     supply: "",
     description: "",

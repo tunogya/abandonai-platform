@@ -76,11 +76,15 @@ const Page = () => {
               onClick={async () => {
                 if (!user) return
                 await createSeries({
-                  ...series,
                   owner: user.sub,
                   price: {
                     unit_amount: Math.floor(Number(series.price) * 100),
                     currency: "usd",
+                  },
+                  product: {
+                    name: series.name,
+                    description: series.description,
+                    image: series.image,
                   }
                 });
                 redirect("/series/create/success")

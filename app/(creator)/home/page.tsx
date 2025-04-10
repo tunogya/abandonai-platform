@@ -26,8 +26,8 @@ const Page = () => {
                   switch (part.type) {
                     case 'text':
                       return <span key={index} className={clsx([
-                        "rounded-[18px] px-4 py-1.5 text-[15px]",
-                        message.role === "user" ? "bg-[#3797F0] text-white" : "bg-[#EFEFEF]",
+                        "rounded-[18px] py-1.5",
+                        message.role === "user" ? "bg-[#3797F0] text-white px-4" : "",
                       ])}>{part.text}</span>;
                   }
                 })}
