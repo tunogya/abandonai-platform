@@ -1,5 +1,5 @@
 import {auth0} from "@/app/_lib/auth0";
-import {redirect, unauthorized} from "next/navigation";
+import {redirect, RedirectType, unauthorized} from "next/navigation";
 import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
 import stripe from "@/app/_lib/stripe";
@@ -35,13 +35,8 @@ const Page = async () => {
             connectedAccountId ? (
               <form action={async () => {
                 "use server";
-                const accountLink = await stripe.accountLinks.create({
-                  account: connectedAccountId,
-                  refresh_url: `${process.env.APP_BASE_URL}/dashboard`,
-                  return_url: `${process.env.APP_BASE_URL}/dashboard`,
-                  type: "account_onboarding",
-                });
-                redirect(accountLink.url);
+                const accountLink = await stripe.accounts.createLoginLink(connectedAccountId)
+                redirect(accountLink.url, RedirectType.push);
               }}>
                 <button
                   className={"px-4 rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
@@ -67,17 +62,26 @@ const Page = async () => {
                   },
                 });
                 // save connect id to dynamodb
-                await docClient.send(new PutCommand({
-                  TableName: "abandon",
-                  Item: {
-                    PK: session.user.sub,
-                    SK: isTestMode ? "connect_account_test" : "connect_account",
-                    id: account.id,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    object: isTestMode ? "connect_account_test" : "connect_account",
-                  },
-                }));
+                const [, accountLink] = await Promise.all([
+                  docClient.send(new PutCommand({
+                    TableName: "abandon",
+                    Item: {
+                      PK: session.user.sub,
+                      SK: isTestMode ? "connect_account_test" : "connect_account",
+                      id: account.id,
+                      createdAt: new Date().toISOString(),
+                      updatedAt: new Date().toISOString(),
+                      object: isTestMode ? "connect_account_test" : "connect_account",
+                    },
+                  })),
+                  await stripe.accountLinks.create({
+                    account: account.id,
+                    refresh_url: `${process.env.APP_BASE_URL}/dashboard`,
+                    return_url: `${process.env.APP_BASE_URL}/dashboard`,
+                    type: "account_onboarding",
+                  })
+                ]);
+                redirect(accountLink.url);
               }}>
                 <button
                   className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}

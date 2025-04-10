@@ -23,7 +23,7 @@ const Page = async () => {
 
   return (
     <div className={"flex justify-center"}>
-      <div className={"w-[630px] flex flex-col gap-8 mt-9"}>
+      <div className={"w-[482px] flex flex-col gap-8 mt-9"}>
         {Items?.map((item, index) => {
           return (
             <div key={index} className={"flex flex-col w-[468px] mx-auto"}>
@@ -77,9 +77,11 @@ const Page = async () => {
               {session.user.nickname}
             </div>
           </div>
-          <button className={"text-xs font-bold text-[#0095F6]"}>
+          <a
+            href={"/auth/logout"}
+            className={"text-xs font-bold text-[#0095F6]"}>
             Log out
-          </button>
+          </a>
         </div>
         <Link
           href={"/series/create"} prefetch
