@@ -1,10 +1,8 @@
-import {auth0} from "@/app/_lib/auth0";
 import Image from "next/image";
 import Link from "next/link";
 import {getTranslations} from "next-intl/server";
 
 const Page = async () => {
-  const session = await auth0.getSession();
   const t = await getTranslations('Root');
 
   return (
@@ -21,40 +19,13 @@ const Page = async () => {
           <div className={"mb-20"}>
             <Image width={200} height={50} alt={"logo"} src={"/logo.svg"}/>
           </div>
-          {
-            session ? (
-              <>
-                <div className={"flex gap-4 items-center"}>
-                  <div>
-                    {t("Hello")}, {session.user.email}
-                  </div>
-                  <a
-                    href={"/auth/logout"}
-                    className={"cursor-pointer text-xs font-bold text-red-500 transition-all underline underline-offset-4 hover:bg-red-500 hover:text-white"}
-                  >
-                    {t("Log out")}
-                  </a>
-                </div>
-                <Link
-                  href={"/home"}
-                  className={"border border-black px-4 h-12 hover:bg-black hover:text-white transition-all w-full font-bold flex items-center justify-center rounded-full"}
-                >
-                  {t("Let's create a blind box!")}
-                </Link>
-                <div className={"text-xs text-[#737373]"}>{t("$$$ Earn money while you sleep $$$")}</div>
-              </>
-            ) : (
-              <>
-                <a
-                  href={"/auth/login?returnTo=/home&audience=https://abandon.ai/api"}
-                  className={"border border-black px-4 h-12 hover:bg-black hover:text-white transition-all w-full font-bold flex items-center justify-center"}
-                >
-                  {t("Start ABANDON")}
-                </a>
-                <div className={"text-xs text-[#737373]"}>{t("Sign up and see where your creativity takes you!")}</div>
-              </>
-            )
-          }
+          <a
+            href={"/auth/login?returnTo=/home&audience=https://abandon.ai/api"}
+            className={"bg-[#0095F6] text-white px-4 h-8 transition-all w-fit font-bold flex items-center justify-center rounded-lg text-sm"}
+          >
+            {t("Start")}
+          </a>
+          <div className={"text-xs text-[#737373]"}>{t("Sign up and see where your creativity takes you!")}</div>
         </div>
       </div>
       <div className={"h-[135px] px-4 flex justify-start items-center flex-col text-[13px] text-[#737373]"}>

@@ -73,7 +73,8 @@ const Page = () => {
             />
           </div>
           <div className={"flex justify-between"}>
-            <Link href={"/series"}  className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
+            <Link href={"/series"} prefetch
+                  className={"font-bold text-[#0095F6] px-3 py-1 text-sm"}>
               Back
             </Link>
             <button
@@ -111,7 +112,7 @@ const Page = () => {
                   }, 3000);
                 }
               }}
-              className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
+              className={"bg-[#0095F6] text-white text-sm px-8 h-8 font-bold rounded-lg flex items-center justify-center"}>
               {status === "loading" && "Loading..."}
               {status === "idle" && "Create"}
               {status === "success" && "Success"}

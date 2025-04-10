@@ -168,7 +168,7 @@ const Page = () => {
                   }, 3000);
                 }
               }}
-              className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
+              className={"bg-[#0095F6] text-white text-sm px-4 h-8 font-bold rounded-lg flex items-center justify-center"}>
               {status === "loading" && "Loading..."}
               {status === "idle" && "Create"}
               {status === "success" && "Success"}
