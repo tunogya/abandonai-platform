@@ -86,11 +86,10 @@ const Page = async () => {
         </div>
         <Link
           href={"/series/create"} prefetch
-          className={"text-[#0095F6] font-bold"}>
+          className={"text-[#0095F6] font-bold px-3 text-sm"}>
           Create new series
         </Link>
       </div>
-
     </div>
   )
 }
