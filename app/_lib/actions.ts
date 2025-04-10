@@ -57,6 +57,7 @@ export const createSeries = async (series: {
       object: "series",
     },
   }));
+  return {ok: true}
 }
 
 export const createBox = async (box: {
@@ -83,4 +84,15 @@ export const createBox = async (box: {
       updatedAt: new Date().toISOString(),
     },
   }));
+  return {ok: true}
 }
+
+export const createLoginLink = async (connectedAccountId: string) => {
+  const accountLink = await stripe.accounts.createLoginLink(connectedAccountId);
+  return {
+    ok: true,
+    url: accountLink.url
+  };
+}
+
+

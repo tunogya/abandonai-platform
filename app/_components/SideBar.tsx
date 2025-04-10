@@ -4,10 +4,18 @@ import {usePathname} from "next/navigation";
 import clsx from "clsx";
 import Link from "next/link";
 import {useTranslations} from 'next-intl';
+import {createLoginLink} from "@/app/_lib/actions";
+import {useState} from "react";
 
-const SideBar = () => {
+const SideBar = ({
+                   connectedAccountId
+                 }: {
+  connectedAccountId: string
+}) => {
   const pathname = usePathname();
   const t = useTranslations('Menu');
+  const [status, setStatus] = useState("idle");
+  const [connectLink, setConnectLink] = useState("");
 
   const menu = [
     {
@@ -140,22 +148,6 @@ const SideBar = () => {
       </svg>,
       path: "/create",
     },
-    {
-      name: t("Dashboard"),
-      icon: <svg className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
-                 role="img" viewBox="0 0 24 24" width="24">
-        <path
-          d="M8 12a1 1 0 0 0-1 1v3a1 1 0 1 0 2 0v-3a1 1 0 0 0-1-1Zm8-3a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0v-6a1 1 0 0 0-1-1Zm-4-2a1 1 0 0 0-1 1v8a1 1 0 1 0 2 0V8a1 1 0 0 0-1-1Z"></path>
-        <path
-          d="M18.44 1H5.567a4.565 4.565 0 0 0-4.56 4.56v12.873a4.565 4.565 0 0 0 4.56 4.56H18.44a4.565 4.565 0 0 0 4.56-4.56V5.56A4.565 4.565 0 0 0 18.44 1ZM21 18.433a2.563 2.563 0 0 1-2.56 2.56H5.567a2.563 2.563 0 0 1-2.56-2.56V5.56A2.563 2.563 0 0 1 5.568 3H18.44A2.563 2.563 0 0 1 21 5.56v12.873Z"></path>
-      </svg>,
-      activeIcon: <svg className="x1lliihq x1n2onr6 x5n08af" fill="currentColor"
-                       height="24" role="img" viewBox="0 0 24 24" width="24">
-        <path
-          d="M18.44 1H5.56A4.566 4.566 0 0 0 1 5.56v12.88A4.566 4.566 0 0 0 5.56 23h12.88A4.566 4.566 0 0 0 23 18.44V5.56A4.566 4.566 0 0 0 18.44 1ZM9 16a1 1 0 1 1-2 0v-3a1 1 0 1 1 2 0v3Zm4 0a1 1 0 1 1-2 0V8a1 1 0 1 1 2 0v8Zm4 0a1 1 0 1 1-2 0v-6a1 1 0 1 1 2 0v6Z"></path>
-      </svg>,
-      path: "/dashboard",
-    },
   ]
 
   return (
@@ -188,6 +180,38 @@ const SideBar = () => {
               )
             })
           }
+          <form action={async () => {
+            if (connectLink) {
+              window.open(connectLink, "_blank");
+              return;
+            }
+            setStatus("loading");
+            const {url} = await createLoginLink(connectedAccountId);
+            setStatus("idle");
+            setConnectLink(url);
+            window.open(url, "_blank");
+          }}>
+            <button
+              disabled={status === "loading"}
+              type={"submit"}
+              className={clsx([
+                "w-full h-12 hover:bg-black/5 cursor-pointer rounded-lg p-3 gap-4 flex items-center group my-1",
+              ])}
+            >
+              <svg className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
+                   role="img" viewBox="0 0 24 24" width="24">
+                <path
+                  d="M8 12a1 1 0 0 0-1 1v3a1 1 0 1 0 2 0v-3a1 1 0 0 0-1-1Zm8-3a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0v-6a1 1 0 0 0-1-1Zm-4-2a1 1 0 0 0-1 1v8a1 1 0 1 0 2 0V8a1 1 0 0 0-1-1Z"></path>
+                <path
+                  d="M18.44 1H5.567a4.565 4.565 0 0 0-4.56 4.56v12.873a4.565 4.565 0 0 0 4.56 4.56H18.44a4.565 4.565 0 0 0 4.56-4.56V5.56A4.565 4.565 0 0 0 18.44 1ZM21 18.433a2.563 2.563 0 0 1-2.56 2.56H5.567a2.563 2.563 0 0 1-2.56-2.56V5.56A2.563 2.563 0 0 1 5.568 3H18.44A2.563 2.563 0 0 1 21 5.56v12.873Z"></path>
+              </svg>
+              <div className={"text-[18px] leading-5"}>
+                {status === "idle" && "Dashboard"}
+                {status === "loading" && "Connecting..."}
+                {status === "error" && "Error"}
+              </div>
+            </button>
+          </form>
         </div>
       </div>
     </aside>
