@@ -39,7 +39,7 @@ const Page = async () => {
                   className={"px-4 rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
                   type={"submit"}
                 >
-                  {t("Manage Payout Account")}
+                  {t("Manage payout account")}
                 </button>
               </form>
             ) : (
