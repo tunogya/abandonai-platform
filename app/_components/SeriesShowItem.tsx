@@ -1,6 +1,7 @@
 "use client";
 
-import {FC} from "react";
+import {FC, useState} from "react";
+import {Dialog, DialogBackdrop, DialogPanel} from "@headlessui/react";
 
 const SeriesShowItem: FC<{
   item: {
@@ -13,6 +14,8 @@ const SeriesShowItem: FC<{
     }
   }
 }> = ({item}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className={"flex flex-col w-[468px] mx-auto"}>
       <div className={"flex justify-between items-center pb-3"}>
@@ -20,7 +23,7 @@ const SeriesShowItem: FC<{
           <div className={"text-sm font-bold"}>{item.product.name}</div>
           <div className={"text-xs text-[#666666]"}>{item.price.unit_amount / 100} {item.price.currency}</div>
         </div>
-        <button>
+        <button onClick={() => setIsOpen(true)}>
           <svg aria-label="More options" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
                role="img" viewBox="0 0 24 24" width="24"><title>More options</title>
             <circle cx="12" cy="12" r="1.5"></circle>
@@ -28,6 +31,22 @@ const SeriesShowItem: FC<{
             <circle cx="18" cy="12" r="1.5"></circle>
           </svg>
         </button>
+        <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+          <DialogBackdrop className="fixed inset-0 bg-black/65" transition/>
+          <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+            <DialogPanel className="border bg-white w-[400px] rounded-xl text-[15px] divide-[#DBDBDB] divide-y">
+              <button className={"h-12 font-bold w-full text-[#ED4956]"}>
+                Delete
+              </button>
+              <button className={"h-12 w-full"}>
+                Copy link
+              </button>
+              <button className={"h-12 w-full"} onClick={() => setIsOpen(false)}>
+                Cancel
+              </button>
+            </DialogPanel>
+          </div>
+        </Dialog>
       </div>
       <div className={"h-[585px] border border-[#DBDBDB] w-full rounded"}>
 

@@ -32,7 +32,7 @@ const Page = async () => {
           )
         })}
         {
-          Items?.length !== 0 && (
+          Items?.length === 0 && (
             <div className={"flex flex-col border border-[#DBDBDB] p-8 rounded-lg gap-3 justify-center items-center w-[468px] mx-auto"}>
               <div>
                 {t("You haven’t created any series yet")}
