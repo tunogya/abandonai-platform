@@ -2,7 +2,7 @@
 
 import stripe from "@/app/_lib/stripe";
 import {docClient} from "@/app/_lib/dynamodb";
-import {GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
+import {DeleteCommand, GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
 import {v4 as uuidv4} from "uuid";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
@@ -57,6 +57,45 @@ export const createSeries = async (series: {
         object: "series",
       },
     }));
+    return {ok: true}
+  } catch (e) {
+    console.log(e)
+    return {ok: false, error: e}
+  }
+}
+
+export const deleteSeries = async (series: {
+  owner: string,
+  product: {
+    id: string,
+  },
+}) => {
+  const {Item} = await docClient.send(new GetCommand({
+    TableName: "abandon",
+    Key: {
+      PK: series.owner,
+      SK: isTestMode ? "connect_account_test" : "connect_account",
+    },
+  }))
+  if (!Item) {
+    return {ok: false, error: "Connect account not found"}
+  }
+  const connectAccountId = Item.id;
+  try {
+    await Promise.all([
+      docClient.send(new DeleteCommand({
+        TableName: "abandon",
+        Key: {
+          PK: series.owner,
+          SK: series.product.id,
+        },
+      })),
+      stripe.prices.update(series.product.id, {
+        active: false,
+      }, {
+        stripeAccount: connectAccountId,
+      }),
+    ]);
     return {ok: true}
   } catch (e) {
     console.log(e)

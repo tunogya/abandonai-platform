@@ -2,10 +2,13 @@
 
 import {FC, useState} from "react";
 import {Dialog, DialogBackdrop, DialogPanel} from "@headlessui/react";
+import {deleteSeries} from "@/app/_lib/actions";
 
 const SeriesShowItem: FC<{
   item: {
+    owner: string,
     product: {
+      id: string,
       name: string,
     },
     price: {
@@ -35,7 +38,21 @@ const SeriesShowItem: FC<{
           <DialogBackdrop className="fixed inset-0 bg-black/65" transition/>
           <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
             <DialogPanel className="border bg-white w-[400px] rounded-xl text-sm divide-[#DBDBDB] divide-y">
-              <button className={"h-12 font-bold w-full text-[#ED4956]"}>
+              <button
+                className={"h-12 font-bold w-full text-[#ED4956]"}
+                onClick={async () => {
+                  const {ok} = await deleteSeries({
+                    owner: item.owner,
+                    product: {
+                      id: item.product.id,
+                    }
+                  });
+                  if (ok) {
+                    setIsOpen(false);
+                    window.location.reload();
+                  }
+                }}
+              >
                 Delete
               </button>
               <button className={"h-12 w-full"}>
