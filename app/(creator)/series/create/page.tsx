@@ -22,10 +22,10 @@ const Page = () => {
 
   return (
     <div className={"mx-auto p-8 relative min-h-screen w-full"}>
-      <div className={"max-w-[1232px] mx-auto h-12"}>
-        <div className={"text-3xl font-bold"}>Create a new series</div>
+      <div className={"max-w-[1232px] mx-auto h-8"}>
+        <div className={"text-xl font-bold"}>Create a new series</div>
       </div>
-      <div className={"flex gap-8 mt-8 mb-[72px] justify-center"}>
+      <div className={"flex gap-8 mt-4 mb-[72px] justify-center"}>
         <div className={"w-full max-w-[600px] min-w-[300px]"}>
           <button
             className={"border border-[#DBDBDB] rounded-xl border-dashed w-full aspect-square flex flex-col items-center justify-center"}>
@@ -37,42 +37,42 @@ const Page = () => {
             </div>
           </button>
         </div>
-        <div className={"w-full flex flex-col gap-[32px] max-w-[600px] min-w-[300px]"}>
+        <div className={"w-full flex flex-col max-w-[600px] min-w-[300px]"}>
           <div>
-            <div className={"font-bold mb-3"}>
-              Name*
+            <div className={"font-bold mb-4 leading-5"}>
+              Name
             </div>
             <input
               value={series.name}
               onChange={(e) => setSeries({...series, name: e.target.value})}
               placeholder={"Series name"}
-              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
+              className={"border border-[#DBDBDB] rounded-xl px-3 py-2.5 w-full leading-5"}
             />
           </div>
           <div>
-            <div className={"font-bold mb-3"}>
-              Price(usd)*
+            <div className={"font-bold my-4 leading-5"}>
+              Price(USD)
             </div>
             <input
               value={series.price}
               type={"number"}
               onChange={(e) => setSeries({...series, price: e.target.value})}
               placeholder={"Price"}
-              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
+              className={"border border-[#DBDBDB] rounded-xl px-3 py-2.5 w-full leading-5"}
             />
           </div>
           <div>
-            <div className={"font-bold mb-3"}>
+            <div className={"font-bold my-4 leading-5"}>
               Description
             </div>
             <input
               value={series.description}
               onChange={(e) => setSeries({...series, description: e.target.value})}
               placeholder={"Description"}
-              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
+              className={"border border-[#DBDBDB] rounded-xl px-3 py-2.5 w-full leading-5"}
             />
           </div>
-          <div className={"flex justify-between"}>
+          <div className={"flex justify-between my-4 items-center"}>
             <Link href={"/series"} prefetch
                   className={"font-bold text-[#0095F6] px-3 py-1 text-sm"}>
               Back
@@ -112,7 +112,7 @@ const Page = () => {
                   }, 3000);
                 }
               }}
-              className={"bg-[#0095F6] text-white text-sm px-8 h-8 font-bold rounded-lg flex items-center justify-center"}>
+              className={"bg-[#0095F6] text-white w-60 h-11 font-bold rounded-lg flex items-center justify-center"}>
               {status === "loading" && "Loading..."}
               {status === "idle" && "Create"}
               {status === "success" && "Success"}

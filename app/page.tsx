@@ -17,11 +17,11 @@ const Page = async () => {
         </div>
         <div className={"w-[360px] flex flex-col gap-4 justify-center items-center p-4"}>
           <div className={"mb-20"}>
-            <Image width={200} height={50} alt={"logo"} src={"/logo.svg"}/>
+            <Image width={132} height={32} alt={"logo"} src={"/logo.svg"}/>
           </div>
           <a
             href={"/auth/login?returnTo=/home&audience=https://abandon.ai/api"}
-            className={"bg-[#0095F6] text-white px-4 h-8 transition-all w-fit font-bold flex items-center justify-center rounded-lg text-sm"}
+            className={"bg-[#0095F6] text-white w-60 h-11 transition-all font-bold flex items-center justify-center rounded-lg"}
           >
             {t("Start")}
           </a>
