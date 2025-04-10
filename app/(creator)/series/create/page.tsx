@@ -3,6 +3,7 @@
 import {useState} from "react";
 import {createSeries} from "@/app/_lib/actions";
 import {useUser} from "@auth0/nextjs-auth0";
+import Link from "next/link";
 
 const Page = () => {
   const {user} = useUser();
@@ -71,25 +72,28 @@ const Page = () => {
               className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
             />
           </div>
-          <div className={"flex flex-row-reverse"}>
+          <div className={"flex justify-between"}>
+            <Link href={"/series"}  className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
+              Back
+            </Link>
             <button
               disabled={status === "loading" || !series.name || !user}
               onClick={async () => {
                 if (!user) return
                 setStatus("loading");
-                try {
-                  await createSeries({
-                    owner: user.sub,
-                    price: {
-                      unit_amount: Math.floor(Number(series.price) * 100),
-                      currency: "usd",
-                    },
-                    product: {
-                      name: series.name,
-                      description: series.description,
-                      image: series.image,
-                    }
-                  });
+                const {ok} = await createSeries({
+                  owner: user.sub,
+                  price: {
+                    unit_amount: Math.floor(Number(series.price) * 100),
+                    currency: "usd",
+                  },
+                  product: {
+                    name: series.name,
+                    description: series.description,
+                    image: series.image,
+                  }
+                });
+                if (ok) {
                   setStatus("success");
                   setSeries({
                     name: "",
@@ -100,8 +104,7 @@ const Page = () => {
                   setTimeout(() => {
                     setStatus("idle");
                   }, 3000);
-                } catch (e) {
-                  console.log(e)
+                } else {
                   setStatus("error");
                   setTimeout(() => {
                     setStatus("idle");

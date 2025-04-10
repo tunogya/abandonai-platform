@@ -143,13 +143,13 @@ const Page = () => {
                 if (!user || !user?.sub || !box.series || !box.supply || !box.name) {
                   return;
                 }
-                try {
-                  setStatus("loading");
-                  await createBox({
-                    ...box,
-                    owner: user.sub,
-                    supply: Math.floor(Number(box.supply)),
-                  });
+                setStatus("loading");
+                const {ok} = await createBox({
+                  ...box,
+                  owner: user.sub,
+                  supply: Math.floor(Number(box.supply)),
+                });
+                if (ok) {
                   setStatus("success");
                   setBox({
                     supply: "",
@@ -161,8 +161,7 @@ const Page = () => {
                   setTimeout(() => {
                     setStatus("idle");
                   }, 3000);
-                }catch (e) {
-                  console.log(e)
+                } else {
                   setStatus("error");
                   setTimeout(() => {
                     setStatus("idle");
