@@ -19,6 +19,7 @@ const GET = async (req: NextRequest) => {
       ":sk": "prod_",
     },
     Limit: 10,
+    ScanIndexForward: false,
     // ExclusiveStartKey: "",
   }));
 

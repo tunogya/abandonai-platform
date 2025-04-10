@@ -170,7 +170,10 @@ const Page = () => {
                 }
               }}
               className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
-              Create
+              {status === "loading" && "Loading..."}
+              {status === "idle" && "Create"}
+              {status === "success" && "Success"}
+              {status === "error" && "Error"}
             </button>
           </div>
         </div>

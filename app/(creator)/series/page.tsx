@@ -18,6 +18,7 @@ const Page = async () => {
       ":sk": "prod_",
     },
     Limit: 10,
+    ScanIndexForward: false,
     // ExclusiveStartKey: "",
   }));
 

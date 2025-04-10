@@ -3,7 +3,6 @@
 import {useState} from "react";
 import {createSeries} from "@/app/_lib/actions";
 import {useUser} from "@auth0/nextjs-auth0";
-import {redirect} from "next/navigation";
 
 const Page = () => {
   const {user} = useUser();
@@ -18,6 +17,7 @@ const Page = () => {
     description: "",
     image: "",
   })
+  const [status, setStatus] = useState("idle");
 
   return (
     <div className={"mx-auto p-8 relative min-h-screen w-full"}>
@@ -73,24 +73,46 @@ const Page = () => {
           </div>
           <div className={"flex flex-row-reverse"}>
             <button
+              disabled={status === "loading" || !series.name || !user}
               onClick={async () => {
                 if (!user) return
-                await createSeries({
-                  owner: user.sub,
-                  price: {
-                    unit_amount: Math.floor(Number(series.price) * 100),
-                    currency: "usd",
-                  },
-                  product: {
-                    name: series.name,
-                    description: series.description,
-                    image: series.image,
-                  }
-                });
-                redirect("/series/create/success")
+                setStatus("loading");
+                try {
+                  await createSeries({
+                    owner: user.sub,
+                    price: {
+                      unit_amount: Math.floor(Number(series.price) * 100),
+                      currency: "usd",
+                    },
+                    product: {
+                      name: series.name,
+                      description: series.description,
+                      image: series.image,
+                    }
+                  });
+                  setStatus("success");
+                  setSeries({
+                    name: "",
+                    price: "",
+                    description: "",
+                    image: "",
+                  })
+                  setTimeout(() => {
+                    setStatus("idle");
+                  }, 3000);
+                } catch (e) {
+                  console.log(e)
+                  setStatus("error");
+                  setTimeout(() => {
+                    setStatus("idle");
+                  }, 3000);
+                }
               }}
               className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
-              Create
+              {status === "loading" && "Loading..."}
+              {status === "idle" && "Create"}
+              {status === "success" && "Success"}
+              {status === "error" && "Error"}
             </button>
           </div>
         </div>
