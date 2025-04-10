@@ -1,19 +1,32 @@
 "use client";
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {createBox} from "@/app/_lib/actions";
-// import {useUser} from "@auth0/nextjs-auth0";
+import Link from "next/link";
+import useSWR from "swr";
+import {getAccessToken} from "@auth0/nextjs-auth0";
 
 const Page = () => {
-  // const { user } = useUser();
   const [box, setBox] = useState({
     supply: "",
     description: "",
-    externalLink: "",
     series: "",
     image: "",
     name: "",
   });
+  const [accessToken, setAccessToken] = useState("");
+  const {data, isLoading} = useSWR(accessToken ? "/api/series": null, (url) => fetch(url, {
+    headers: {
+      "Authorization": `Bearer ${accessToken}`
+    }
+  }).then((res) => res.json()));
+
+  useEffect(() => {
+    (async () => {
+      const accessToken = await getAccessToken();
+      setAccessToken(accessToken);
+    })();
+  }, []);
 
   return (
     <div className={"mx-auto p-8 relative min-h-screen w-full"}>
@@ -37,14 +50,45 @@ const Page = () => {
             <div className={"font-bold mb-3"}>
               Series*
             </div>
-            <div className={"bg-[#1212120A] p-4 rounded-xl flex items-center gap-4"}>
+            <select
+              value={box.series}
+              onChange={(e) => {
+                setBox({
+                  ...box,
+                  series: e.target.value,
+                })
+              }}
+              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full mr-2"}
+            >
+              {
+                isLoading && (
+                  <option value={""}>
+                    Loading...
+                  </option>
+                )
+              }
+              {
+                !isLoading && data?.Count > 0 && data?.Items?.map((item: any) => {
+                  return (
+                    <option key={item?.product?.id} value={item?.product?.id}>
+                      {item?.product?.name}
+                    </option>
+                  )
+                })
+              }
+            </select>
+            <Link
+              href={"/series/create"}
+              prefetch
+              className={"bg-[#1212120A] p-4 rounded-xl flex items-center gap-4 mt-3"}
+            >
               <div className={"w-16 h-16 bg-[#1212120B] rounded-xl flex items-center justify-center text-xl"}>
                 +
               </div>
               <div className={"font-bold"}>
                 Create a new series
               </div>
-            </div>
+            </Link>
           </div>
           <div>
             <div className={"font-bold mb-3"}>
@@ -91,22 +135,6 @@ const Page = () => {
                 })
               }}
               placeholder={"Description"}
-              className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
-            />
-          </div>
-          <div>
-            <div className={"font-bold mb-3"}>
-              External link
-            </div>
-            <input
-              value={box.externalLink}
-              onChange={(e) => {
-                setBox({
-                  ...box,
-                  externalLink: e.target.value,
-                })
-              }}
-              placeholder={"External link"}
               className={"border border-[#DBDBDB] rounded-xl px-4 h-12 w-full"}
             />
           </div>
