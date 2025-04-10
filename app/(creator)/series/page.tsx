@@ -5,6 +5,7 @@ import {docClient} from "@/app/_lib/dynamodb";
 import {QueryCommand} from "@aws-sdk/lib-dynamodb";
 import {unauthorized} from "next/navigation";
 import Image from "next/image";
+import SeriesShowItem from "@/app/_components/SeriesShowItem";
 
 const Page = async () => {
   const t = await getTranslations("Series");
@@ -25,34 +26,18 @@ const Page = async () => {
   return (
     <div className={"flex justify-center"}>
       <div className={"w-[482px] flex flex-col gap-8 my-9"}>
-        {Items?.map((item, index) => {
+        {Items?.map((item: any) => {
           return (
-            <div key={index} className={"flex flex-col w-[468px] mx-auto"}>
-              <div className={"flex justify-between items-center pb-3"}>
-                <div className={"flex-1"}>
-                  <div className={"text-sm font-bold"}>{item.product.name}</div>
-                  <div className={"text-xs text-[#666666]"}>{item.price.unit_amount / 100} {item.price.currency}</div>
-                </div>
-                <button>
-                  <svg aria-label="More options" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
-                       role="img" viewBox="0 0 24 24" width="24"><title>More options</title>
-                    <circle cx="12" cy="12" r="1.5"></circle>
-                    <circle cx="6" cy="12" r="1.5"></circle>
-                    <circle cx="18" cy="12" r="1.5"></circle>
-                  </svg>
-                </button>
-              </div>
-              <div className={"h-[585px] border border-[#DBDBDB] w-full rounded"}>
-
-              </div>
-            </div>
+            <SeriesShowItem key={item.product.id} item={item}/>
           )
         })}
         {
-          Items?.length === 0 && (
-            <div className={"flex items-center justify-between border border-[#DBDBDB] p-8 rounded-2xl"}>
-              {t("You haven’t created any series yet")}
-              <Link href={"/series/create"} prefetch className={"hover:bg-foreground hover:text-background px-8 h-12 font-bold rounded-full border border-[#DBDBDB] flex items-center justify-center"}>
+          Items?.length !== 0 && (
+            <div className={"flex flex-col border border-[#DBDBDB] p-8 rounded-lg gap-3 justify-center items-center w-[468px] mx-auto"}>
+              <div>
+                {t("You haven’t created any series yet")}
+              </div>
+              <Link href={"/series/create"} prefetch className={"w-60 h-11 font-bold rounded-xl bg-[#0095F6] text-white flex items-center justify-center"}>
                 {t("Create")}
               </Link>
             </div>
