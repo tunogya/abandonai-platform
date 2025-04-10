@@ -187,9 +187,13 @@ const SideBar = ({
             }
             setStatus("loading");
             const {url} = await createLoginLink(connectedAccountId);
-            setStatus("idle");
-            setConnectLink(url);
-            window.open(url, "_blank");
+            if (url) {
+              setStatus("idle");
+              setConnectLink(url);
+              window.open(url, "_blank");
+            } else {
+              setStatus("idle");
+            }
           }}>
             <button
               disabled={status === "loading"}
