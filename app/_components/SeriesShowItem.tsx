@@ -34,7 +34,7 @@ const SeriesShowItem: FC<{
         <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
           <DialogBackdrop className="fixed inset-0 bg-black/65" transition/>
           <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-            <DialogPanel className="border bg-white w-[400px] rounded-xl text-[15px] divide-[#DBDBDB] divide-y">
+            <DialogPanel className="border bg-white w-[400px] rounded-xl text-sm divide-[#DBDBDB] divide-y">
               <button className={"h-12 font-bold w-full text-[#ED4956]"}>
                 Delete
               </button>
