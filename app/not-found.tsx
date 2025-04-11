@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 export default function NotFound() {
   return (
     <div className={"flex flex-col items-center justify-center h-screen"}>
@@ -34,7 +32,6 @@ export default function NotFound() {
         </svg>
       </div>
       <p className={"pt-4 pb-8"}>Could not find requested resource</p>
-      <Link href="/home" className={"font-semibold underline"}>Return Home</Link>
     </div>
   )
 }
