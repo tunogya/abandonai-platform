@@ -58,6 +58,8 @@ export const createSeries = async (series: {
         object: "series",
         GPK: "series",
         GSK: product.id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       },
     }));
     return {ok: true}
