@@ -39,6 +39,18 @@ const SeriesShowItem: FC<{
           <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
             <DialogPanel className="border bg-white w-[400px] rounded-xl text-sm divide-[#DBDBDB] divide-y">
               <button
+                onClick={async () => {
+                }}
+                className={"h-12 w-full text-[#ED4956] font-bold"}>
+                Edit
+              </button>
+              <button
+                onClick={async () => {
+                }}
+                className={"h-12 w-full text-[#ED4956] font-bold"}>
+                Archive
+              </button>
+              <button
                 className={"h-12 font-bold w-full text-[#ED4956]"}
                 onClick={async () => {
                   const {ok} = await deleteSeries({
