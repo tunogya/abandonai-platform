@@ -9,7 +9,7 @@ const GET = async (req: NextRequest) => {
   try {
     session = await verifyToken(req.headers.get("authorization")?.split(" ")?.[1]);
   } catch {
-    unauthorized()
+    unauthorized();
   }
   const {Items, LastEvaluatedKey, Count, } = await docClient.send(new QueryCommand({
     TableName: "abandon",
