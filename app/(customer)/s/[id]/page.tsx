@@ -1,7 +1,26 @@
+import {docClient} from "@/app/_lib/dynamodb";
+import {QueryCommand} from "@aws-sdk/lib-dynamodb";
+
 const Page = async ({params}: {
   params: { id: string }
 }) => {
   const id = (await params).id;
+  const {Items} = await docClient.send(new QueryCommand({
+    TableName: "abandon",
+    IndexName: "GPK-GSK-index",
+    // GPK = "series", GSK = id
+    KeyConditionExpression: "GPK = :gpk AND GSK = :gsk",
+    ExpressionAttributeValues: {
+      ":gpk": "series",
+      ":gsk": id,
+    },
+  }));
+  const series = Items?.[0];
+
+  if (!series) {
+    return <div>Series not found</div>
+  }
+
   // 准备开盒
   // 获取产品series的内容
   // 获取价格
@@ -13,17 +32,35 @@ const Page = async ({params}: {
 
   return (
     <div className={"flex flex-col w-screen"}>
-      Series: {id}
-
-      <div className={"my-6"}>
-        <button
-          className={"h-11 w-60 text-white font-bold rounded-full flex items-center justify-center mx-auto"}
-          style={{
-            background: "linear-gradient(90deg, #7638FA 0%, #D300C5 25%, #FF0069 50%, #FF7A00 75%, #FFD600 100%)"
-          }}
-        >
-          Open
-        </button>
+      <div className={"max-w-screen-sm mx-auto w-full"}>
+        <div className={"flex flex-col my-3"}>
+          <div className={"text-center font-bold text-lg"}>
+            {series.product.name}
+          </div>
+          <div className={"text-center break-words"}>
+            {series.product?.description}
+          </div>
+        </div>
+        <div className={"flex items-center justify-center my-4 p-4"}>
+          <div className={"w-full border rounded-lg"} style={{
+            aspectRatio: "4/5",
+          }}>
+            {JSON.stringify(series, null, 2)}
+          </div>
+        </div>
+        <div>
+          <button
+            className={"h-11 w-60 text-white font-bold rounded-full flex items-center justify-center mx-auto"}
+            style={{
+              background: "linear-gradient(90deg, #7638FA 0%, #D300C5 25%, #FF0069 50%, #FF7A00 75%, #FFD600 100%)"
+            }}
+          >
+            Open the box
+          </button>
+        </div>
+        <div className={"text-xs text-center my-1.5 break-words"}>
+          You need to pay <span className={"font-bold"}>{(series.price.unit_amount / 100).toFixed(2)}</span> dollars.
+        </div>
       </div>
     </div>
   )

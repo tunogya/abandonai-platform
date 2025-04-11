@@ -70,8 +70,9 @@ const SeriesShowItem: FC<{
           </div>
         </Dialog>
       </div>
-      <div className={"h-[585px] border border-[#DBDBDB] w-full rounded"}>
-
+      <div className={"border border-[#DBDBDB] w-full rounded"} style={{
+        aspectRatio: "4/5",
+      }}>
       </div>
     </div>
   )
