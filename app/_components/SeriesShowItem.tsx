@@ -55,7 +55,12 @@ const SeriesShowItem: FC<{
               >
                 Delete
               </button>
-              <button className={"h-12 w-full"}>
+              <button
+                onClick={async () => {
+                  await navigator.clipboard.writeText(window.location.origin + "/s/" + item.product.id);
+                  setIsOpen(false);
+                }}
+                className={"h-12 w-full"}>
                 Copy link
               </button>
               <button className={"h-12 w-full"} onClick={() => setIsOpen(false)}>

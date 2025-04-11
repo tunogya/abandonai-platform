@@ -5,7 +5,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import {useTranslations} from 'next-intl';
 import {createLoginLink} from "@/app/_lib/actions";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const SideBar = ({
                    connectedAccountId
@@ -150,6 +150,19 @@ const SideBar = ({
     },
   ]
 
+  useEffect(() => {
+    (async() => {
+      setStatus("loading");
+      const {url} = await createLoginLink(connectedAccountId);
+      if (url) {
+        setStatus("idle");
+        setConnectLink(url);
+      } else {
+        setStatus("idle");
+      }
+    })();
+  }, []);
+
   return (
     <aside
       className={"fixed left-0 top-0 w-[245px] h-screen border-[#DBDBDB] border-r px-3 pt-2 pb-4 z-10 bg-background"}>
@@ -180,19 +193,9 @@ const SideBar = ({
               )
             })
           }
-          <form action={async () => {
+          <form action={() => {
             if (connectLink) {
               window.open(connectLink, "_blank");
-              return;
-            }
-            setStatus("loading");
-            const {url} = await createLoginLink(connectedAccountId);
-            if (url) {
-              setStatus("idle");
-              setConnectLink(url);
-              window.open(url, "_blank");
-            } else {
-              setStatus("idle");
             }
           }}>
             <button
@@ -210,9 +213,7 @@ const SideBar = ({
                   d="M18.44 1H5.567a4.565 4.565 0 0 0-4.56 4.56v12.873a4.565 4.565 0 0 0 4.56 4.56H18.44a4.565 4.565 0 0 0 4.56-4.56V5.56A4.565 4.565 0 0 0 18.44 1ZM21 18.433a2.563 2.563 0 0 1-2.56 2.56H5.567a2.563 2.563 0 0 1-2.56-2.56V5.56A2.563 2.563 0 0 1 5.568 3H18.44A2.563 2.563 0 0 1 21 5.56v12.873Z"></path>
               </svg>
               <div className={"text-[18px] leading-5"}>
-                {status === "idle" && "Dashboard"}
-                {status === "loading" && "Connecting..."}
-                {status === "error" && "Error"}
+                Dashboard
               </div>
             </button>
           </form>
