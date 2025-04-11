@@ -14,9 +14,12 @@ const Page = async () => {
   const {Items} = await docClient.send(new QueryCommand({
     TableName: "abandon",
     KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+    // Filter, active: true or the active field does not exist
+    FilterExpression: "attribute_not_exists(active) OR active = :active",
     ExpressionAttributeValues: {
       ":pk": session.user.sub,
       ":sk": "prod_",
+      ":active": true,
     },
     Limit: 10,
     ScanIndexForward: false,

@@ -14,9 +14,11 @@ const GET = async (req: NextRequest) => {
   const {Items, LastEvaluatedKey, Count, } = await docClient.send(new QueryCommand({
     TableName: "abandon",
     KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+    FilterExpression: "attribute_not_exists(active) OR active = :active",
     ExpressionAttributeValues: {
       ":pk": session.sub,
       ":sk": "prod_",
+      ":active": true,
     },
     Limit: 10,
     ScanIndexForward: false,

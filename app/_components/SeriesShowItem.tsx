@@ -45,12 +45,6 @@ const SeriesShowItem: FC<{
                 Edit
               </button>
               <button
-                onClick={async () => {
-                }}
-                className={"h-12 w-full text-[#ED4956] font-bold"}>
-                Archive
-              </button>
-              <button
                 className={"h-12 font-bold w-full text-[#ED4956]"}
                 onClick={async () => {
                   const {ok} = await deleteSeries({
@@ -69,7 +63,8 @@ const SeriesShowItem: FC<{
               </button>
               <button
                 onClick={async () => {
-                  await navigator.clipboard.writeText(window.location.origin + "/s/" + item.product.id);
+                  const shortId = item.product.id.split("_")[1]
+                  await navigator.clipboard.writeText(window.location.origin + "/s/" + shortId);
                   setIsOpen(false);
                 }}
                 className={"h-12 w-full"}>

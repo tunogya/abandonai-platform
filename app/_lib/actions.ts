@@ -2,7 +2,7 @@
 
 import stripe from "@/app/_lib/stripe";
 import {docClient} from "@/app/_lib/dynamodb";
-import {DeleteCommand, GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
+import {GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 import {v4 as uuidv4} from "uuid";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
@@ -88,14 +88,22 @@ export const deleteSeries = async (series: {
   const connectAccountId = Item.id;
   try {
     await Promise.all([
-      docClient.send(new DeleteCommand({
+      docClient.send(new UpdateCommand({
         TableName: "abandon",
         Key: {
           PK: series.owner,
           SK: series.product.id,
         },
+        UpdateExpression: "set #active = :active",
+        ExpressionAttributeNames: {
+          "#active": "active",
+        },
+        ExpressionAttributeValues: {
+          ":active": false,
+        },
       })),
-      stripe.prices.update(series.product.id, {
+      // 在 connect 账户中，归档商品
+      stripe.products.update(series.product.id, {
         active: false,
       }, {
         stripeAccount: connectAccountId,
