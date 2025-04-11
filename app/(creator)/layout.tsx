@@ -29,9 +29,9 @@ const Layout = async ({
   const connectedAccountId = Item?.id;
   if (!connectedAccountId) {
     return (
-      <div>
-        <div>
-          Onboard
+      <div className={"flex flex-col items-center justify-center w-screen h-screen"}>
+        <div className={"text-lg font-bold my-3"}>
+         Onboard
         </div>
         <form action={async () => {
           "use server";
@@ -65,8 +65,8 @@ const Layout = async ({
             })),
             await stripe.accountLinks.create({
               account: account.id,
-              refresh_url: `${process.env.APP_BASE_URL}/dashboard`,
-              return_url: `${process.env.APP_BASE_URL}/dashboard`,
+              refresh_url: `${process.env.APP_BASE_URL}/home`,
+              return_url: `${process.env.APP_BASE_URL}/home`,
               type: "account_onboarding",
             })
           ]);
