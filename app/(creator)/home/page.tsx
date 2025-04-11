@@ -2,10 +2,24 @@
 import {useChat} from '@ai-sdk/react';
 import clsx from "clsx";
 import {useTranslations} from "next-intl";
+import {useEffect, useState} from "react";
+import {getAccessToken} from "@auth0/nextjs-auth0";
 
 const Page = () => {
-  const {messages, input, handleSubmit, handleInputChange, status} = useChat();
+  const [ accessToken, setAccessToken ] = useState("");
+  const {messages, input, handleSubmit, handleInputChange, status} = useChat({
+    headers: {
+      "Authorization": `Bearer ${accessToken}`
+    },
+  });
   const t = useTranslations("Home");
+
+  useEffect(() => {
+    (async () => {
+      const accessToken = await getAccessToken();
+      setAccessToken(accessToken);
+    })();
+  }, []);
 
   return (
     <div className={"flex flex-col w-full h-screen"}>

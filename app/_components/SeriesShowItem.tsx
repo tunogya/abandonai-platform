@@ -3,6 +3,7 @@
 import {FC, useState} from "react";
 import {Dialog, DialogBackdrop, DialogPanel} from "@headlessui/react";
 import {deleteSeries} from "@/app/_lib/actions";
+import { useRouter } from 'next/navigation';
 
 const SeriesShowItem: FC<{
   item: {
@@ -18,6 +19,7 @@ const SeriesShowItem: FC<{
   }
 }> = ({item}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <div className={"flex flex-col w-[468px] mx-auto"}>
@@ -54,8 +56,8 @@ const SeriesShowItem: FC<{
                     }
                   });
                   if (ok) {
+                    router.refresh();
                     setIsOpen(false);
-                    window.location.reload();
                   }
                 }}
               >
