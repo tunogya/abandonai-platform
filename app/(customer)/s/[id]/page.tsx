@@ -78,9 +78,14 @@ const Page = async ({params}: {
                     0 tokens
                   </div>
                 </div>
-                <div className={"text-sm font-bold ml-3"}>
+                <button
+                  className={"text-sm font-bold ml-3"}
+                  // onClick={async () => {
+                  //
+                  // }}
+                >
                   Top up
-                </div>
+                </button>
               </div>
             ) : (
               <a href={`/auth/login?returnTo=/s/${params.id}&audience=https://abandon.ai/api`}>

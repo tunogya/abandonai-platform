@@ -168,4 +168,72 @@ export const createLoginLink = async (connectedAccountId: string) => {
   }
 }
 
-
+export const createTopupLink = async (user: {
+  sub: string,
+  email: string,
+  name: string,
+}, prod_id: string) => {
+  try {
+    // 从数据库中获取用户的消费者记录
+    const {Item} = await docClient.send(new GetCommand({
+      TableName: "abandon",
+      Key: {
+        PK: user.sub,
+        SK: isTestMode ? "customer_test" : "customer",
+      },
+    }))
+    // 如果不存在，则创建一个消费者
+    let customer;
+    if (!Item) {
+      const _customer = await stripe.customers.create({
+        email: user.email,
+        name: user.name,
+      });
+      await docClient.send(new PutCommand({
+        TableName: "abandon",
+        Item: {
+          PK: user.sub,
+          SK: isTestMode ? "customer_test" : "customer",
+          id: _customer.id,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          object: "customer",
+          GPK: "customer",
+          GSK: user.sub,
+        },
+      }));
+      customer = _customer.id;
+    } else {
+      // 如果存在，则获取其 id
+      customer = Item.id;
+    }
+    const session = await stripe.checkout.sessions.create({
+      line_items: [{
+        price: isTestMode ? "price_1RCnbLFPRjptKGEx89Iuqlxr" : "price_1RCo4WFPRjptKGExvuO0s63y", // for test
+        quantity: 1,
+        adjustable_quantity: {
+          enabled: true,
+          minimum: 1,
+          maximum: 5000,
+        }
+      }],
+      customer: customer,
+      mode: "payment",
+      success_url: `${process.env.APP_BASE_URL}/s/${prod_id}`,
+      cancel_url: `${process.env.APP_BASE_URL}/s/${prod_id}`,
+      payment_intent_data: {
+        setup_future_usage: "on_session",
+      }
+    });
+    return {
+      ok: true,
+      url: session.url
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      ok: false,
+      error: e
+    }
+  }
+}
