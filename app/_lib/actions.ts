@@ -52,6 +52,7 @@ export const createSeries = async (series: {
       Item: {
         PK: series.owner,
         SK: product.id,
+        owner: series.owner,
         price: price,
         product: product,
         object: "series",
