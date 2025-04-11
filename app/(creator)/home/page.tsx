@@ -4,6 +4,7 @@ import clsx from "clsx";
 import {useTranslations} from "next-intl";
 import {useEffect, useState} from "react";
 import {getAccessToken} from "@auth0/nextjs-auth0";
+import {AutoResizeTextarea} from "@/app/_components/AutoResizeTextarea";
 
 const Page = () => {
   const [ accessToken, setAccessToken ] = useState("");
@@ -56,14 +57,14 @@ const Page = () => {
           <div className={"text-base mx-auto px-3 pt-3 md:px-4 w-full lg:px-4 xl:px-5"}>
             <div
               className={"mx-auto flex flex-1 text-base gap-4 md:gap-5 lg:gap-6 md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem]"}>
-              <form onSubmit={handleSubmit} className={"w-full border border-[#DBDBDB] rounded-full px-4 py-2"}>
-                <input
+              <form onSubmit={handleSubmit} className={"w-full border border-[#DBDBDB] rounded-[22px] px-4 py-2 flex items-center min-h-11"}>
+                <AutoResizeTextarea
                   value={input}
                   autoFocus={true}
-                  placeholder="Send a message..."
-                  onChange={handleInputChange}
                   disabled={status !== 'ready'}
-                  className={"w-full active:border-none active:outline-none focus:outline-none focus:border-none text-base placeholder-[#65676B] bg-transparent"}
+                  onChange={handleInputChange}
+                  placeholder={"Send a message..."}
+                  className={"w-full active:border-none active:outline-none focus:outline-none focus:border-none text-base placeholder-[#65676B] bg-transparent leading-6"}
                 />
               </form>
             </div>
