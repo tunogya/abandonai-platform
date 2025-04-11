@@ -55,6 +55,8 @@ export const createSeries = async (series: {
         price: price,
         product: product,
         object: "series",
+        GPK: "series",
+        GSK: product.id,
       },
     }));
     return {ok: true}
@@ -112,11 +114,12 @@ export const createBox = async (box: {
   name: string,
 }) => {
   try {
+    const id = uuidv4();
     await docClient.send(new PutCommand({
       TableName: "abandon",
       Item: {
         PK: box.series,
-        SK: uuidv4(),
+        SK: id,
         name: box.name,
         description: box.description,
         image: box.image,
@@ -126,6 +129,8 @@ export const createBox = async (box: {
         available: box.supply,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        GPK: "box",
+        GSK: id,
       },
     }));
     return {ok: true}

@@ -59,6 +59,8 @@ const Layout = async ({
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
                 object: "connect_account",
+                GPK: "connect_account",
+                GSK: session.user.sub,
               },
             })),
             await stripe.accountLinks.create({
