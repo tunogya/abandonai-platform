@@ -52,6 +52,7 @@ export const createSeries = async (series: {
       Item: {
         PK: series.owner,
         SK: product.id,
+        series: product.id,
         owner: series.owner,
         price: price,
         product: product,
@@ -133,6 +134,7 @@ export const createBox = async (box: {
         SK: id,
         name: box.name,
         description: box.description,
+        series: box.series,
         image: box.image,
         owner: box.owner,
         object: "box",
