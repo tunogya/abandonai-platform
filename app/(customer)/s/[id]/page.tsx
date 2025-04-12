@@ -5,10 +5,10 @@ import {auth0} from "@/app/_lib/auth0";
 import Image from "next/image";
 
 const Page = async ({params}: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) => {
+  const { id } = await params;
   const session = await auth0.getSession();
-  const id = (await params).id;
   const {Items} = await docClient.send(new QueryCommand({
     TableName: "abandon",
     IndexName: "GPK-GSK-index",
@@ -88,7 +88,7 @@ const Page = async ({params}: {
                 </button>
               </div>
             ) : (
-              <a href={`/auth/login?returnTo=/s/${params.id}&audience=https://abandon.ai/api`}>
+              <a href={`/auth/login?returnTo=/s/${id}&audience=https://abandon.ai/api`}>
                 <div className={"flex items-center justify-center h-12 border border-[#DBDBDB] rounded-full"}>
                   <div className={"text-sm font-bold"}>
                     Log in and top up
