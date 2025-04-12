@@ -65,7 +65,9 @@ const Page = async ({params}: {
             background: "linear-gradient(90deg, #7638FA 0%, #D300C5 25%, #FF0069 50%, #FF7A00 75%, #FFD600 100%)"
           }}
         >
-          Open the box
+          <span className={"animate-pulse"}>
+             Open the box
+          </span>
         </button>
         <div className={"p-3"}>
           {
