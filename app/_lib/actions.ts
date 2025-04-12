@@ -227,9 +227,6 @@ export const createTopupLink = async (user: User, success_url: string) => {
       mode: "payment",
       success_url: success_url,
       cancel_url: success_url,
-      payment_intent_data: {
-        setup_future_usage: "on_session",
-      }
     });
     return {
       ok: true,
