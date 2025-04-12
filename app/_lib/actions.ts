@@ -233,6 +233,8 @@ export const openBox = async (amount: number, customer: string, series: string) 
     // 记录中，新增键值对，key=series, value为数组，抽中的盲盒放这数组里
     console.log(series);
 
+    // 分账给connect用户
+
     return {
       ok: true,
       pi: pi,
