@@ -222,7 +222,16 @@ export const openBox = async (amount: number, customer: string, series: string) 
     // If the payment is successful, the success callback
     // handle the series blind box
 
+    // 从数据库中查询盲盒的详细信息
 
+
+    // 如果购买成功，挑选一个盲盒，添加到
+    //      Key: {
+    //         PK: session.user.sub,
+    //         SK: isTestMode ? "customer_test" : "customer",
+    //       },
+    // 记录中，新增键值对，key=series, value为数组，抽中的盲盒放这数组里
+    console.log(series);
 
     return {
       ok: true,

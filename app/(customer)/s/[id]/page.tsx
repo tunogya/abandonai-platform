@@ -44,27 +44,18 @@ const Page = async ({params}: {
   let myItems = [];
   // Only the customer who has login, query by user.sub
   if (session) {
-    const [customer_cache, my_boxes] = await Promise.all([
-      docClient.send(new GetCommand({
-        TableName: "abandon",
-        Key: {
-          PK: session.user.sub,
-          SK: isTestMode ? "customer_test" : "customer",
-        },
-      })),
-      docClient.send(new GetCommand({
-        TableName: "abandon",
-        Key: {
-          PK: session.user.sub,
-          SK: `box_ser#${id}`,
-        }
-      }))
-    ]);
-    if (customer_cache.Item?.id) {
-      customer = customer_cache.Item.id;
+    const { Item } = await docClient.send(new GetCommand({
+      TableName: "abandon",
+      Key: {
+        PK: session.user.sub,
+        SK: isTestMode ? "customer_test" : "customer",
+      },
+    }));
+    if (Item?.id) {
+      customer = Item.id;
     }
-    if (my_boxes.Item && my_boxes.Item?.boxed) {
-      myItems = my_boxes.Item.boxes
+    if (Item?.[id]) {
+      myItems = Item[id];
     }
   }
   // If user have logged in, but customer info does not exist, create a consumer.
@@ -157,7 +148,7 @@ const Page = async ({params}: {
           <div className={"text-sm mt-1"}>{series.product.description}</div>
         </div>
         {
-          session && (
+          session && myItems.length > 0 && (
             <div className={"px-3 py-3"}>
               <div className={"font-semibold leading-5"}>My items</div>
               <div className={"flex flex-col mt-1 gap-1.5"}>
