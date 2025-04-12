@@ -1,7 +1,7 @@
 import {NextRequest} from "next/server";
 import stripe from "@/app/_lib/stripe";
 
-const endpointSecret = ""
+const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET_KEY || "";
 
 const POST = async (req: NextRequest) => {
   const sig = req.headers.get('stripe-signature');
