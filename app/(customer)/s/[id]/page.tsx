@@ -84,6 +84,19 @@ const Page = async ({params}: {
     }));
     customer = newId;
   }
+  let myBalance = 0;
+  if (session && customer) {
+    const { Item } = await docClient.send(new GetCommand({
+      TableName: "abandon",
+      Key: {
+        PK: customer,
+        SK: "customer.balance",
+      },
+    }));
+    if (Item) {
+      myBalance = Item.balance * -1 / 100;
+    }
+  }
 
   return (
     <div className={"flex flex-col w-screen"}>
@@ -123,7 +136,7 @@ const Page = async ({params}: {
                 <div className={"flex-1 ml-1.5 overflow-hidden"}>
                   <div className={"text-sm font-medium truncate leading-4"}>{session?.user.email}</div>
                   <div className={"text-xs font-medium leading-4 text-[#0095F6]"}>
-                    0 tokens
+                    {myBalance.toFixed(2)} tokens
                   </div>
                 </div>
                 {
