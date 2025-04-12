@@ -5,12 +5,12 @@ import {useTranslations} from "next-intl";
 import {useEffect, useState} from "react";
 import {getAccessToken} from "@auth0/nextjs-auth0";
 import {AutoResizeTextarea} from "@/app/_components/AutoResizeTextarea";
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const Page = () => {
   const [accessToken, setAccessToken] = useState("");
-  const {messages, input, handleSubmit, handleInputChange, status, error, setMessages, stop} = useChat({
+  const {messages, input, handleSubmit, handleInputChange, status, error, setMessages, stop, reload} = useChat({
     headers: {
       "Authorization": `Bearer ${accessToken}`
     },
@@ -70,14 +70,24 @@ const Page = () => {
         <div className={"flex items-center justify-center gap-1.5"}>
           {
             status === "ready" && (
-              <button
-                disabled={status !== "ready"}
-                onClick={() => {
-                  setMessages([]);
-                }}
-                className={"px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#DBDBDB] mt-1.5"}>
-                New chat
-              </button>
+              <>
+                <button
+                  onClick={() => {
+                    setMessages([]);
+                  }}
+                  className={"px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#DBDBDB] mt-1.5"}>
+                  New chat
+                </button>
+                {
+                  messages.length > 0 && (
+                    <button
+                      onClick={() => reload()}
+                      className={"px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#DBDBDB] mt-1.5"}>
+                      Reload
+                    </button>
+                  )
+                }
+              </>
             )
           }
           {
