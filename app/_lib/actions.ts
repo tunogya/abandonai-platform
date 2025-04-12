@@ -4,6 +4,7 @@ import stripe from "@/app/_lib/stripe";
 import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 import {v4 as uuidv4} from "uuid";
+import {User} from "@auth0/nextjs-auth0/types";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
@@ -178,13 +179,8 @@ export const createLoginLink = async (connectedAccountId: string) => {
   }
 }
 
-export const createTopupLink = async (user: {
-  sub: string,
-  email: string,
-  name: string,
-}, prod_id: string) => {
+export const createTopupLink = async (user: User, success_url: string) => {
   try {
-    // 从数据库中获取用户的消费者记录
     const {Item} = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
@@ -229,8 +225,8 @@ export const createTopupLink = async (user: {
       }],
       customer: customer,
       mode: "payment",
-      success_url: `${process.env.APP_BASE_URL}/s/${prod_id}`,
-      cancel_url: `${process.env.APP_BASE_URL}/s/${prod_id}`,
+      success_url: success_url,
+      cancel_url: success_url,
       payment_intent_data: {
         setup_future_usage: "on_session",
       }

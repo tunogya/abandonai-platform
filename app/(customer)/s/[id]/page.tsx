@@ -5,11 +5,12 @@ import {auth0} from "@/app/_lib/auth0";
 import Image from "next/image";
 import Link from "next/link";
 import {getTranslations} from "next-intl/server";
+import TopupButton from "@/app/_components/TopupButton";
 
 const Page = async ({params}: {
   params: Promise<{ id: string }>
 }) => {
-  const { id } = await params;
+  const {id} = await params;
   const session = await auth0.getSession();
   const {Items} = await docClient.send(new QueryCommand({
     TableName: "abandon",
@@ -71,7 +72,8 @@ const Page = async ({params}: {
             session?.user ? (
               <div className={"flex items-center pl-1.5 pr-4 py-1.5 border border-[#DBDBDB] rounded-full"}>
                 {session.user.picture ? (
-                  <Image src={session.user.picture} alt={""} width={36} height={36} className={"w-9 h-9 rounded-full mx-auto"}/>
+                  <Image src={session.user.picture} alt={""} width={36} height={36}
+                         className={"w-9 h-9 rounded-full mx-auto"}/>
                 ) : (
                   <div className={"w-9 h-9 rounded-full bg-black"}>
                   </div>
@@ -82,14 +84,7 @@ const Page = async ({params}: {
                     0 tokens
                   </div>
                 </div>
-                <button
-                  className={"text-sm font-bold ml-3"}
-                  // onClick={async () => {
-                  //
-                  // }}
-                >
-                  Top up
-                </button>
+                <TopupButton user={session.user} success_url={`${process.env.APP_BASE_URL}/s/${id}`}/>
               </div>
             ) : (
               <a href={`/auth/login?returnTo=/s/${id}&audience=https://abandon.ai/api`}>
