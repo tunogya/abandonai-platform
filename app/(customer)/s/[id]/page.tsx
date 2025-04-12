@@ -1,11 +1,14 @@
 import {docClient} from "@/app/_lib/dynamodb";
-import {QueryCommand} from "@aws-sdk/lib-dynamodb";
+import {GetCommand, PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
 import {notFound} from "next/navigation";
 import {auth0} from "@/app/_lib/auth0";
 import Image from "next/image";
 import Link from "next/link";
 import {getTranslations} from "next-intl/server";
 import TopupButton from "@/app/_components/TopupButton";
+import stripe from "@/app/_lib/stripe";
+
+const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
 const Page = async ({params}: {
   params: Promise<{ id: string }>
@@ -23,22 +26,72 @@ const Page = async ({params}: {
     },
   }));
   const series = Items?.[0];
-
   if (!series) {
     notFound();
   }
   const t = await getTranslations('Root');
-
-  // 遍历 series?.boxes 数组，每个 item.available 相加，得出 totalAvailable
+  // Iterate through the series?.boxes array, sum up each item.available, and get the totalAvailable.
   const totalAvailable = series?.boxes.reduce((acc: number, item: any) => {
     return acc + item.available;
   }, 0);
-  // 遍历 series?.boxes 数组，每个 item.supply 相加，得出 totalSupply
+  // Iterate through the series?.boxes array, sum up each item.supply, and obtain the totalSupply.
   const totalSupply = series?.boxes.reduce((acc: number, item: any) => {
     return acc + item.supply;
   }, 0);
-
-  // 购买成功后通过回调获取产品
+  // First, check if the customer information for the currently logged-in user exists.
+  let customer: string | undefined = undefined;
+  let myItems = [];
+  // Only the customer who has login, query by user.sub
+  if (session) {
+    const [customer_cache, my_boxes] = await Promise.all([
+      docClient.send(new GetCommand({
+        TableName: "abandon",
+        Key: {
+          PK: session.user.sub,
+          SK: isTestMode ? "customer_test" : "customer",
+        },
+      })),
+      docClient.send(new GetCommand({
+        TableName: "abandon",
+        Key: {
+          PK: session.user.sub,
+          SK: `box_ser#${id}`,
+        }
+      }))
+    ]);
+    if (customer_cache.Item?.id) {
+      customer = customer_cache.Item.id;
+    }
+    if (my_boxes.Item && my_boxes.Item?.boxed) {
+      myItems = my_boxes.Item.boxes
+    }
+  }
+  // If user have logged in, but customer info does not exist, create a consumer.
+  if (session && !customer) {
+    // create a new customer, and record the information of sub
+    const {id: newId} = await stripe.customers.create({
+      email: session.user.email,
+      name: session.user.name,
+      metadata: {
+        user: session.user.sub,
+      }
+    });
+    // record in dynamodb
+    await docClient.send(new PutCommand({
+      TableName: "abandon",
+      Item: {
+        PK: session.user.sub,
+        SK: isTestMode ? "customer_test" : "customer",
+        id: newId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        object: "customer",
+        GPK: "customer",
+        GSK: session.user.sub,
+      },
+    }));
+    customer = newId;
+  }
 
   return (
     <div className={"flex flex-col w-screen"}>
@@ -71,7 +124,7 @@ const Page = async ({params}: {
         </button>
         <div className={"p-3"}>
           {
-            session?.user ? (
+            session ? (
               <div className={"flex items-center pl-1.5 pr-4 py-1.5 border border-[#DBDBDB] rounded-full"}>
                 {session.user.picture ? (
                   <Image src={session.user.picture} alt={""} width={36} height={36}
@@ -86,7 +139,11 @@ const Page = async ({params}: {
                     0 tokens
                   </div>
                 </div>
-                <TopupButton user={session.user} success_url={`${process.env.APP_BASE_URL}/s/${id}`}/>
+                {
+                  customer && (
+                    <TopupButton customer={customer} success_url={`${process.env.APP_BASE_URL}/s/${id}`}/>
+                  )
+                }
               </div>
             ) : (
               <a href={`/auth/login?returnTo=/s/${id}&audience=https://abandon.ai/api`}>
@@ -103,14 +160,26 @@ const Page = async ({params}: {
           <div className={"font-semibold leading-5"}>Description</div>
           <div className={"text-sm mt-1"}>{series.product.description}</div>
         </div>
-        <div className={"px-3 py-3"}>
-          <div className={"font-semibold leading-5"}>My items</div>
-          <div className={"flex flex-col mt-1 gap-1.5"}>
-            <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-
+        {
+          session && (
+            <div className={"px-3 py-3"}>
+              <div className={"font-semibold leading-5"}>My items</div>
+              <div className={"flex flex-col mt-1 gap-1.5"}>
+                {
+                  myItems && myItems?.map((item: {
+                    id: string,
+                    name: string,
+                    description?: string,
+                    image?: string,
+                  }) => (
+                    <div key={item.id} className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
+                    </div>
+                  ))
+                }
+              </div>
             </div>
-          </div>
-        </div>
+          )
+        }
         <div className={"px-3 py-3"}>
           <div className={"font-semibold leading-5"}>Recently</div>
           <div className={"flex flex-col mt-1 gap-1.5"}>

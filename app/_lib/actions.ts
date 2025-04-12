@@ -4,7 +4,6 @@ import stripe from "@/app/_lib/stripe";
 import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 import {v4 as uuidv4} from "uuid";
-import {User} from "@auth0/nextjs-auth0/types";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
@@ -179,43 +178,8 @@ export const createLoginLink = async (connectedAccountId: string) => {
   }
 }
 
-export const createTopupLink = async (user: User, success_url: string) => {
+export const createTopupLink = async (customer: string, success_url: string) => {
   try {
-    const {Item} = await docClient.send(new GetCommand({
-      TableName: "abandon",
-      Key: {
-        PK: user.sub,
-        SK: isTestMode ? "customer_test" : "customer",
-      },
-    }))
-    // If it does not exist, create a consumer.
-    let customer;
-    if (!Item) {
-      const _customer = await stripe.customers.create({
-        email: user.email,
-        name: user.name,
-        metadata: {
-          user: user.sub,
-        }
-      });
-      await docClient.send(new PutCommand({
-        TableName: "abandon",
-        Item: {
-          PK: user.sub,
-          SK: isTestMode ? "customer_test" : "customer",
-          id: _customer.id,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          object: "customer",
-          GPK: "customer",
-          GSK: user.sub,
-        },
-      }));
-      customer = _customer.id;
-    } else {
-      // If it exists, retrieve its id.
-      customer = Item.id;
-    }
     const session = await stripe.checkout.sessions.create({
       line_items: [{
         price: isTestMode ? "price_1RCnbLFPRjptKGEx89Iuqlxr" : "price_1RCo4WFPRjptKGExvuO0s63y", // for test
