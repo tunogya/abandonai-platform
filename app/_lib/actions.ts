@@ -30,9 +30,9 @@ export const createSeries = async (series: {
   if (!Item) {
     return {ok: false, error: "Connect account not found"}
   }
-  // 查询 connectAccountId
+  // query connectAccountId
   const connectAccountId = Item.id;
-  // 在 connect 账户中，创建商品
+  // In the connect account, create a product.
   try {
     const ser_id = uuidv4();
     const product = await stripe.products.create({
@@ -107,7 +107,7 @@ export const deleteSeries = async (series: {
           ":active": false,
         },
       })),
-      // 在 connect 账户中，归档商品
+      // In the connect account, archived products
       stripe.products.update(series.product.id, {
         active: false,
       }, {
@@ -188,12 +188,15 @@ export const createTopupLink = async (user: User, success_url: string) => {
         SK: isTestMode ? "customer_test" : "customer",
       },
     }))
-    // 如果不存在，则创建一个消费者
+    // If it does not exist, create a consumer.
     let customer;
     if (!Item) {
       const _customer = await stripe.customers.create({
         email: user.email,
         name: user.name,
+        metadata: {
+          user: user.sub,
+        }
       });
       await docClient.send(new PutCommand({
         TableName: "abandon",
@@ -210,7 +213,7 @@ export const createTopupLink = async (user: User, success_url: string) => {
       }));
       customer = _customer.id;
     } else {
-      // 如果存在，则获取其 id
+      // If it exists, retrieve its id.
       customer = Item.id;
     }
     const session = await stripe.checkout.sessions.create({
