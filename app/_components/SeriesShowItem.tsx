@@ -11,6 +11,7 @@ const SeriesShowItem: FC<{
     product: {
       id: string,
       name: string,
+      url: string,
     },
     price: {
       unit_amount: number,
@@ -65,8 +66,7 @@ const SeriesShowItem: FC<{
               </button>
               <button
                 onClick={async () => {
-                  const shortId = item.product.id.split("_")[1]
-                  await navigator.clipboard.writeText(window.location.origin + "/s/" + shortId);
+                  await navigator.clipboard.writeText(item.product.url);
                   setIsOpen(false);
                 }}
                 className={"h-12 w-full"}>

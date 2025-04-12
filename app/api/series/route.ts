@@ -17,7 +17,7 @@ const GET = async (req: NextRequest) => {
     FilterExpression: "attribute_not_exists(active) OR active = :active",
     ExpressionAttributeValues: {
       ":pk": session.sub,
-      ":sk": "prod_",
+      ":sk": "ser#",
       ":active": true,
     },
     Limit: 10,

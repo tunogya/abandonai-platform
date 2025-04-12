@@ -33,17 +33,20 @@ export const createSeries = async (series: {
   const connectAccountId = Item.id;
   // 在 connect 账户中，创建商品
   try {
+    const ser_id = uuidv4();
     const product = await stripe.products.create({
+      id: ser_id,
       name: series.product.name,
       description: series.product.description ? series.product.description : undefined,
       images: series.product.image ? [series.product.image] : undefined,
+      url: `https://abandon.ai/s/${ser_id}`,
     }, {
       stripeAccount: connectAccountId,
     });
     const price = await stripe.prices.create({
       unit_amount: series.price.unit_amount,
       currency: series.price.currency,
-      product: product.id,
+      product: ser_id,
     }, {
       stripeAccount: connectAccountId,
     });
@@ -51,14 +54,14 @@ export const createSeries = async (series: {
       TableName: "abandon",
       Item: {
         PK: series.owner,
-        SK: product.id,
-        series: product.id,
+        SK: `ser#${ser_id}`,
+        series: ser_id,
         owner: series.owner,
         price: price,
         product: product,
         object: "series",
         GPK: "series",
-        GSK: product.id,
+        GSK: ser_id,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -127,31 +130,36 @@ export const createBox = async (box: {
 }) => {
   try {
     const id = uuidv4();
-    await docClient.send(new PutCommand({
+    await docClient.send(new UpdateCommand({
       TableName: "abandon",
-      Item: {
-        PK: box.series,
-        SK: id,
-        name: box.name,
-        description: box.description,
-        series: box.series,
-        image: box.image,
-        owner: box.owner,
-        object: "box",
-        supply: box.supply,
-        available: box.supply,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        GPK: "box",
-        GSK: id,
+      Key: {
+        PK: box.owner,
+        SK: `ser#${box.series}`,
       },
-    }));
+      UpdateExpression: "set #boxes = list_append(if_not_exists(#boxes, :empty_list), :box)",
+      ExpressionAttributeNames: {
+        "#boxes": "boxes",
+      },
+      ExpressionAttributeValues: {
+        ":box": [{
+          id: id,
+          name: box.name,
+          description: box.description,
+          image: box.image,
+          object: "box",
+          supply: box.supply,
+          available: box.supply,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }],
+        ":empty_list": [],
+      },
+    }))
     return {ok: true}
   } catch (e) {
     console.log(e)
     return {ok: false, error: e}
   }
-
 }
 
 export const createLoginLink = async (connectedAccountId: string) => {

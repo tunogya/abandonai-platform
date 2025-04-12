@@ -25,11 +25,6 @@ const Page = async ({params}: {
     notFound();
   }
 
-  // 准备开盒
-  // 获取 box 数量信息，如果不足，则不能购买
-
-
-
   // 购买成功后通过回调获取产品
 
 

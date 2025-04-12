@@ -18,7 +18,7 @@ const Page = async () => {
     FilterExpression: "attribute_not_exists(active) OR active = :active",
     ExpressionAttributeValues: {
       ":pk": session.user.sub,
-      ":sk": "prod_",
+      ":sk": "ser#",
       ":active": true,
     },
     Limit: 10,
@@ -48,7 +48,7 @@ const Page = async () => {
         }
       </div>
       <div className={"w-[384px] pl-16"}>
-        <div className={"flex gap-3 items-center mb-6 my-9"}>
+        <div className={"flex gap-1.5 items-center mb-6 my-9"}>
           <div className={"p-1.5"}>
             {
               session.user.picture ? (
@@ -58,12 +58,9 @@ const Page = async () => {
               )
             }
           </div>
-          <div className={"flex flex-col flex-1"}>
-            <div className={"text-sm font-semibold leading-4"}>
+          <div className={"flex flex-col flex-1 overflow-hidden"}>
+            <div className={"text-sm font-semibold leading-4 truncate"}>
               {session.user.email}
-            </div>
-            <div className={"text-sm leading-4"}>
-              {session.user.nickname}
             </div>
           </div>
           <a
