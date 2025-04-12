@@ -10,7 +10,7 @@ import remarkGfm from 'remark-gfm'
 
 const Page = () => {
   const [accessToken, setAccessToken] = useState("");
-  const {messages, input, handleSubmit, handleInputChange, status} = useChat({
+  const {messages, input, handleSubmit, handleInputChange, status, error, setMessages, stop} = useChat({
     headers: {
       "Authorization": `Bearer ${accessToken}`
     },
@@ -53,32 +53,63 @@ const Page = () => {
               </div>
             </div>
           ))}
+          <div className={"md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem] mx-auto"}>
+            {(status === "submitted" || status === "streaming") && (
+              <div className={"text-xs font-semibold text-[#65676B]"}>typing...</div>
+            )}
+            {status === "error" && (
+              <div>
+                {error?.name}: {error?.message}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div
         className={"w-full flex flex-col md:pt-0 md:border-transparent dark:border-white/20 md:dark:border-transparent"}>
-        <div>
-          <div className={"text-base mx-auto px-3 pt-3 md:px-4 w-full lg:px-4 xl:px-5"}>
-            <div
-              className={"mx-auto flex flex-1 text-base gap-4 md:gap-5 lg:gap-6 md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem]"}>
-              <form onSubmit={handleSubmit}
-                    className={"w-full border border-[#DBDBDB] rounded-[22px] px-4 py-2 flex items-center min-h-11"}>
-                <AutoResizeTextarea
-                  value={input}
-                  autoFocus={true}
-                  disabled={status !== 'ready'}
-                  onChange={handleInputChange}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSubmit(e);
-                    }
-                  }}
-                  placeholder={"Send a message..."}
-                  className={"w-full active:border-none active:outline-none focus:outline-none focus:border-none text-base placeholder-[#65676B] bg-transparent leading-6"}
-                />
-              </form>
-            </div>
+        <div className={"flex items-center justify-center gap-1.5"}>
+          {
+            status === "ready" && (
+              <button
+                disabled={status !== "ready"}
+                onClick={() => {
+                  setMessages([]);
+                }}
+                className={"px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#DBDBDB] mt-1.5"}>
+                New chat
+              </button>
+            )
+          }
+          {
+            (status === "streaming" || status === "submitted") && (
+              <button
+                onClick={stop}
+                className={"px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#DBDBDB] mt-1.5"}>
+                Stop
+              </button>
+            )
+          }
+        </div>
+        <div className={"text-base mx-auto px-3 pt-1.5 md:px-4 w-full lg:px-4 xl:px-5"}>
+          <div
+            className={"mx-auto flex flex-1 text-base gap-4 md:gap-5 lg:gap-6 md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem]"}>
+            <form onSubmit={handleSubmit}
+                  className={"w-full border border-[#DBDBDB] rounded-[22px] px-4 py-2 flex items-center min-h-11"}>
+              <AutoResizeTextarea
+                value={input}
+                autoFocus={true}
+                disabled={status !== 'ready'}
+                onChange={handleInputChange}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e);
+                  }
+                }}
+                placeholder={"Send a message..."}
+                className={"w-full active:border-none active:outline-none focus:outline-none focus:border-none text-base placeholder-[#65676B] bg-transparent leading-6"}
+              />
+            </form>
           </div>
         </div>
         <div
