@@ -207,3 +207,32 @@ export const createTopupLink = async (customer: string, success_url: string) => 
     }
   }
 }
+
+export const openBox = async (amount: number, customer: string, series: string) => {
+  try {
+    // Use paymentIntents to immediately deduct payment from the user's customer_balance.
+    const pi = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: 'usd',
+      payment_method_types: ['customer_balance'],
+      customer: customer,
+      confirm: true,
+      off_session: true, // Do not jump to the front end
+    });
+    // If the payment is successful, the success callback
+    // handle the series blind box
+
+
+
+    return {
+      ok: true,
+      pi: pi,
+    }
+  } catch (e) {
+    // If the payment fails, return an error.
+    return {
+      ok: false,
+      error: e,
+    }
+  }
+}

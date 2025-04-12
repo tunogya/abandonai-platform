@@ -7,6 +7,7 @@ import Link from "next/link";
 import {getTranslations} from "next-intl/server";
 import TopupButton from "@/app/_components/TopupButton";
 import stripe from "@/app/_lib/stripe";
+import OpenBoxButton from "@/app/_components/OpenBoxButton";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
@@ -111,17 +112,12 @@ const Page = async ({params}: {
             </div>
           </div>
         </div>
-        <button
+        <OpenBoxButton
           disabled={totalAvailable === 0}
-          className={"h-11 w-full text-white font-bold flex items-center justify-center mx-auto"}
-          style={{
-            background: "linear-gradient(90deg, #7638FA 0%, #D300C5 25%, #FF0069 50%, #FF7A00 75%, #FFD600 100%)"
-          }}
-        >
-          <span className={"animate-pulse"}>
-             Open the box
-          </span>
-        </button>
+          amount={series.price.unit_amount}
+          customer={customer}
+          series={series.product.id}
+        />
         <div className={"p-3"}>
           {
             session ? (
