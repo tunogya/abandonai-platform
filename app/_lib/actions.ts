@@ -216,8 +216,8 @@ export const openBox = async (amount: number, customer: string, series: string, 
     const {Item: balance } = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
-        PK: customer,
-        SK: "customer.balance",
+        PK: user.sub,
+        SK: isTestMode ? "customer.balance#test" : "customer.balance",
       },
     }));
     const userBalance = balance ? balance.balance * -1 : 0;
@@ -329,8 +329,8 @@ export const openBox = async (amount: number, customer: string, series: string, 
       docClient.send(new UpdateCommand({
         TableName: "abandon",
         Key: {
-          PK: customer as string,
-          SK: "customer.balance",
+          PK: user.sub,
+          SK: isTestMode ? "customer.balance#test" : "customer.balance",
         },
         // Update user balance, increase by amount_subtotal * -1
         UpdateExpression: "SET balance = if_not_exists(balance, :zero) + :delta, updatedAt = :updatedAt",

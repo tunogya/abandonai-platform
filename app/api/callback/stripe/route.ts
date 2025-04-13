@@ -2,7 +2,9 @@ import {NextRequest} from "next/server";
 import stripe from "@/app/_lib/stripe";
 import Stripe from "stripe";
 import {docClient} from "@/app/_lib/dynamodb";
-import {GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
+import {GetCommand, PutCommand, QueryCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
+
+const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
 const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET_KEY || "";
 
@@ -31,11 +33,31 @@ const POST = async (req: NextRequest) => {
     case 'checkout.session.completed':
       const {id, customer, amount_subtotal} = event.data.object;
       if (customer && amount_subtotal) {
+        // Get user info from dynamodb
+        const { Items } = await docClient.send(new QueryCommand({
+          TableName: "abandon",
+          IndexName: "GPK-GSK-index",
+          KeyConditionExpression: "GPK = :GPK and GSK = :GSK",
+          ExpressionAttributeValues: {
+            ":GPK": "customer",
+            ":GSK": customer,
+          },
+          ProjectionExpression: "PK, SK",
+          Limit: 1,
+        }));
+        let sub;
+        if (Items && Items.length > 0) {
+          sub = Items[0].id;
+        } else {
+          return {
+            ok: false, error: "User not found."
+          }
+        }
         // Need to check if the id has been processed, I mentioned storing the record.
         const {Item: checkout_session} = await docClient.send(new GetCommand({
           TableName: "abandon",
           Key: {
-            PK: customer as string,
+            PK: sub,
             SK: id, // session id
           },
           // Just return PK and SK.
@@ -56,7 +78,7 @@ const POST = async (req: NextRequest) => {
           docClient.send(new PutCommand({
             TableName: "abandon",
             Item: {
-              PK: customer as string,
+              PK: sub,
               SK: id,
               id: id,
               object: "checkout.session",
@@ -69,8 +91,8 @@ const POST = async (req: NextRequest) => {
           docClient.send(new UpdateCommand({
             TableName: "abandon",
             Key: {
-              PK: customer as string,
-              SK: "customer.balance",
+              PK: sub,
+              SK: isTestMode ? "customer.balance#test" : "customer.balance",
             },
             // Update user balance, increase by amount_subtotal * -1
             UpdateExpression: "SET balance = if_not_exists(balance, :zero) + :delta, updatedAt = :updatedAt",

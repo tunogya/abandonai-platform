@@ -78,7 +78,7 @@ const Page = async ({params}: {
         updatedAt: new Date().toISOString(),
         object: "customer",
         GPK: "customer",
-        GSK: session.user.sub,
+        GSK: newId,
       },
     }));
     customer = newId;
@@ -88,8 +88,8 @@ const Page = async ({params}: {
     const {Item} = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
-        PK: customer,
-        SK: "customer.balance",
+        PK: session.user.sub,
+        SK: isTestMode ? "customer.balance#test" : "customer.balance",
       },
     }));
     if (Item) {

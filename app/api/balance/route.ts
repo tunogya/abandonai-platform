@@ -13,24 +13,11 @@ const GET = async (req: NextRequest) => {
   } catch {
     unauthorized()
   }
-  const {Item: customer} = await docClient.send(new GetCommand({
-    TableName: "abandon",
-    Key: {
-      PK: session.sub,
-      SK: isTestMode ? "customer#test" : "customer",
-    },
-    ProjectionExpression: "id",
-  }));
-  if (!customer) {
-    return Response.json({
-      balance: 0,
-    })
-  }
   const {Item} = await docClient.send(new GetCommand({
     TableName: "abandon",
     Key: {
-      PK: customer.id,
-      SK: "customer.balance",
+      PK: session.sub,
+      SK: isTestMode ? "customer.balance#test" : "customer.balance",
     },
   }));
   return Response.json({
