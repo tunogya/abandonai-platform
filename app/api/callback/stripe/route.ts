@@ -2,7 +2,7 @@ import {NextRequest} from "next/server";
 import stripe from "@/app/_lib/stripe";
 import Stripe from "stripe";
 import {docClient} from "@/app/_lib/dynamodb";
-import {BatchWriteCommand, GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
+import {GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 
 const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET_KEY || "";
 
