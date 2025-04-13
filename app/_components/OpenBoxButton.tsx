@@ -2,6 +2,7 @@
 
 import {FC} from "react";
 import {openBox} from "@/app/_lib/actions";
+import {User} from "@auth0/nextjs-auth0/types";
 
 const OpenBoxButton: FC<{
   disabled: boolean,
@@ -9,7 +10,7 @@ const OpenBoxButton: FC<{
   customer?: string,
   series: string,
   owner: string,
-  sub?: string,
+  user?: User,
 }> = (props) => {
   return (
     // TODO: when no loggin
@@ -20,10 +21,10 @@ const OpenBoxButton: FC<{
         background: "linear-gradient(90deg, #7638FA 0%, #D300C5 25%, #FF0069 50%, #FF7A00 75%, #FFD600 100%)"
       }}
       onClick={async () => {
-        if (!props.customer || !props.sub) {
+        if (!props.customer || !props.user?.sub) {
           return;
         }
-        await openBox(props.amount, props.customer, props.series, props.owner, props.sub);
+        await openBox(props.amount, props.customer, props.series, props.owner, props.user);
       }}
     >
       <span className={"animate-pulse"}>
