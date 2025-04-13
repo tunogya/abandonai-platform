@@ -3,7 +3,7 @@
 ## Dynamodb Design
 
 1. object customer
-    PK: <user.sub>, SK: "customer"|"customer_test"
+    PK: <user.sub>, SK: "customer"|"customer.test"
 2. object logs
     PK: <ser#series.id>, SK: "logs"
 3. object customer.balance

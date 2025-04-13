@@ -49,7 +49,7 @@ const Page = async ({params}: {
       TableName: "abandon",
       Key: {
         PK: session.user.sub,
-        SK: isTestMode ? "customer_test" : "customer",
+        SK: isTestMode ? "customer.test" : "customer",
       },
       ProjectionExpression: "id",
     }));
@@ -72,7 +72,7 @@ const Page = async ({params}: {
       TableName: "abandon",
       Item: {
         PK: session.user.sub,
-        SK: isTestMode ? "customer_test" : "customer",
+        SK: isTestMode ? "customer.test" : "customer",
         id: newId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

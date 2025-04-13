@@ -17,7 +17,7 @@ const GET = async (req: NextRequest) => {
     TableName: "abandon",
     Key: {
       PK: session.sub,
-      SK: isTestMode ? "customer_test" : "customer",
+      SK: isTestMode ? "customer.test" : "customer",
     },
     ProjectionExpression: "id",
   }));
