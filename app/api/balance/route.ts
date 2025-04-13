@@ -19,6 +19,7 @@ const GET = async (req: NextRequest) => {
       PK: session.sub,
       SK: isTestMode ? "customer_test" : "customer",
     },
+    ProjectionExpression: "id",
   }));
   if (!customer) {
     return Response.json({
