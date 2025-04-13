@@ -27,7 +27,6 @@ const POST = async (req: NextRequest) => {
       status: 400,
     })
   }
-  event = await req.json();
   switch (event.type) {
     case 'checkout.session.completed':
       const {id, customer, amount_subtotal} = event.data.object;

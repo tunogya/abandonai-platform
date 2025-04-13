@@ -186,7 +186,7 @@ export const createTopupLink = async (customer: string, success_url: string) => 
         quantity: 1,
         adjustable_quantity: {
           enabled: true,
-          minimum: 2,
+          minimum: 1,
           maximum: 5000,
         }
       }],
