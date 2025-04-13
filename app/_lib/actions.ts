@@ -304,7 +304,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
         TableName: "abandon",
         Key: {
           PK: `ser#${series}`,
-          SK: `ser#${series}`,
+          SK: `series.public`,
         },
         UpdateExpression: "set #logs = list_append(if_not_exists(#logs, :empty_list), :log)",
         ExpressionAttributeNames: {

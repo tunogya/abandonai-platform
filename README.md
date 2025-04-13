@@ -5,7 +5,7 @@
 1. object customer
     PK: <user.sub>, SK: "customer"|"customer.test"
 2. object series.public
-    PK: <ser#series.id>, SK: <ser#series.id>
+    PK: <ser#series.id>, SK: "series.public"
 3. object customer.balance
     PK: <customer.id>, SK: "customer.balance"
 4. object items
