@@ -6,8 +6,6 @@ import {GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 import {v4 as uuidv4} from "uuid";
 import {User} from "@auth0/nextjs-auth0/types";
 
-const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
-
 export const createSeries = async (series: {
   owner: string,
   product: {
@@ -24,7 +22,7 @@ export const createSeries = async (series: {
     TableName: "abandon",
     Key: {
       PK: series.owner,
-      SK: isTestMode ? "connect.account#test" : "connect.account",
+      SK: "connect.account",
     },
   }))
   if (!Item) {
@@ -84,7 +82,7 @@ export const deleteSeries = async (series: {
     TableName: "abandon",
     Key: {
       PK: series.owner,
-      SK: isTestMode ? "connect.account#test" : "connect.account",
+      SK: "connect.account",
     },
   }))
   if (!Item) {
@@ -183,7 +181,7 @@ export const createTopupLink = async (customer: string, success_url: string) => 
   try {
     const session = await stripe.checkout.sessions.create({
       line_items: [{
-        price: isTestMode ? "price_1RCnbLFPRjptKGEx89Iuqlxr" : "price_1RCo4WFPRjptKGExvuO0s63y", // for test
+        price: "price_1RCnbLFPRjptKGEx89Iuqlxr", // TODO: check for prod price
         quantity: 1,
         adjustable_quantity: {
           enabled: true,
@@ -217,7 +215,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       TableName: "abandon",
       Key: {
         PK: user.sub,
-        SK: isTestMode ? "customer.balance#test" : "customer.balance",
+        SK: "customer.balance",
       },
     }));
     const userBalance = balance ? balance.balance * -1 : 0;
@@ -330,7 +328,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
         TableName: "abandon",
         Key: {
           PK: user.sub,
-          SK: isTestMode ? "customer.balance#test" : "customer.balance",
+          SK: "customer.balance",
         },
         // Update user balance, increase by amount_subtotal * -1
         UpdateExpression: "SET balance = if_not_exists(balance, :zero) + :delta, updatedAt = :updatedAt",
@@ -346,7 +344,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       TableName: "abandon",
       Key: {
         PK: owner,
-        SK: isTestMode ? "connect.account#test" : "connect.account",
+        SK: "connect.account",
       },
     }));
     if (connect_account) {

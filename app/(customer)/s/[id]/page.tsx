@@ -11,8 +11,6 @@ import BlindBox from "@/app/_components/BlindBox";
 import RecentLogs from "@/app/_components/RecentLogs";
 import MyItems from "@/app/_components/MyItems";
 
-const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
-
 const Page = async ({params}: {
   params: Promise<{ id: string }>
 }) => {
@@ -49,7 +47,7 @@ const Page = async ({params}: {
       TableName: "abandon",
       Key: {
         PK: session.user.sub,
-        SK: isTestMode ? "customer#test" : "customer",
+        SK: "customer",
       },
       ProjectionExpression: "id",
     }));
@@ -72,7 +70,7 @@ const Page = async ({params}: {
       TableName: "abandon",
       Item: {
         PK: session.user.sub,
-        SK: isTestMode ? "customer#test" : "customer",
+        SK: "customer",
         id: newId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -89,7 +87,7 @@ const Page = async ({params}: {
       TableName: "abandon",
       Key: {
         PK: session.user.sub,
-        SK: isTestMode ? "customer.balance#test" : "customer.balance",
+        SK: "customer.balance",
       },
     }));
     if (Item) {

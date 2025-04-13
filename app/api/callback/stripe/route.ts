@@ -4,8 +4,6 @@ import Stripe from "stripe";
 import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand, QueryCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 
-const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
-
 const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET_KEY || "";
 
 const POST = async (req: NextRequest) => {
@@ -92,7 +90,7 @@ const POST = async (req: NextRequest) => {
             TableName: "abandon",
             Key: {
               PK: sub,
-              SK: isTestMode ? "customer.balance#test" : "customer.balance",
+              SK: "customer.balance",
             },
             // Update user balance, increase by amount_subtotal * -1
             UpdateExpression: "SET balance = if_not_exists(balance, :zero) + :delta, updatedAt = :updatedAt",

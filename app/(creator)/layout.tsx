@@ -6,8 +6,6 @@ import {GetCommand, PutCommand} from "@aws-sdk/lib-dynamodb";
 import stripe from "@/app/_lib/stripe";
 import {getTranslations} from "next-intl/server";
 
-const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
-
 const Layout = async ({
                   children,
                 }: Readonly<{
@@ -22,7 +20,7 @@ const Layout = async ({
     TableName: "abandon",
     Key: {
       PK: session.user.sub,
-      SK: isTestMode ? "connect.account#test" : "connect.account",
+      SK: "connect.account",
     },
     ProjectionExpression: "id",
   }));
@@ -54,7 +52,7 @@ const Layout = async ({
               TableName: "abandon",
               Item: {
                 PK: session.user.sub,
-                SK: isTestMode ? "connect.account#test" : "connect.account",
+                SK: "connect.account",
                 id: account.id,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),

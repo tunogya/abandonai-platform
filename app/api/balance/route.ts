@@ -4,8 +4,6 @@ import {GetCommand} from "@aws-sdk/lib-dynamodb";
 import {verifyToken} from "@/app/_lib/jwt";
 import {unauthorized} from "next/navigation";
 
-const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
-
 const GET = async (req: NextRequest) => {
   let session;
   try {
@@ -17,7 +15,7 @@ const GET = async (req: NextRequest) => {
     TableName: "abandon",
     Key: {
       PK: session.sub,
-      SK: isTestMode ? "customer.balance#test" : "customer.balance",
+      SK: "customer.balance",
     },
   }));
   return Response.json({
