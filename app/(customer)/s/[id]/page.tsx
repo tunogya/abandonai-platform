@@ -2,7 +2,6 @@ import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand, QueryCommand} from "@aws-sdk/lib-dynamodb";
 import {notFound} from "next/navigation";
 import {auth0} from "@/app/_lib/auth0";
-import Image from "next/image";
 import Link from "next/link";
 import {getTranslations} from "next-intl/server";
 import TopupButton from "@/app/_components/TopupButton";
@@ -44,7 +43,7 @@ const Page = async ({params}: {
   let myItems = [];
   // Only the customer who has login, query by user.sub
   if (session) {
-    const { Item } = await docClient.send(new GetCommand({
+    const {Item} = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
         PK: session.user.sub,
@@ -86,7 +85,7 @@ const Page = async ({params}: {
   }
   let myBalance = 0;
   if (session && customer) {
-    const { Item } = await docClient.send(new GetCommand({
+    const {Item} = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
         PK: customer,
@@ -124,27 +123,13 @@ const Page = async ({params}: {
         />
         <div className={"p-3"}>
           {
-            session ? (
-              <div className={"flex items-center pl-1.5 pr-4 py-1.5 border border-[#DBDBDB] rounded-full"}>
-                {session.user.picture ? (
-                  <Image src={session.user.picture} alt={""} width={36} height={36}
-                         className={"w-9 h-9 rounded-full mx-auto"}/>
-                ) : (
-                  <div className={"w-9 h-9 rounded-full bg-black"}>
-                  </div>
-                )}
-                <div className={"flex-1 ml-1.5 overflow-hidden"}>
-                  <div className={"text-sm font-medium truncate leading-4"}>{session?.user.email}</div>
-                  <div className={"text-xs font-medium leading-4 text-[#0095F6]"}>
-                    {myBalance.toFixed(2)} tokens
-                  </div>
-                </div>
-                {
-                  customer && (
-                    <TopupButton customer={customer} success_url={`${process.env.APP_BASE_URL}/s/${id}`}/>
-                  )
-                }
-              </div>
+            (session && customer) ? (
+              <TopupButton
+                user={session.user}
+                balance={myBalance}
+                customer={customer}
+                success_url={`${process.env.APP_BASE_URL}/s/${id}`}
+              />
             ) : (
               <a href={`/auth/login?returnTo=/s/${id}&audience=https://abandon.ai/api`}>
                 <div className={"flex items-center justify-center h-12 border border-[#DBDBDB] rounded-full"}>
