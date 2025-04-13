@@ -2,7 +2,7 @@ import {NextRequest} from "next/server";
 import {verifyToken} from "@/app/_lib/jwt";
 import {unauthorized} from "next/navigation";
 import {docClient} from "@/app/_lib/dynamodb";
-import {GetCommand} from "@aws-sdk/lib-dynamodb";
+import {QueryCommand} from "@aws-sdk/lib-dynamodb";
 
 const GET = async (req: NextRequest, {params}: {
   params: Promise<{id: string}>
@@ -15,15 +15,17 @@ const GET = async (req: NextRequest, {params}: {
   }
 
   const {id} = await params;
-  const {Item} = await docClient.send(new GetCommand({
+  const {Items} = await docClient.send(new QueryCommand({
     TableName: "abandon",
-    Key: {
-      PK: session.sub,
-      SK: `items#${id}`,
+    KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+    ExpressionAttributeValues: {
+      ":pk": session.user.sub,
+      ":sk": `items#${id}#`,
     },
+    ScanIndexForward: false,
+    Limit: 20,
   }));
-
-  return  Response.json(Item);
+  return  Response.json(Items);
 };
 
 export {

@@ -7,6 +7,7 @@
    GPK: "customer", GSK: <customer.id>
 2. TODO: object items
    PK: <user.sub>, SK: <items#series.id#item.id>
+   GPK: <items#series.id>, SK: <item.id>
 3. object series
    PK: <user.sub>, SK: <series#series.id>
 4. object connect.account

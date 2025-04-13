@@ -1,20 +1,23 @@
 import {NextRequest} from "next/server";
 import {docClient} from "@/app/_lib/dynamodb";
-import {GetCommand} from "@aws-sdk/lib-dynamodb";
+import {QueryCommand} from "@aws-sdk/lib-dynamodb";
 
 const GET = async (req: NextRequest, {params}: {
   params: Promise<{id: string}>
 }) => {
   const {id} = await params;
-  const {Item} = await docClient.send(new GetCommand({
+  const {Items} = await docClient.send(new QueryCommand({
     TableName: "abandon",
-    Key: {
-      PK: id,
-      SK: "logs",
+    IndexName: "GPK-GSK-index",
+    KeyConditionExpression: "GPK = :gpk",
+    ExpressionAttributeValues: {
+      ":gpk": `items#${id}`,
     },
+    ScanIndexForward: false,
+    // filter share = true
+    Limit: 20,
   }));
-
-  return  Response.json(Item);
+  return  Response.json(Items);
 };
 
 export {
