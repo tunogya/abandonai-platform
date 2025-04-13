@@ -282,39 +282,14 @@ export const openBox = async (amount: number, customer: string, series: string, 
     // Deduct from the user's quota, calculate the positive number
     await Promise.all([
       // add info to my items
-      docClient.send(new UpdateCommand({
+      docClient.send(new PutCommand({
         TableName: "abandon",
-        Key: {
+        Item: {
           PK: user.sub,
-          SK: `items#${series}`,
-        },
-        UpdateExpression: "set #items = list_append(if_not_exists(#items, :empty_list), :item)",
-        ExpressionAttributeNames: {
-          "#items": "items",
-        },
-        ExpressionAttributeValues: {
-          ":item": [item],
-          ":empty_list": [],
-        },
-      })),
-      // add info to logs
-      docClient.send(new UpdateCommand({
-        TableName: "abandon",
-        Key: {
-          PK: `series#${series}`,
-          SK: `series.public`,
-        },
-        UpdateExpression: "set #logs = list_append(if_not_exists(#logs, :empty_list), :log)",
-        ExpressionAttributeNames: {
-          "#logs": "logs",
-        },
-        ExpressionAttributeValues: {
-          ":log": [{
-            user: user,
-            item: item,
-            createdAt: new Date().toISOString(),
-          }],
-          ":empty_list": [],
+          SK: `items#${series}#${item.id}`,
+          ...item,
+          GPK: `items#${series}`,
+          GSK: item.id,
         },
       })),
       // balance transfer from customer at stripe
