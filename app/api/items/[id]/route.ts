@@ -19,7 +19,7 @@ const GET = async (req: NextRequest, {params}: {
     TableName: "abandon",
     Key: {
       PK: session.sub,
-      SK: id,
+      SK: `ser#${id}`,
     },
   }));
 

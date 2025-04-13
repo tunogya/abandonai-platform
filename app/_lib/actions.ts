@@ -4,6 +4,7 @@ import stripe from "@/app/_lib/stripe";
 import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 import {v4 as uuidv4} from "uuid";
+import {User} from "@auth0/nextjs-auth0/types";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
@@ -209,38 +210,157 @@ export const createTopupLink = async (customer: string, success_url: string) => 
   }
 }
 
-export const openBox = async (amount: number, customer: string, series: string) => {
+export const openBox = async (amount: number, customer: string, series: string, owner: string, user: User) => {
   try {
-    // Use paymentIntents to immediately deduct payment from the user's customer_balance.
-    const pi = await stripe.paymentIntents.create({
-      amount: amount,
-      currency: 'usd',
-      payment_method_types: ['customer_balance'],
-      customer: customer,
-      confirm: true,
-      off_session: true, // Do not jump to the front end
-    });
-    // If the payment is successful, the success callback
-    // handle the series blind box
-
+    // Check balance first, make sure enough to do this deal
+    const {Item: balance } = await docClient.send(new GetCommand({
+      TableName: "abandon",
+      Key: {
+        PK: customer,
+        SK: "customer.balance",
+      },
+    }));
+    const userBalance = balance ? balance.balance * -1 : 0;
+    if (userBalance < amount) {
+      return {
+        ok: false,
+        error: "Insufficient balance",
+      }
+    }
     // 从数据库中查询盲盒的详细信息
+    const { Item: seriesInfo } = await docClient.send(new GetCommand({
+      TableName: "abandon",
+      Key: {
+        PK: owner,
+        SK: `ser#${series}`,
+      },
+    }));
+    const boxes = seriesInfo?.boxes;
+    if (boxes.length === 0) {
+      return {
+        ok: false,
+      }
+    }
 
+    let selected;
+    const total = boxes.reduce((sum: number, p: {
+      available: number
+    }) => sum + p.available, 0);
+    let rand = Math.floor(Math.random() * total);
+    for (const box of boxes) {
+      if (rand < box.available) {
+        box.available  -= 1;
+        selected = box;
+      }
+      rand -= box.available;
+    }
+    if (!selected) {
+      return {
+        ok: false,
+      }
+    }
+    // update now boxes info
+    await docClient.send(new UpdateCommand({
+      TableName: "abandon",
+      Key: {
+        PK: owner,
+        SK: `ser#${series}`,
+      },
+      UpdateExpression: "set boxes = :boxes",
+      ExpressionAttributeValues: {
+        ":boxes": boxes,
+      },
+    }));
+    const item = {
+      id: uuidv4(),
+      name: selected.name,
+      description: selected.description,
+      image: selected.image,
+      object: "box",
+      shared: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
 
-    // 如果购买成功，挑选一个盲盒，添加到
-    //      Key: {
-    //         PK: session.user.sub,
-    //         SK: isTestMode ? "customer_test" : "customer",
-    //       },
-    // 记录中，新增键值对，key=series, value为数组，抽中的盲盒放这数组里
-    console.log(series);
-
-    // 分账给connect用户
-
+    // add info to my items
+    await docClient.send(new UpdateCommand({
+      TableName: "abandon",
+      Key: {
+        PK: user.sub,
+        SK: `ser#${series}`,
+      },
+      UpdateExpression: "set #items = list_append(if_not_exists(#items, :empty_list), :item)",
+      ExpressionAttributeNames: {
+        "#items": "items",
+      },
+      ExpressionAttributeValues: {
+        ":item": [item],
+        ":empty_list": [],
+      },
+    }));
+    // add info to logs
+    await docClient.send(new UpdateCommand({
+      TableName: "abandon",
+      Key: {
+        PK: `ser#${series}`,
+        SK: "logs"
+      },
+      UpdateExpression: "set #logs = list_append(if_not_exists(#logs, :empty_list), :log)",
+      ExpressionAttributeNames: {
+        "#logs": "logs",
+      },
+      ExpressionAttributeValues: {
+        ":log": [{
+          user: user,
+          item: item,
+          createdAt: new Date().toISOString(),
+        }],
+        ":empty_list": [],
+      },
+    }));
+    // Deduct from the user's quota, calculate the positive number
+    await Promise.all([
+      stripe.customers.createBalanceTransaction(customer as string, {
+        amount: amount,
+        currency: "usd",
+        description: "Top-up",
+      }),
+      docClient.send(new UpdateCommand({
+        TableName: "abandon",
+        Key: {
+          PK: customer as string,
+          SK: "customer.balance",
+        },
+        // Update user balance, increase by amount_subtotal * -1
+        UpdateExpression: "SET balance = if_not_exists(balance, :zero) + :delta, updatedAt = :updatedAt",
+        ExpressionAttributeValues: {
+          ":delta": amount,
+          ":zero": 0,
+          ":updatedAt": new Date().toISOString(),
+        },
+      }))
+    ]);
+    // Distribute accounts to connect users
+    const { Item: connect_account } = await docClient.send(new GetCommand({
+      TableName: "abandon",
+      Key: {
+        PK: owner,
+        SK: isTestMode ? "connect_account_test" : "connect_account",
+      },
+    }));
+    if (connect_account) {
+      await stripe.transfers.create({
+        amount: amount * 0.7,
+        currency: 'usd',
+        destination: connect_account.id,
+        transfer_group: series,
+      });
+    }
     return {
       ok: true,
-      pi: pi,
     }
   } catch (e) {
+    console.log(e);
     // If the payment fails, return an error.
     return {
       ok: false,

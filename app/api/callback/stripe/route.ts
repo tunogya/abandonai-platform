@@ -59,8 +59,10 @@ const POST = async (req: NextRequest) => {
               PK: customer as string,
               SK: id,
               id: id,
+              object: "checkout.session",
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
+              TTL: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
             },
           })),
           // update balance at dynamodb

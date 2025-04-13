@@ -111,6 +111,8 @@ const Page = async ({params}: {
           amount={series.price.unit_amount}
           customer={customer}
           series={series.product.id}
+          owner={series.owner}
+          sub={session?.user.sub}
         />
         <div className={"p-3"}>
           {
