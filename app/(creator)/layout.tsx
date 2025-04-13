@@ -22,7 +22,7 @@ const Layout = async ({
     TableName: "abandon",
     Key: {
       PK: session.user.sub,
-      SK: isTestMode ? "connect.account.test" : "connect.account",
+      SK: isTestMode ? "connect.account#test" : "connect.account",
     },
     ProjectionExpression: "id",
   }));
@@ -54,7 +54,7 @@ const Layout = async ({
               TableName: "abandon",
               Item: {
                 PK: session.user.sub,
-                SK: isTestMode ? "connect.account.test" : "connect.account",
+                SK: isTestMode ? "connect.account#test" : "connect.account",
                 id: account.id,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),

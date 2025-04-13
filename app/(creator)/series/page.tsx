@@ -18,7 +18,7 @@ const Page = async () => {
     FilterExpression: "attribute_not_exists(active) OR active = :active",
     ExpressionAttributeValues: {
       ":pk": session.user.sub,
-      ":sk": "ser#",
+      ":sk": "series#",
       ":active": true,
     },
     Limit: 10,

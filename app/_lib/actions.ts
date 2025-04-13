@@ -24,7 +24,7 @@ export const createSeries = async (series: {
     TableName: "abandon",
     Key: {
       PK: series.owner,
-      SK: isTestMode ? "connect.account.test" : "connect.account",
+      SK: isTestMode ? "connect.account#test" : "connect.account",
     },
   }))
   if (!Item) {
@@ -55,7 +55,7 @@ export const createSeries = async (series: {
       TableName: "abandon",
       Item: {
         PK: series.owner,
-        SK: `ser#${ser_id}`,
+        SK: `series#${ser_id}`,
         series: ser_id,
         owner: series.owner,
         price: price,
@@ -84,7 +84,7 @@ export const deleteSeries = async (series: {
     TableName: "abandon",
     Key: {
       PK: series.owner,
-      SK: isTestMode ? "connect.account.test" : "connect.account",
+      SK: isTestMode ? "connect.account#test" : "connect.account",
     },
   }))
   if (!Item) {
@@ -135,7 +135,7 @@ export const createBox = async (box: {
       TableName: "abandon",
       Key: {
         PK: box.owner,
-        SK: `ser#${box.series}`,
+        SK: `series#${box.series}`,
       },
       UpdateExpression: "set #boxes = list_append(if_not_exists(#boxes, :empty_list), :box)",
       ExpressionAttributeNames: {
@@ -232,7 +232,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       TableName: "abandon",
       Key: {
         PK: owner,
-        SK: `ser#${series}`,
+        SK: `series#${series}`,
       },
     }));
     const boxes = seriesInfo?.boxes;
@@ -264,7 +264,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       TableName: "abandon",
       Key: {
         PK: owner,
-        SK: `ser#${series}`,
+        SK: `series#${series}`,
       },
       UpdateExpression: "set boxes = :boxes",
       ExpressionAttributeValues: {
@@ -303,7 +303,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       docClient.send(new UpdateCommand({
         TableName: "abandon",
         Key: {
-          PK: `ser#${series}`,
+          PK: `series#${series}`,
           SK: `series.public`,
         },
         UpdateExpression: "set #logs = list_append(if_not_exists(#logs, :empty_list), :log)",
@@ -346,7 +346,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       TableName: "abandon",
       Key: {
         PK: owner,
-        SK: isTestMode ? "connect.account.test" : "connect.account",
+        SK: isTestMode ? "connect.account#test" : "connect.account",
       },
     }));
     if (connect_account) {
