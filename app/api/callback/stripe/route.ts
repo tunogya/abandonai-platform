@@ -45,35 +45,40 @@ const POST = async (req: NextRequest) => {
           break;
         }
         // Update the balance of the Stripe user customer
-        await stripe.customers.createBalanceTransaction(customer as string, {
-          amount: amount_subtotal * -1,
-          currency: "usd",
-          description: "Top-up",
-        })
-        await docClient.send(new PutCommand({
-          TableName: "abandon",
-          Item: {
-            PK: customer as string,
-            SK: id,
-            id: id,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        }));
-        await docClient.send(new UpdateCommand({
-          TableName: "abandon",
-          Key: {
-            PK: customer as string,
-            SK: "customer.balance",
-          },
-          // 更新用户 balance，增加 amount_subtotal * -1
-          UpdateExpression: "SET balance = if_not_exists(balance, :zero) + :delta, updatedAt = :updatedAt",
-          ExpressionAttributeValues: {
-            ":delta": amount_subtotal * -1,
-            ":zero": 0,
-            ":updatedAt": new Date().toISOString(),
-          },
-        }));
+        await Promise.all([
+          // update customer balance at stripe
+          stripe.customers.createBalanceTransaction(customer as string, {
+            amount: amount_subtotal * -1,
+            currency: "usd",
+            description: "Top-up",
+          }),
+          // record this session for cache
+          docClient.send(new PutCommand({
+            TableName: "abandon",
+            Item: {
+              PK: customer as string,
+              SK: id,
+              id: id,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
+          })),
+          // update balance at dynamodb
+          docClient.send(new UpdateCommand({
+            TableName: "abandon",
+            Key: {
+              PK: customer as string,
+              SK: "customer.balance",
+            },
+            // Update user balance, increase by amount_subtotal * -1
+            UpdateExpression: "SET balance = if_not_exists(balance, :zero) + :delta, updatedAt = :updatedAt",
+            ExpressionAttributeValues: {
+              ":delta": amount_subtotal * -1,
+              ":zero": 0,
+              ":updatedAt": new Date().toISOString(),
+            },
+          })),
+        ])
       }
       break;
   }
