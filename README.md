@@ -2,15 +2,17 @@
 
 ## Dynamodb Design
 
-1. Get customer info of stripe.
+1. object customer
     PK: <user.sub>, SK: "customer"|"customer_test"
-2. Get public logs of series
+2. object logs
     PK: <ser#series.id>, SK: "logs"
-3. Get customer balance of stripe
+3. object customer.balance
     PK: <customer.id>, SK: "customer.balance"
-4. Get my items
+4. object items
+    PK: <user.sub>, SK: <items#series.id>
+5. object series
     PK: <user.sub>, SK: <ser#series.id>
-5. Get info of series
-    PK: <user.sub>, SK: <ser#series.id>
-6. Get connect account
-    PK: <user.sub>, SK: "connect_account"|"connect_account_test"
+6. object connect.account
+    PK: <user.sub>, SK: "connect.account"|"connect.account.test"
+7. object transfer
+    PK: <user.sub>, SK: "tx#uuid.v4"

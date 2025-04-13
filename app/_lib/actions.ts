@@ -24,7 +24,7 @@ export const createSeries = async (series: {
     TableName: "abandon",
     Key: {
       PK: series.owner,
-      SK: isTestMode ? "connect_account_test" : "connect_account",
+      SK: isTestMode ? "connect.account.test" : "connect.account",
     },
   }))
   if (!Item) {
@@ -84,7 +84,7 @@ export const deleteSeries = async (series: {
     TableName: "abandon",
     Key: {
       PK: series.owner,
-      SK: isTestMode ? "connect_account_test" : "connect_account",
+      SK: isTestMode ? "connect.account.test" : "connect.account",
     },
   }))
   if (!Item) {
@@ -288,7 +288,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
         TableName: "abandon",
         Key: {
           PK: user.sub,
-          SK: `ser#${series}`,
+          SK: `items#${series}`,
         },
         UpdateExpression: "set #items = list_append(if_not_exists(#items, :empty_list), :item)",
         ExpressionAttributeNames: {
@@ -346,7 +346,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       TableName: "abandon",
       Key: {
         PK: owner,
-        SK: isTestMode ? "connect_account_test" : "connect_account",
+        SK: isTestMode ? "connect.account.test" : "connect.account",
       },
     }));
     if (connect_account) {
@@ -357,11 +357,12 @@ export const openBox = async (amount: number, customer: string, series: string, 
           destination: connect_account.id,
           transfer_group: series,
         });
+        const _id = uuidv4();
         await docClient.send(new PutCommand({
           TableName: "abandon",
           Item: {
-            PK: "transfer",
-            SK: uuidv4(),
+            PK: user.sub,
+            SK: `tx#${_id}`,
             amount: amount * 0.7,
             currency: 'usd',
             destination: connect_account.id,
@@ -371,15 +372,16 @@ export const openBox = async (amount: number, customer: string, series: string, 
             object: "transfer",
             createdAt: new Date().toISOString(),
             GPK: "transfer",
-            GSK: "paid",
+            GSK: `tx#${_id}`,
           },
         }));
       } catch {
+        const _id = uuidv4();
         await docClient.send(new PutCommand({
           TableName: "abandon",
           Item: {
-            PK: "transfer",
-            SK: uuidv4(),
+            PK: user.sub,
+            SK: `tx#${_id}`,
             amount: amount * 0.7,
             currency: 'usd',
             destination: connect_account.id,
@@ -389,7 +391,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
             object: "transfer",
             createdAt: new Date().toISOString(),
             GPK: "transfer",
-            GSK: "draft",
+            GSK: `tx#${_id}`,
           },
         }))
       }
