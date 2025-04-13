@@ -11,7 +11,7 @@
 4. object connect.account
    PK: <user.sub>, SK: "connect.account"|"connect.account#test"
 5. object transfer
-   PK: <user.sub>, SK: <tx#uuid.v4>
+   PK: <user.sub>, SK: <transfer#uuid.v4>
 6. object customer.balance
    PK: <customer.id>, SK: "customer.balance"
 7. TODO: object series.public
