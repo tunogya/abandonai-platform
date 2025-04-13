@@ -13,4 +13,4 @@
 5. Get info of series
     PK: <user.sub>, SK: <ser#series.id>
 6. Get connect account
-    PK: <>, SK: ""
+    PK: <user.sub>, SK: "connect_account"|"connect_account_test"
