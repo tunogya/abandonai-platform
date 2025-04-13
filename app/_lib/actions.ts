@@ -190,6 +190,7 @@ export const createTopupLink = async (customer: string, success_url: string) => 
           maximum: 5000,
         }
       }],
+      currency: "usd",
       customer: customer,
       mode: "payment",
       success_url: success_url,
