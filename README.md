@@ -15,4 +15,4 @@
 6. object connect.account
     PK: <user.sub>, SK: "connect.account"|"connect.account.test"
 7. object transfer
-    PK: <user.sub>, SK: "tx#uuid.v4"
+    PK: <user.sub>, SK: <tx#uuid.v4>
