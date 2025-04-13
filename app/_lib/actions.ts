@@ -227,7 +227,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
         error: "Insufficient balance",
       }
     }
-    // 从数据库中查询盲盒的详细信息
+    // Query the detailed information of the blind box from the database.
     const { Item: seriesInfo } = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
@@ -281,50 +281,51 @@ export const openBox = async (amount: number, customer: string, series: string, 
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
-
-    // add info to my items
-    await docClient.send(new UpdateCommand({
-      TableName: "abandon",
-      Key: {
-        PK: user.sub,
-        SK: `ser#${series}`,
-      },
-      UpdateExpression: "set #items = list_append(if_not_exists(#items, :empty_list), :item)",
-      ExpressionAttributeNames: {
-        "#items": "items",
-      },
-      ExpressionAttributeValues: {
-        ":item": [item],
-        ":empty_list": [],
-      },
-    }));
-    // add info to logs
-    await docClient.send(new UpdateCommand({
-      TableName: "abandon",
-      Key: {
-        PK: `ser#${series}`,
-        SK: "logs"
-      },
-      UpdateExpression: "set #logs = list_append(if_not_exists(#logs, :empty_list), :log)",
-      ExpressionAttributeNames: {
-        "#logs": "logs",
-      },
-      ExpressionAttributeValues: {
-        ":log": [{
-          user: user,
-          item: item,
-          createdAt: new Date().toISOString(),
-        }],
-        ":empty_list": [],
-      },
-    }));
     // Deduct from the user's quota, calculate the positive number
     await Promise.all([
+      // add info to my items
+      docClient.send(new UpdateCommand({
+        TableName: "abandon",
+        Key: {
+          PK: user.sub,
+          SK: `ser#${series}`,
+        },
+        UpdateExpression: "set #items = list_append(if_not_exists(#items, :empty_list), :item)",
+        ExpressionAttributeNames: {
+          "#items": "items",
+        },
+        ExpressionAttributeValues: {
+          ":item": [item],
+          ":empty_list": [],
+        },
+      })),
+      // add info to logs
+      docClient.send(new UpdateCommand({
+        TableName: "abandon",
+        Key: {
+          PK: `ser#${series}`,
+          SK: "logs"
+        },
+        UpdateExpression: "set #logs = list_append(if_not_exists(#logs, :empty_list), :log)",
+        ExpressionAttributeNames: {
+          "#logs": "logs",
+        },
+        ExpressionAttributeValues: {
+          ":log": [{
+            user: user,
+            item: item,
+            createdAt: new Date().toISOString(),
+          }],
+          ":empty_list": [],
+        },
+      })),
+      // balance transfer from customer at stripe
       stripe.customers.createBalanceTransaction(customer as string, {
         amount: amount,
         currency: "usd",
         description: "Top-up",
       }),
+      // balance transfer from customer at dynamodb
       docClient.send(new UpdateCommand({
         TableName: "abandon",
         Key: {
@@ -349,12 +350,49 @@ export const openBox = async (amount: number, customer: string, series: string, 
       },
     }));
     if (connect_account) {
-      await stripe.transfers.create({
-        amount: amount * 0.7,
-        currency: 'usd',
-        destination: connect_account.id,
-        transfer_group: series,
-      });
+      try {
+        await stripe.transfers.create({
+          amount: amount * 0.7,
+          currency: 'usd',
+          destination: connect_account.id,
+          transfer_group: series,
+        });
+        await docClient.send(new PutCommand({
+          TableName: "abandon",
+          Item: {
+            PK: "transfer",
+            SK: uuidv4(),
+            amount: amount * 0.7,
+            currency: 'usd',
+            destination: connect_account.id,
+            transfer_group: series,
+            user: user,
+            status: "paid",
+            object: "transfer",
+            createdAt: new Date().toISOString(),
+            GPK: "transfer",
+            GSK: "paid",
+          },
+        }));
+      } catch {
+        await docClient.send(new PutCommand({
+          TableName: "abandon",
+          Item: {
+            PK: "transfer",
+            SK: uuidv4(),
+            amount: amount * 0.7,
+            currency: 'usd',
+            destination: connect_account.id,
+            transfer_group: series,
+            user: user,
+            status: "draft",
+            object: "transfer",
+            createdAt: new Date().toISOString(),
+            GPK: "transfer",
+            GSK: "draft",
+          },
+        }))
+      }
     }
     return {
       ok: true,
