@@ -16,7 +16,7 @@ const GET = async (req: NextRequest) => {
   const {Item: customer} = await docClient.send(new GetCommand({
     TableName: "abandon",
     Key: {
-      PK: session.user.sub,
+      PK: session.sub,
       SK: isTestMode ? "customer_test" : "customer",
     },
   }));

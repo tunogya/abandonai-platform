@@ -7,6 +7,7 @@ import {getTranslations} from "next-intl/server";
 import TopupButton from "@/app/_components/TopupButton";
 import stripe from "@/app/_lib/stripe";
 import OpenBoxButton from "@/app/_components/OpenBoxButton";
+import BlindBox from "@/app/_components/BlindBox";
 
 const isTestMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_test_");
 
@@ -100,110 +101,101 @@ const Page = async ({params}: {
   return (
     <div className={"flex flex-col w-screen"}>
       <div className={"max-w-screen-sm mx-auto w-full"}>
-        <div className={"flex flex-col items-center justify-center"}>
-          <div className={"font-bold text-lg leading-5 w-full px-3 py-3"}>
-            {series.product.name}
-          </div>
-          <div className={"w-full overflow-scroll text-xs relative bg-blue-400"} style={{
-            aspectRatio: "3/4"
-          }}>
-            <div className={"text-center absolute right-0 top-0 p-1.5"}>
-              ({totalAvailable}/{totalSupply})
-            </div>
-            <div className={"text-xs text-center my-1.5 break-words absolute bottom-0 w-full"}>
-              <span className={"font-bold"}>{(series.price.unit_amount / 100).toFixed(2)}</span> tokens
-            </div>
-          </div>
-        </div>
+        <BlindBox series={{
+          product: series.product,
+          price: series.price,
+          totalAvailable: totalAvailable,
+          totalSupply: totalSupply,
+        }}/>
         <OpenBoxButton
-          disabled={totalAvailable === 0}
-          amount={series.price.unit_amount}
-          customer={customer}
-          series={series.product.id}
-        />
-        <div className={"p-3"}>
-          {
-            (session && customer) ? (
-              <TopupButton
-                user={session.user}
-                balance={myBalance}
-                customer={customer}
-                success_url={`${process.env.APP_BASE_URL}/s/${id}`}
-              />
-            ) : (
-              <a href={`/auth/login?returnTo=/s/${id}&audience=https://abandon.ai/api`}>
-                <div className={"flex items-center justify-center h-12 border border-[#DBDBDB] rounded-full"}>
-                  <div className={"text-sm font-bold"}>
-                    Log in and top up
-                  </div>
-                </div>
-              </a>
-            )
-          }
-        </div>
-        <div className={"px-3 py-3"}>
-          <div className={"font-semibold leading-5"}>Description</div>
-          <div className={"text-sm mt-1"}>{series.product.description}</div>
-        </div>
+        disabled={totalAvailable === 0}
+           amount={series.price.unit_amount}
+           customer={customer}
+           series={series.product.id}
+      />
+      <div className={"p-3"}>
         {
-          session && myItems.length > 0 && (
-            <div className={"px-3 py-3"}>
-              <div className={"font-semibold leading-5"}>My items</div>
-              <div className={"flex flex-col mt-1 gap-1.5"}>
-                {
-                  myItems && myItems?.map((item: {
-                    id: string,
-                    name: string,
-                    description?: string,
-                    image?: string,
-                  }) => (
-                    <div key={item.id} className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-                    </div>
-                  ))
-                }
+          (session && customer) ? (
+            <TopupButton
+              user={session.user}
+              balance={myBalance}
+              customer={customer}
+              success_url={`${process.env.APP_BASE_URL}/s/${id}`}
+            />
+          ) : (
+            <a href={`/auth/login?returnTo=/s/${id}&audience=https://abandon.ai/api`}>
+              <div className={"flex items-center justify-center h-12 border border-[#DBDBDB] rounded-full"}>
+                <div className={"text-sm font-bold"}>
+                  Log in and top up
+                </div>
               </div>
-            </div>
+            </a>
           )
         }
-        <div className={"px-3 py-3"}>
-          <div className={"font-semibold leading-5"}>Recently</div>
-          <div className={"flex flex-col mt-1 gap-1.5"}>
-            <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-
-            </div>
-            <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-
-            </div>
-            <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-
-            </div>
-            <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-
-            </div>
-          </div>
+      </div>
+      <div className={"px-3 py-3"}>
+        <div className={"font-semibold leading-5"}>Description</div>
+        <div className={"text-sm mt-1"}>{series.product.description}</div>
+      </div>
+      {
+      session && myItems.length > 0 && (
+      <div className={"px-3 py-3"}>
+        <div className={"font-semibold leading-5"}>My items</div>
+        <div className={"flex flex-col mt-1 gap-1.5"}>
+          {
+            myItems && myItems?.map((item: {
+              id: string,
+              name: string,
+              description?: string,
+              image?: string,
+            }) => (
+              <div key={item.id} className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
+              </div>
+            ))
+          }
         </div>
-        <div className={"p-3 flex justify-start items-center flex-col text-xs text-[#737373] mt-10"}>
-          <div className={"flex gap-3 mt-4 w-screen md:overflow-scroll px-4 md:w-fit justify-center"}>
-            <Link href={"/about.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-              {t("About")}
-            </Link>
-            <Link href={"https://x.com/abandonai"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-              X.com
-            </Link>
-            <Link href={"/privacy-policy.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-              {t("Privacy Policy")}
-            </Link>
-            <Link href={"/terms-of-use.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
-              {t("Terms of Use")}
-            </Link>
+      </div>
+      )
+      }
+      <div className={"px-3 py-3"}>
+        <div className={"font-semibold leading-5"}>Recently</div>
+        <div className={"flex flex-col mt-1 gap-1.5"}>
+          <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
+
           </div>
-          <div className={"py-0.5"}>
-            {t("Copyright")} © {new Date().getFullYear()} Abandon Inc. {t("All rights reserved")}
+          <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
+
+          </div>
+          <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
+
+          </div>
+          <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
+
           </div>
         </div>
       </div>
+      <div className={"p-3 flex justify-start items-center flex-col text-xs text-[#737373] mt-10"}>
+        <div className={"flex gap-3 mt-4 w-screen md:overflow-scroll px-4 md:w-fit justify-center"}>
+          <Link href={"/about.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
+            {t("About")}
+          </Link>
+          <Link href={"https://x.com/abandonai"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
+            X.com
+          </Link>
+          <Link href={"/privacy-policy.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
+            {t("Privacy Policy")}
+          </Link>
+          <Link href={"/terms-of-use.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
+            {t("Terms of Use")}
+          </Link>
+        </div>
+        <div className={"py-0.5"}>
+          {t("Copyright")} © {new Date().getFullYear()} Abandon Inc. {t("All rights reserved")}
+        </div>
+      </div>
     </div>
-  )
+</div>
+)
 }
 
 export default Page;
