@@ -5,10 +5,11 @@ import useSWR from "swr";
 
 const BlindBox: FC<{
   series: {
+    id: string,
     product: {
-      id: string,
       name: string,
-      url: string,
+      description?: string,
+      image?: string,
     },
     price: {
       unit_amount: number,
@@ -19,7 +20,7 @@ const BlindBox: FC<{
   }
 }> = (props) => {
   const [series, setSeries] = useState(props.series);
-  const {data} = useSWR(`/api/series/${series.product.id}`, (url) => fetch(url).then((res) => res.json()), {
+  const {data} = useSWR(`/api/series/${series.id}`, (url) => fetch(url).then((res) => res.json()), {
     refreshInterval: 5_000,
     dedupingInterval: 1_000,
   });

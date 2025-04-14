@@ -31,7 +31,7 @@ const Page = async () => {
       <div className={"w-[482px] flex flex-col gap-8 my-9"}>
         {Items?.map((item: any) => {
           return (
-            <SeriesShowItem key={item.product.id} item={item}/>
+            <SeriesShowItem key={item.id} series={item}/>
           )
         })}
         {

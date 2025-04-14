@@ -99,6 +99,7 @@ const Page = async ({params}: {
     <div className={"flex flex-col w-screen"}>
       <div className={"max-w-screen-sm mx-auto w-full"}>
         <BlindBox series={{
+          id: series.id,
           product: series.product,
           price: series.price,
           totalAvailable: totalAvailable,
@@ -108,7 +109,7 @@ const Page = async ({params}: {
           disabled={totalAvailable === 0}
           amount={series.price.unit_amount}
           customer={customer}
-          series={series.product.id}
+          series={series.series}
           owner={series.owner}
           user={session?.user}
         />
@@ -136,8 +137,8 @@ const Page = async ({params}: {
           <div className={"font-semibold leading-5"}>Description</div>
           <div className={"text-sm mt-1"}>{series.product.description}</div>
         </div>
-        <MyItems user={session?.user} series={series.product.id}/>
-        <RecentLogs series={series.product.id}/>
+        <MyItems user={session?.user} series={series.series}/>
+        <RecentLogs series={series.series}/>
         <div className={"p-3 flex justify-start items-center flex-col text-xs text-[#737373] mt-10"}>
           <div className={"flex gap-3 mt-4 w-screen md:overflow-scroll px-4 md:w-fit justify-center"}>
             <Link href={"/about.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>

@@ -7,19 +7,20 @@ import { useRouter } from 'next/navigation';
 import Link from "next/link";
 
 const SeriesShowItem: FC<{
-  item: {
+  series: {
+    id: string,
     owner: string,
     product: {
-      id: string,
       name: string,
-      url: string,
+      description?: string,
+      image?: string,
     },
     price: {
       unit_amount: number,
       currency: string,
     }
   }
-}> = ({item}) => {
+}> = ({series}) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -27,8 +28,8 @@ const SeriesShowItem: FC<{
     <div className={"flex flex-col w-[468px] mx-auto"}>
       <div className={"flex justify-between items-center pb-3"}>
         <div className={"flex-1"}>
-          <div className={"text-sm font-bold"}>{item.product.name}</div>
-          <div className={"text-xs text-[#666666]"}>{item.price.unit_amount / 100} {item.price.currency}</div>
+          <div className={"text-sm font-bold"}>{series.product.name}</div>
+          <div className={"text-xs text-[#666666]"}>{series.price.unit_amount / 100} {series.price.currency}</div>
         </div>
         <button onClick={() => setIsOpen(true)}>
           <svg aria-label="More options" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
@@ -44,7 +45,7 @@ const SeriesShowItem: FC<{
             <DialogPanel className="border bg-white w-[400px] rounded-xl text-sm divide-[#DBDBDB] divide-y">
               <Link
                 prefetch
-                href={`/series/edit/${item.product.id}`}
+                href={`/series/edit/${series.id}`}
               >
                 <div className={"h-12 w-full text-[#ED4956] font-bold flex items-center justify-center"}>
                   Edit
@@ -54,10 +55,8 @@ const SeriesShowItem: FC<{
                 className={"h-12 font-bold w-full text-[#ED4956]"}
                 onClick={async () => {
                   const {ok} = await deleteSeries({
-                    owner: item.owner,
-                    product: {
-                      id: item.product.id,
-                    }
+                    owner: series.owner,
+                    id: series.id,
                   });
                   if (ok) {
                     router.refresh();
@@ -69,7 +68,7 @@ const SeriesShowItem: FC<{
               </button>
               <button
                 onClick={async () => {
-                  await navigator.clipboard.writeText(item.product.url);
+                  await navigator.clipboard.writeText(`${process.env.APP_BASE_URL}/s/${series.id}`);
                   setIsOpen(false);
                 }}
                 className={"h-12 w-full"}>

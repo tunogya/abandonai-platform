@@ -88,9 +88,7 @@ export const updateSeries = async (series: {
 
 export const deleteSeries = async (series: {
   owner: string,
-  product: {
-    id: string,
-  },
+  id: string,
 }) => {
   const {Item} = await docClient.send(new GetCommand({
     TableName: "abandon",
@@ -107,7 +105,7 @@ export const deleteSeries = async (series: {
       TableName: "abandon",
       Key: {
         PK: series.owner,
-        SK: series.product.id,
+        SK: series.id,
       },
       UpdateExpression: "set #active = :active",
       ExpressionAttributeNames: {
