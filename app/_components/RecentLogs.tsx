@@ -1,6 +1,6 @@
 "use client";
 
-import {FC, useState} from "react";
+import {FC} from "react";
 import useSWR from "swr";
 import {getAccessToken} from "@auth0/nextjs-auth0";
 
@@ -13,22 +13,20 @@ const RecentLogs: FC<{
     }
   }).then(res => res.json()));
 
-  console.log(data);
-
   return (
     <div className={"px-3 py-3"}>
       <div className={"font-semibold leading-5"}>Recently</div>
       <div className={"flex flex-col mt-1 gap-1.5"}>
         {
-          data && data?.map((log: {
+          data && data?.map((item: {
             id: string,
             name: string,
             description: string,
             shared: boolean,
             createdAt: string
           }) => (
-            <div key={log.id} className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-              {log.name} {log.description} {log.createdAt}
+            <div key={item.id} className={"h-20 w-full border border-[#DBDBDB] rounded-lg flex items-center justify-center"}>
+              {item.name} {item.description} {item.createdAt}
             </div>
           ))
         }

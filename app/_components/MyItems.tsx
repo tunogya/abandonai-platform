@@ -35,8 +35,8 @@ const MyItems: FC<{
             shared: boolean,
             createdAt: string
           }) => (
-            <div key={item.id} className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-              {item.name} {item.description} {item.createdAt}
+            <div key={item.id} className={"h-20 w-full border border-[#DBDBDB] rounded-lg flex items-center justify-center"}>
+              {item.name}
             </div>
           ))
         }
