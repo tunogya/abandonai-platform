@@ -76,6 +76,7 @@ export const updateSeries = async (series: {
         ":updatedAt": new Date().toISOString(),
       },
     }));
+    return {ok: true}
   } catch (e) {
     console.log(e)
     return {ok: false, error: e}

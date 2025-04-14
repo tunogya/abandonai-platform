@@ -1,7 +1,7 @@
 "use client";
 
-import {useEffect, useState} from "react";
-import {createSeries} from "@/app/_lib/actions";
+import {useState} from "react";
+import {updateSeries} from "@/app/_lib/actions";
 import {useUser} from "@auth0/nextjs-auth0";
 import Link from "next/link";
 import {useParams} from "next/navigation";
@@ -84,9 +84,10 @@ const Page = () => {
             <button
               disabled={status === "loading" || !series.name || !user}
               onClick={async () => {
-                if (!user) return
+                if (!user || !id) return
                 setStatus("loading");
-                const {ok} = await createSeries({
+                const {ok} = await updateSeries({
+                  id: id as string,
                   owner: user.sub,
                   price: {
                     unit_amount: Math.floor(Number(series.price) * 100),
