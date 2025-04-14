@@ -5,6 +5,9 @@ import {docClient} from "@/app/_lib/dynamodb";
 import {GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 import {v4 as uuidv4} from "uuid";
 import {User} from "@auth0/nextjs-auth0/types";
+import {PutObjectCommand} from "@aws-sdk/client-s3";
+import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
+import {s3Client} from "@/app/_lib/s3";
 
 export const createSeries = async (series: {
   owner: string,
@@ -385,5 +388,50 @@ export const openBox = async (amount: number, customer: string, series: string, 
       ok: false,
       error: e,
     }
+  }
+}
+
+export const getS3SignedUrl= async (key: string, contentType: string) => {
+  const
+    command = new PutObjectCommand({
+      Bucket: "abandon.ai",
+      Key: key,
+      ContentType: contentType,
+    });
+  // @ts-ignore
+  const url = await getSignedUrl(s3Client, command, {
+    expiresIn: 60 * 5,
+  });
+  return {
+    ok: true,
+    url: url,
+  }
+}
+
+export const getBalance = async () => {
+  return {
+    ok: true,
+    balance: 0,
+  }
+}
+
+export const getMyItems = async () => {
+  return {
+    ok: true,
+    items: [],
+  }
+}
+
+export const getSeriesLogs = async () => {
+  return {
+    ok: true,
+    logs: [],
+  }
+}
+
+export const getSeriesInfo = async () => {
+  return {
+    ok: true,
+    series: {},
   }
 }
