@@ -10,6 +10,7 @@ import OpenBoxButton from "@/app/_components/OpenBoxButton";
 import BlindBox from "@/app/_components/BlindBox";
 import RecentLogs from "@/app/_components/RecentLogs";
 import MyItems from "@/app/_components/MyItems";
+import {Series} from "@/app/_lib/types";
 
 const Page = async ({params}: {
   params: Promise<{ id: string }>
@@ -26,19 +27,19 @@ const Page = async ({params}: {
       ":gsk": id,
     },
   }));
-  const series = Items?.[0];
+  const series = Items?.[0] as Series;
   if (!series) {
     notFound();
   }
   const t = await getTranslations('Root');
   // Iterate through the series?.boxes array, sum up each item.available, and get the totalAvailable.
-  const totalAvailable = series?.boxes.reduce((acc: number, item: any) => {
+  const totalAvailable = series?.boxes?.reduce((acc: number, item: any) => {
     return acc + item.available;
-  }, 0);
+  }, 0) || 0;
   // Iterate through the series?.boxes array, sum up each item.supply, and obtain the totalSupply.
-  const totalSupply = series?.boxes.reduce((acc: number, item: any) => {
+  const totalSupply = series?.boxes?.reduce((acc: number, item: any) => {
     return acc + item.supply;
-  }, 0);
+  }, 0) || 0;
   // First, check if the customer information for the currently logged-in user exists.
   let customer: string | undefined = undefined;
   // Only the customer who has login, query by user.sub
@@ -99,17 +100,15 @@ const Page = async ({params}: {
     <div className={"flex flex-col w-screen"}>
       <div className={"max-w-screen-sm mx-auto w-full"}>
         <BlindBox series={{
-          id: series.id,
-          product: series.product,
-          price: series.price,
+          ...series,
           totalAvailable: totalAvailable,
           totalSupply: totalSupply,
         }}/>
         <OpenBoxButton
           disabled={totalAvailable === 0}
-          amount={series.price.unit_amount}
+          amount={series.unit_amount}
           customer={customer}
-          series={series.series}
+          series={series.id}
           owner={series.owner}
           user={session?.user}
         />
@@ -135,10 +134,10 @@ const Page = async ({params}: {
         </div>
         <div className={"px-3 py-3"}>
           <div className={"font-semibold leading-5"}>Description</div>
-          <div className={"text-sm mt-1"}>{series.product.description}</div>
+          <div className={"text-sm mt-1"}>{series.description}</div>
         </div>
-        <MyItems user={session?.user} series={series.series}/>
-        <RecentLogs series={series.series}/>
+        <MyItems user={session?.user} series={series.id}/>
+        <RecentLogs series={series.id}/>
         <div className={"p-3 flex justify-start items-center flex-col text-xs text-[#737373] mt-10"}>
           <div className={"flex gap-3 mt-4 w-screen md:overflow-scroll px-4 md:w-fit justify-center"}>
             <Link href={"/about.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>

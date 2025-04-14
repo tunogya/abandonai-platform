@@ -27,17 +27,18 @@ const GET = async (req: NextRequest, {params}: {
     });
   }
   const series = Items[0];
-  const totalAvailable = series?.boxes.reduce((acc: number, item: any) => {
+  const totalAvailable = series?.boxes?.reduce((acc: number, item: any) => {
     return acc + item.available;
-  }, 0);
+  }, 0) || 0;
   // Iterate through the series?.boxes array, sum up each item.supply, and obtain the totalSupply.
-  const totalSupply = series?.boxes.reduce((acc: number, item: any) => {
+  const totalSupply = series?.boxes?.reduce((acc: number, item: any) => {
     return acc + item.supply;
-  }, 0);
+  }, 0) || 0;
 
   return Response.json({
-    product: series.product,
-    price: series.price,
+    ...series,
+    boxes: undefined,
+    items: undefined,
     totalAvailable,
     totalSupply,
   });

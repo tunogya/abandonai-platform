@@ -3,24 +3,12 @@
 import {FC, useState} from "react";
 import {Dialog, DialogBackdrop, DialogPanel} from "@headlessui/react";
 import {deleteSeries} from "@/app/_lib/actions";
-import { useRouter } from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import Link from "next/link";
+import Image from "next/image";
+import {Series} from "@/app/_lib/types";
 
-const SeriesShowItem: FC<{
-  series: {
-    id: string,
-    owner: string,
-    product: {
-      name: string,
-      description?: string,
-      image?: string,
-    },
-    price: {
-      unit_amount: number,
-      currency: string,
-    }
-  }
-}> = ({series}) => {
+const SeriesShowItem: FC<{ series: Series }> = ({series}) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -28,8 +16,8 @@ const SeriesShowItem: FC<{
     <div className={"flex flex-col w-[468px] mx-auto"}>
       <div className={"flex justify-between items-center pb-3"}>
         <div className={"flex-1"}>
-          <div className={"text-sm font-bold"}>{series.product.name}</div>
-          <div className={"text-xs text-[#666666]"}>{series.price.unit_amount / 100} {series.price.currency}</div>
+          <div className={"text-sm font-bold"}>{series.name}</div>
+          <div className={"text-xs text-[#666666]"}>{series.unit_amount / 100}</div>
         </div>
         <button onClick={() => setIsOpen(true)}>
           <svg aria-label="More options" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
@@ -81,7 +69,16 @@ const SeriesShowItem: FC<{
           </div>
         </Dialog>
       </div>
-      <div className={"border border-[#DBDBDB] w-full rounded aspect-square"}>
+      <div className={"border border-[#DBDBDB] w-full rounded aspect-auto"}>
+        {
+          series?.image ? (
+            <Image src={series.image} alt={""} width={468} height={468}/>
+          ) : (
+            <div className={"w-full h-full flex items-center justify-center"}>
+              <div className={"text-sm text-[#666666]"}>No image</div>
+            </div>
+          )
+        }
       </div>
     </div>
   )

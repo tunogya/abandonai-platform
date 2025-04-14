@@ -63,8 +63,8 @@ const Page = () => {
               {
                 !isLoading && data?.Count > 0 && data?.Items?.map((item: any) => {
                   return (
-                    <option key={item?.product?.id} value={item?.product?.id}>
-                      {item?.product?.name}
+                    <option key={item?.id} value={item?.id}>
+                      {item?.name}
                     </option>
                   )
                 })

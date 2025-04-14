@@ -11,8 +11,8 @@ const Page = () => {
   const {user} = useUser();
   const {id} = useParams();
   const [series, setSeries] = useState<{
-    name: string,
-    price: string,
+    name?: string,
+    price?: string,
     description?: string,
     image?: string,
   }>({
@@ -49,7 +49,7 @@ const Page = () => {
             <input
               value={series.name}
               onChange={(e) => setSeries({...series, name: e.target.value})}
-              placeholder={data?.product?.name}
+              placeholder={data?.name}
               className={"border border-[#DBDBDB] rounded-xl px-3 py-2.5 w-full leading-5"}
             />
           </div>
@@ -61,7 +61,7 @@ const Page = () => {
               value={series.price}
               type={"number"}
               onChange={(e) => setSeries({...series, price: e.target.value})}
-              placeholder={(data?.price?.unit_amount / 100).toFixed(2)}
+              placeholder={(data?.unit_amount / 100).toFixed(2)}
               className={"border border-[#DBDBDB] rounded-xl px-3 py-2.5 w-full leading-5"}
             />
           </div>
@@ -72,7 +72,7 @@ const Page = () => {
             <input
               value={series.description}
               onChange={(e) => setSeries({...series, description: e.target.value})}
-              placeholder={data?.product?.description}
+              placeholder={data?.description}
               className={"border border-[#DBDBDB] rounded-xl px-3 py-2.5 w-full leading-5"}
             />
           </div>
@@ -89,15 +89,10 @@ const Page = () => {
                 const {ok} = await updateSeries({
                   id: id as string,
                   owner: user.sub,
-                  price: {
-                    unit_amount: Math.floor(Number(series.price) * 100),
-                    currency: "usd",
-                  },
-                  product: {
-                    name: series.name,
-                    description: series.description,
-                    image: series.image,
-                  }
+                  unit_amount: Math.floor(Number(series.price) * 100),
+                  name: series.name,
+                  description: series.description,
+                  image: series.image,
                 });
                 if (ok) {
                   setStatus("success");

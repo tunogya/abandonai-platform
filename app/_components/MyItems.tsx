@@ -8,7 +8,7 @@ import {Dialog, DialogPanel} from "@headlessui/react";
 
 const MyItems: FC<{
   user?: User,
-  series: number,
+  series: string,
 }> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [myItems, setMyItems] = useState([]);

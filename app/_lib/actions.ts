@@ -11,15 +11,10 @@ import {s3Client} from "@/app/_lib/s3";
 
 export const createSeries = async (series: {
   owner: string,
-  product: {
-    name: string,
-    description?: string,
-    image?: string,
-  },
-  price: {
-    unit_amount: number,
-    currency: string,
-  },
+  name: string,
+  description?: string,
+  image?: string,
+  unit_amount: number,
 }) => {
   // In the connect account, create a product.
   try {
@@ -29,10 +24,12 @@ export const createSeries = async (series: {
       Item: {
         PK: series.owner,
         SK: `series#${ser_id}`,
-        series: ser_id,
+        id: ser_id,
         owner: series.owner,
-        price: series.price,
-        product: series.product,
+        name: series.name,
+        description: series.description,
+        image: series.image,
+        unit_amount: series.unit_amount,
         object: "series",
         GPK: "series",
         GSK: ser_id,
@@ -50,34 +47,50 @@ export const createSeries = async (series: {
 export const updateSeries = async (series: {
   id: string,
   owner: string,
-  product: {
-    name: string,
-    description?: string,
-    image?: string,
-  },
-  price: {
-    unit_amount: number,
-    currency: string,
-  },
+  name?: string,
+  description?: string,
+  image?: string,
+  unit_amount?: number,
 }) => {
   try {
+    let updateExpression = "SET ";
+    const expressionAttributeValues: Record<string, any> = {};
+    const expressionAttributeNames: Record<string, any> = {};
+
+    if (series.name) {
+      updateExpression += "#name = :name,";
+      expressionAttributeValues[":name"] = series.name;
+      expressionAttributeNames["#name"] = "name";
+    }
+    if (series.description) {
+      updateExpression += "#description = :description,";
+      expressionAttributeValues[":description"] = series.description;
+      expressionAttributeNames["#description"] = "description";
+    }
+    if (series.image) {
+      updateExpression += "#image = :image,";
+      expressionAttributeValues[":image"] = series.image;
+      expressionAttributeNames["#image"] = "image";
+    }
+    if (typeof series.unit_amount === "number") {
+      updateExpression += "#unit_amount = :unit_amount,";
+      expressionAttributeValues[":unit_amount"] = series.unit_amount;
+      expressionAttributeNames["#unit_amount"] = "unit_amount";
+    }
+    updateExpression += "#updatedAt = :updatedAt";
+    expressionAttributeValues[":updatedAt"] = new Date().toISOString();
+    expressionAttributeNames["#updatedAt"] = "updatedAt";
+    updateExpression = updateExpression.replace(/,$/, "");
+
     await docClient.send(new UpdateCommand({
       TableName: "abandon",
       Key: {
         PK: series.owner,
         SK: `series#${series.id}`,
       },
-      UpdateExpression: "set #product = :product, #price = :price, #updatedAt = :updatedAt",
-      ExpressionAttributeNames: {
-        "#product": "product",
-        "#price": "price",
-        "#updatedAt": "updatedAt",
-      },
-      ExpressionAttributeValues: {
-        ":product": series.product,
-        ":price": series.price,
-        ":updatedAt": new Date().toISOString(),
-      },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeNames: expressionAttributeNames,
+      ExpressionAttributeValues: expressionAttributeValues,
     }));
     return {ok: true}
   } catch (e) {

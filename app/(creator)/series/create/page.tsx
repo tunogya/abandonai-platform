@@ -298,15 +298,10 @@ const Page = () => {
 
                 const seriesData = {
                   owner: user.sub as string,
-                  price: {
-                    unit_amount: Math.floor(Number(series.price) * 100),
-                    currency: "usd",
-                  },
-                  product: {
-                    name: series.name,
-                    description: series.description || undefined,
-                    image: series.image || undefined,
-                  },
+                  unit_amount: Math.floor(Number(series.price) * 100),
+                  name: series.name,
+                  description: series.description || undefined,
+                  image: series.image || undefined,
                 };
 
                 const { ok } = await createSeries(seriesData);
