@@ -18,37 +18,9 @@ export const createSeries = async (series: {
     currency: string,
   },
 }) => {
-  const {Item} = await docClient.send(new GetCommand({
-    TableName: "abandon",
-    Key: {
-      PK: series.owner,
-      SK: "connect.account",
-    },
-  }))
-  if (!Item) {
-    return {ok: false, error: "Connect account not found"}
-  }
-  // query connectAccountId
-  const connectAccountId = Item.id;
   // In the connect account, create a product.
   try {
     const ser_id = uuidv4();
-    const product = await stripe.products.create({
-      id: ser_id,
-      name: series.product.name,
-      description: series.product.description ? series.product.description : undefined,
-      images: series.product.image ? [series.product.image] : undefined,
-      url: `https://abandon.ai/s/${ser_id}`,
-    }, {
-      stripeAccount: connectAccountId,
-    });
-    const price = await stripe.prices.create({
-      unit_amount: series.price.unit_amount,
-      currency: series.price.currency,
-      product: ser_id,
-    }, {
-      stripeAccount: connectAccountId,
-    });
     await docClient.send(new PutCommand({
       TableName: "abandon",
       Item: {
@@ -56,8 +28,8 @@ export const createSeries = async (series: {
         SK: `series#${ser_id}`,
         series: ser_id,
         owner: series.owner,
-        price: price,
-        product: product,
+        price: series.price,
+        product: series.product,
         object: "series",
         GPK: "series",
         GSK: ser_id,
@@ -66,6 +38,44 @@ export const createSeries = async (series: {
       },
     }));
     return {ok: true}
+  } catch (e) {
+    console.log(e)
+    return {ok: false, error: e}
+  }
+}
+
+export const updateSeries = async (series: {
+  id: string,
+  owner: string,
+  product: {
+    name: string,
+    description?: string,
+    image?: string,
+  },
+  price: {
+    unit_amount: number,
+    currency: string,
+  },
+}) => {
+  try {
+    await docClient.send(new UpdateCommand({
+      TableName: "abandon",
+      Key: {
+        PK: series.owner,
+        SK: `series#${series.id}`,
+      },
+      UpdateExpression: "set #product = :product, #price = :price, #updatedAt = :updatedAt",
+      ExpressionAttributeNames: {
+        "#product": "product",
+        "#price": "price",
+        "#updatedAt": "updatedAt",
+      },
+      ExpressionAttributeValues: {
+        ":product": series.product,
+        ":price": series.price,
+        ":updatedAt": new Date().toISOString(),
+      },
+    }));
   } catch (e) {
     console.log(e)
     return {ok: false, error: e}
@@ -88,30 +98,21 @@ export const deleteSeries = async (series: {
   if (!Item) {
     return {ok: false, error: "Connect account not found"}
   }
-  const connectAccountId = Item.id;
   try {
-    await Promise.all([
-      docClient.send(new UpdateCommand({
-        TableName: "abandon",
-        Key: {
-          PK: series.owner,
-          SK: series.product.id,
-        },
-        UpdateExpression: "set #active = :active",
-        ExpressionAttributeNames: {
-          "#active": "active",
-        },
-        ExpressionAttributeValues: {
-          ":active": false,
-        },
-      })),
-      // In the connect account, archived products
-      stripe.products.update(series.product.id, {
-        active: false,
-      }, {
-        stripeAccount: connectAccountId,
-      }),
-    ]);
+    await docClient.send(new UpdateCommand({
+      TableName: "abandon",
+      Key: {
+        PK: series.owner,
+        SK: series.product.id,
+      },
+      UpdateExpression: "set #active = :active",
+      ExpressionAttributeNames: {
+        "#active": "active",
+      },
+      ExpressionAttributeValues: {
+        ":active": false,
+      },
+    }))
     return {ok: true}
   } catch (e) {
     console.log(e)
