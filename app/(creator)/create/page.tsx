@@ -370,6 +370,9 @@ const Page = () => {
                     image: "",
                     name: "",
                   });
+                  setFile(null);
+                  setPreview(null);
+                  setUploadProgress(0);
                   setTimeout(() => {
                     setStatus("idle");
                   }, 3000);
