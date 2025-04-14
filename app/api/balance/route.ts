@@ -15,8 +15,9 @@ const GET = async (req: NextRequest) => {
     TableName: "abandon",
     Key: {
       PK: session.sub,
-      SK: "customer.balance",
+      SK: "customer",
     },
+    ProjectionExpression: "balance",
   }));
   return Response.json({
     balance: Item ? Item.balance * -1 / 100 : 0,

@@ -17,6 +17,7 @@ const GET = async (req: NextRequest, {params}: {
     // filter share = true
     Limit: 20,
   }));
+  // TODO, if shared = false, hidden something
   return  Response.json(Items);
 };
 

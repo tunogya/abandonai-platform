@@ -215,7 +215,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       TableName: "abandon",
       Key: {
         PK: user.sub,
-        SK: "customer.balance",
+        SK: "customer",
       },
     }));
     const userBalance = balance ? balance.balance * -1 : 0;
@@ -303,7 +303,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
         TableName: "abandon",
         Key: {
           PK: user.sub,
-          SK: "customer.balance",
+          SK: "customer",
         },
         // Update user balance, increase by amount_subtotal * -1
         UpdateExpression: "SET balance = if_not_exists(balance, :zero) + :delta, updatedAt = :updatedAt",

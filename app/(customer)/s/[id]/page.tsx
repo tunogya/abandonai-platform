@@ -87,7 +87,7 @@ const Page = async ({params}: {
       TableName: "abandon",
       Key: {
         PK: session.user.sub,
-        SK: "customer.balance",
+        SK: "customer",
       },
     }));
     if (Item) {

@@ -90,7 +90,7 @@ const POST = async (req: NextRequest) => {
             TableName: "abandon",
             Key: {
               PK: sub,
-              SK: "customer.balance",
+              SK: "customer",
             },
             // Update user balance, increase by amount_subtotal * -1
             UpdateExpression: "SET balance = if_not_exists(balance, :zero) + :delta, updatedAt = :updatedAt",

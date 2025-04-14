@@ -16,5 +16,3 @@
    PK: <user.sub>, SK: <transfer#uuid.v4>
 6. object checkout.session
    PK: <user.sub>, SK: <session.id>
-7. object customer.balance
-   PK: <user.sub>, SK: "customer.balance"
