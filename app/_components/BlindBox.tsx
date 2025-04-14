@@ -19,7 +19,10 @@ const BlindBox: FC<{
   }
 }> = (props) => {
   const [series, setSeries] = useState(props.series);
-  const {data} = useSWR(`/api/series/${series.product.id}`, (url) => fetch(url).then((res) => res.json()));
+  const {data} = useSWR(`/api/series/${series.product.id}`, (url) => fetch(url).then((res) => res.json()), {
+    refreshInterval: 5_000,
+    dedupingInterval: 1_000,
+  });
 
   useEffect(() => {
     if (data) {

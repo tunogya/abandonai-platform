@@ -13,7 +13,10 @@ const RecentLogs: FC<{
     headers: {
       Authorization: `Bearer ${await getAccessToken()}`
     }
-  }).then(res => res.json()));
+  }).then(res => res.json()), {
+    refreshInterval: 5_000,
+    dedupingInterval: 1_000,
+  });
   const [item, setItem] = useState<{
     id: string;   name: string;   description?: string | undefined;   image?: string | undefined;   shared: boolean;   createdAt: string;
   }>({

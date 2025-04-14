@@ -19,7 +19,10 @@ const Page = () => {
     headers: {
       "Authorization": `Bearer ${await getAccessToken()}`
     }
-  }).then((res) => res.json()));
+  }).then((res) => res.json()), {
+    refreshInterval: 5_000,
+    dedupingInterval: 1_000,
+  });
   const [status, setStatus] = useState("idle");
 
   return (
