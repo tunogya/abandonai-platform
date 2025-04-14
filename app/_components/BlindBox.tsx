@@ -2,7 +2,6 @@
 
 import {FC, useEffect, useState} from "react";
 import useSWR from "swr";
-import Image from "next/image";
 import {SeriesPublic} from "@/app/_lib/types";
 
 const BlindBox: FC<{ series: SeriesPublic }> = (props) => {
@@ -23,23 +22,17 @@ const BlindBox: FC<{ series: SeriesPublic }> = (props) => {
       <div className={"font-bold text-lg leading-5 w-full px-3 py-3"}>
         {series.name}
       </div>
-      <div className={"w-full overflow-scroll text-xs relative bg-blue-400"} style={{
-        aspectRatio: "3/4"
-      }}>
+      <div className={"w-full overflow-scroll text-xs relative bg-blue-400 aspect-auto"}>
         {
-          series?.image ? (
-            <Image src={series.image} alt={""} width={468} height={468}/>
-          ) : (
-            <div className={"w-full h-full flex items-center justify-center"}>
-              <div className={"text-sm text-[#666666]"}>No image</div>
-            </div>
+          series?.image && (
+            <img src={series.image} alt={""} className={"w-full h-full"}/>
           )
         }
         <div className={"text-center absolute right-0 top-0 p-1.5"}>
           ({series.totalAvailable}/{series.totalSupply})
         </div>
         <div className={"text-xs text-center my-1.5 break-words absolute bottom-0 w-full"}>
-          <span className={"font-bold"}>{(series.unit_amount / 100).toFixed(2)}</span> tokens
+          <span className={"font-bold"}>{series.unit_amount / 100}</span> tokens
         </div>
       </div>
     </div>

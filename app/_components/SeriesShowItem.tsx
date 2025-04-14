@@ -5,7 +5,6 @@ import {Dialog, DialogBackdrop, DialogPanel} from "@headlessui/react";
 import {deleteSeries} from "@/app/_lib/actions";
 import {useRouter} from 'next/navigation';
 import Link from "next/link";
-import Image from "next/image";
 import {Series} from "@/app/_lib/types";
 
 const SeriesShowItem: FC<{ series: Series }> = ({series}) => {
@@ -71,12 +70,8 @@ const SeriesShowItem: FC<{ series: Series }> = ({series}) => {
       </div>
       <div className={"border border-[#DBDBDB] w-full rounded aspect-auto"}>
         {
-          series?.image ? (
-            <Image src={series.image} alt={""} width={468} height={468}/>
-          ) : (
-            <div className={"w-full h-full flex items-center justify-center"}>
-              <div className={"text-sm text-[#666666]"}>No image</div>
-            </div>
+          series?.image && (
+            <img src={series.image} alt={""} className={"w-full h-full"}/>
           )
         }
       </div>
