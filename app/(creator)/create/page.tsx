@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {createBox} from "@/app/_lib/actions";
 import Link from "next/link";
 import useSWR from "swr";
@@ -15,20 +15,12 @@ const Page = () => {
     image: "",
     name: "",
   });
-  const [accessToken, setAccessToken] = useState("");
-  const {data, isLoading} = useSWR(accessToken ? "/api/series": null, (url) => fetch(url, {
+  const {data, isLoading} = useSWR("/api/series", async (url) => fetch(url, {
     headers: {
-      "Authorization": `Bearer ${accessToken}`
+      "Authorization": `Bearer ${await getAccessToken()}`
     }
   }).then((res) => res.json()));
   const [status, setStatus] = useState("idle");
-
-  useEffect(() => {
-    (async () => {
-      const accessToken = await getAccessToken();
-      setAccessToken(accessToken);
-    })();
-  }, []);
 
   return (
     <div className={"mx-auto p-8 relative min-h-screen w-full"}>

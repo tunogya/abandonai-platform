@@ -15,19 +15,11 @@ const TopupButton: FC<{
 }> = ({user, customer, balance, success_url}) => {
   const [status, setStatus] = useState("idle");
   const [myBalance, setMyBalance] = useState(balance);
-  const [accessToken, setAccessToken] = useState("");
-  const {data} = useSWR(accessToken ? "/api/balance" : null, (url) => fetch(url, {
+  const {data} = useSWR("/api/balance", async (url) => fetch(url, {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${await getAccessToken()}`,
     }
   }).then((res) => res.json()));
-
-  useEffect(() => {
-    (async () => {
-      const accessToken = await getAccessToken();
-      setAccessToken(accessToken);
-    })();
-  }, []);
 
   useEffect(() => {
     if (data) {

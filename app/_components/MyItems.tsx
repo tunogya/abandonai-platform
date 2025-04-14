@@ -1,13 +1,26 @@
 "use client";
 
-import {FC, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import {User} from "@auth0/nextjs-auth0/types";
+import useSWR from "swr";
+import {getAccessToken} from "@auth0/nextjs-auth0";
 
 const MyItems: FC<{
   user?: User,
   series: number,
 }> = (props) => {
   const [myItems, setMyItems] = useState([]);
+  const { data } = useSWR(`/api/items/${props.series}`, async (url) => fetch(url, {
+    headers: {
+      Authorization: `Bearer ${await getAccessToken()}`
+    }
+  }).then(res => res.json()));
+
+  useEffect(() => {
+    if (data) {
+      setMyItems(data);
+    }
+  }, [data]);
 
   return (
     <div className={"px-3 py-3"}>

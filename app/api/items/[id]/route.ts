@@ -19,7 +19,7 @@ const GET = async (req: NextRequest, {params}: {
     TableName: "abandon",
     KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
     ExpressionAttributeValues: {
-      ":pk": session.user.sub,
+      ":pk": session.sub,
       ":sk": `items#${id}#`,
     },
     ScanIndexForward: false,
