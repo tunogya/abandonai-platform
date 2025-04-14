@@ -30,7 +30,11 @@ export default async function RootLayout({children}: Readonly<{ children: ReactN
       className={`antialiased`}
     >
     <NextIntlClientProvider>{children}</NextIntlClientProvider>
-    <BreakpointIndicator/>
+    {
+      process.env.NODE_ENV === "development" && (
+        <BreakpointIndicator/>
+      )
+    }
     </body>
     </html>
   );
