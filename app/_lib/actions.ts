@@ -324,12 +324,14 @@ export const openBox = async (amount: number, customer: string, series: string, 
     }));
     if (connect_account) {
       try {
+        // maybe it will transfer fail
         await stripe.transfers.create({
           amount: amount * 0.7,
           currency: 'usd',
           destination: connect_account.id,
           transfer_group: series,
         });
+        // if success
         const _id = uuidv4();
         await docClient.send(new PutCommand({
           TableName: "abandon",
@@ -349,6 +351,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
           },
         }));
       } catch {
+        // if transfer fail
         const _id = uuidv4();
         await docClient.send(new PutCommand({
           TableName: "abandon",
@@ -371,6 +374,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
     }
     return {
       ok: true,
+      item: item,
     }
   } catch (e) {
     console.log(e);
