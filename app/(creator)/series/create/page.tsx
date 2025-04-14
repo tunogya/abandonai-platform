@@ -30,19 +30,19 @@ const Page = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // 当文件变更时生成预览
   useEffect(() => {
-    (async () => {
-      if (!file) {
-        setPreview(null);
-        return;
-      }
+    if (!file) {
+      setPreview(null);
+      return;
+    }
 
-      const objectUrl = URL.createObjectURL(file);
-      setPreview(objectUrl);
-      const key = `${uuidv4()}${file?.name.substring(file.name.lastIndexOf('.'))}`;
+    const objectUrl = URL.createObjectURL(file);
+    setPreview(objectUrl);
+
+    const upload = async () => {
+      const key = `${uuidv4()}${file.name.substring(file.name.lastIndexOf('.'))}`;
       const contentType = file.type;
-      const {url: postUrl} = await getS3SignedUrl(key, contentType);
+      const { url: postUrl } = await getS3SignedUrl(key, contentType);
 
       await fetch(postUrl, {
         method: "PUT",
@@ -51,11 +51,15 @@ const Page = () => {
           "Content-Type": contentType,
         },
       });
-      // 将图片信息更新到series状态
-      setSeries(prev => ({...prev, image: postUrl}));
-      // 清理函数
-      return () => URL.revokeObjectURL(objectUrl);
-    })();
+
+      setSeries(prev => ({ ...prev, image: `https://s3.abandon.ai/${key}`}));
+    };
+
+    upload();
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
   }, [file]);
 
   // 验证文件是否为图片
