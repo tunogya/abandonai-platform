@@ -63,8 +63,8 @@ const Layout = async ({
             })),
             await stripe.accountLinks.create({
               account: account.id,
-              refresh_url: `${process.env.APP_BASE_URL}/home`,
-              return_url: `${process.env.APP_BASE_URL}/home`,
+              refresh_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
+              return_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
               type: "account_onboarding",
             })
           ]);

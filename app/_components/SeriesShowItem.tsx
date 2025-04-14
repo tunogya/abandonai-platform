@@ -68,7 +68,7 @@ const SeriesShowItem: FC<{
               </button>
               <button
                 onClick={async () => {
-                  await navigator.clipboard.writeText(`${process.env.APP_BASE_URL}/s/${series.id}`);
+                  await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/s/${series.id}`);
                   setIsOpen(false);
                 }}
                 className={"h-12 w-full"}>

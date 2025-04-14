@@ -120,7 +120,7 @@ const Page = async ({params}: {
                 user={session.user}
                 balance={myBalance}
                 customer={customer}
-                success_url={`${process.env.APP_BASE_URL}/s/${id}`}
+                success_url={`${process.env.NEXT_PUBLIC_APP_BASE_URL}/s/${id}`}
               />
             ) : (
               <a href={`/auth/login?returnTo=/s/${id}&audience=https://abandon.ai/api`}>
