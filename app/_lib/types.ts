@@ -1,12 +1,3 @@
-export type SeriesInputForm = {
-  id: string,
-  name: string,
-  owner: string,
-  price: number,
-  createdAt: string,
-  updatedAt: string,
-}
-
 export type Series = {
   id: string,
   owner: string,
@@ -14,10 +5,18 @@ export type Series = {
   description?: string,
   image?: string,
   unit_amount: number,
-  boxes: [],
-  items: [],
+  boxes: Box[],
+  items: Item[],
   createdAt: string,
   updatedAt: string,
+}
+
+export type CreateSeriesForm = {
+  owner: string,
+  name: string,
+  description?: string,
+  image?: string,
+  unit_amount: number,
 }
 
 export type SeriesPublic = {
@@ -35,13 +34,20 @@ export type SeriesPublic = {
 
 export type Box = {
   id: string,
-  seriesId: string,
   name: string,
-  description: string,
-  image: string,
-  owner: string,
-  price: number,
-  externalLink: string,
+  description?: string,
+  image?: string,
+  supply: number,
+  available: number,
   createdAt: string,
   updatedAt: string,
+}
+
+export type Item = {
+  id: string,
+  name: string,
+  description?: string,
+  image?: string,
+  shared: boolean,
+  createdAt: string
 }

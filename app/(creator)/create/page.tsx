@@ -111,6 +111,7 @@ const Page = () => {
                   supply: e.target.value,
                 })
               }}
+              type={"number"}
               placeholder={"Supply"}
               className={"border border-[#DBDBDB] rounded-xl px-3 py-2.5 w-full leading-5"}
             />
@@ -138,10 +139,12 @@ const Page = () => {
                 if (!user || !user?.sub || !box.series || !box.supply || !box.name) {
                   return;
                 }
+                if (Math.floor(Number(box.supply)) <=0) {
+                  return;
+                }
                 setStatus("loading");
-                const {ok} = await createBox({
+                const {ok} = await createBox(user.sub, {
                   ...box,
-                  owner: user.sub,
                   supply: Math.floor(Number(box.supply)),
                 });
                 if (ok) {

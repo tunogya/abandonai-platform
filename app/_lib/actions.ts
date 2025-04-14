@@ -135,12 +135,11 @@ export const deleteSeries = async (series: {
   }
 }
 
-export const createBox = async (box: {
-  owner: string,
+export const createBox = async (owner: string, box: {
   supply: number,
-  description: string,
+  description?: string,
   series: string,
-  image: string,
+  image?: string,
   name: string,
 }) => {
   try {
@@ -148,7 +147,7 @@ export const createBox = async (box: {
     await docClient.send(new UpdateCommand({
       TableName: "abandon",
       Key: {
-        PK: box.owner,
+        PK: owner,
         SK: `series#${box.series}`,
       },
       UpdateExpression: "set #boxes = list_append(if_not_exists(#boxes, :empty_list), :box)",

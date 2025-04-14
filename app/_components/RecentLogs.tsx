@@ -4,6 +4,7 @@ import {FC, useState} from "react";
 import useSWR from "swr";
 import {getAccessToken} from "@auth0/nextjs-auth0";
 import {Dialog, DialogPanel} from "@headlessui/react";
+import {Item} from "@/app/_lib/types";
 
 const RecentLogs: FC<{
   series: string
@@ -17,9 +18,7 @@ const RecentLogs: FC<{
     refreshInterval: 5_000,
     dedupingInterval: 1_000,
   });
-  const [item, setItem] = useState<{
-    id: string;   name: string;   description?: string | undefined;   image?: string | undefined;   shared: boolean;   createdAt: string;
-  }>({
+  const [item, setItem] = useState<Item>({
     id: "",
     name: "",
     description: "",

@@ -5,6 +5,7 @@ import {User} from "@auth0/nextjs-auth0/types";
 import useSWR from "swr";
 import {getAccessToken} from "@auth0/nextjs-auth0";
 import {Dialog, DialogPanel} from "@headlessui/react";
+import {Item} from "@/app/_lib/types";
 
 const MyItems: FC<{
   user?: User,
@@ -20,9 +21,7 @@ const MyItems: FC<{
     refreshInterval: 5_000,
     dedupingInterval: 1_000,
   });
-  const [item, setItem] = useState<{
-    id: string;   name: string;   description?: string | undefined;   image?: string | undefined;   shared: boolean;   createdAt: string;
-  }>({
+  const [item, setItem] = useState<Item>({
     id: "",
     name: "",
     description: "",
@@ -42,14 +41,7 @@ const MyItems: FC<{
       <div className={"font-semibold leading-5"}>My items</div>
       <div className={"flex flex-col mt-1 gap-1.5"}>
         {
-          myItems && myItems?.map((item: {
-            id: string,
-            name: string,
-            description?: string,
-            image?: string,
-            shared: boolean,
-            createdAt: string
-          }) => (
+          myItems && myItems?.map((item: Item) => (
             <button
               key={item.id}
               className={"h-20 w-full border border-[#DBDBDB] rounded-lg flex items-center justify-center"}
