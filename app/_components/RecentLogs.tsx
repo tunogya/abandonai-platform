@@ -26,7 +26,7 @@ const RecentLogs: FC<{
             createdAt: string
           }) => (
             <div key={item.id} className={"h-20 w-full border border-[#DBDBDB] rounded-lg flex items-center justify-center"}>
-              {item.name} {item.description} {item.createdAt}
+              {item.name}
             </div>
           ))
         }

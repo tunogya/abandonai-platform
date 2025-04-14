@@ -14,11 +14,15 @@ const GET = async (req: NextRequest, {params}: {
       ":gpk": `items#${id}`,
     },
     ScanIndexForward: false,
-    // filter share = true
     Limit: 20,
   }));
-  // TODO, if shared = false, hidden something
-  return  Response.json(Items);
+  return Response.json(Items?.map((item) => ({
+    id: item.id,
+    name: item.shared ? item.name : "******",
+    description: item.shared ? item.description : "******",
+    createdAt: item.createdAt,
+    shared: item.shared,
+  })));
 };
 
 export {
