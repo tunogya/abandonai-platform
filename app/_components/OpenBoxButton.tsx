@@ -1,6 +1,6 @@
 "use client";
 
-import {FC} from "react";
+import {FC, useState} from "react";
 import {openBox} from "@/app/_lib/actions";
 import {User} from "@auth0/nextjs-auth0/types";
 
@@ -12,8 +12,9 @@ const OpenBoxButton: FC<{
   owner: string,
   user?: User,
 }> = (props) => {
+  const [status, setStatus] = useState("idle");
+
   return (
-    // TODO: when no loggin
     <button
       disabled={props.disabled}
       className={"h-11 w-full text-white font-bold flex items-center justify-center mx-auto"}
@@ -24,10 +25,12 @@ const OpenBoxButton: FC<{
         if (!props.customer || !props.user?.sub) {
           return;
         }
+        setStatus("loading");
         await openBox(props.amount, props.customer, props.series, props.owner, props.user);
+        setStatus("idle");
       }}
     >
-      <span className={"animate-pulse"}>
+      <span className={status === "loading" ? "animate-pulse" : ""}>
          Open the box
       </span>
     </button>

@@ -1,26 +1,37 @@
 "use client";
 
-import {FC} from "react";
+import {FC, useState} from "react";
+import useSWR from "swr";
+import {getAccessToken} from "@auth0/nextjs-auth0";
 
 const RecentLogs: FC<{
   series: string
 }> = (props) => {
+  const { data } = useSWR(`/api/logs/${props.series}`, async (url) => fetch(url, {
+    headers: {
+      Authorization: `Bearer ${await getAccessToken()}`
+    }
+  }).then(res => res.json()));
+
+  console.log(data);
+
   return (
     <div className={"px-3 py-3"}>
       <div className={"font-semibold leading-5"}>Recently</div>
       <div className={"flex flex-col mt-1 gap-1.5"}>
-        <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-
-        </div>
-        <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-
-        </div>
-        <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-
-        </div>
-        <div className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
-
-        </div>
+        {
+          data && data?.map((log: {
+            id: string,
+            name: string,
+            description: string,
+            shared: boolean,
+            createdAt: string
+          }) => (
+            <div key={log.id} className={"h-11 w-full border border-[#DBDBDB] rounded-lg"}>
+              {log.name} {log.description} {log.createdAt}
+            </div>
+          ))
+        }
       </div>
     </div>
   )
