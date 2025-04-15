@@ -2,7 +2,7 @@
 
 import stripe from "@/app/_lib/stripe";
 import {docClient} from "@/app/_lib/dynamodb";
-import {GetCommand, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
+import {GetCommand, PutCommand, QueryCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 import {v4 as uuidv4} from "uuid";
 import {User} from "@auth0/nextjs-auth0/types";
 import {PutObjectCommand} from "@aws-sdk/client-s3";
@@ -226,7 +226,7 @@ export const createTopupLink = async (customer: string, success_url: string) => 
 export const openBox = async (amount: number, customer: string, series: string, owner: string, user: User) => {
   try {
     // Check balance first, make sure enough to do this deal
-    const {Item: balance } = await docClient.send(new GetCommand({
+    const {Item: balance} = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
         PK: user.sub,
@@ -241,7 +241,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       }
     }
     // Query the detailed information of the blind box from the database.
-    const { Item: seriesInfo } = await docClient.send(new GetCommand({
+    const {Item: seriesInfo} = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
         PK: owner,
@@ -262,7 +262,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
     let rand = Math.floor(Math.random() * total);
     for (const box of boxes) {
       if (rand < box.available) {
-        box.available  -= 1;
+        box.available -= 1;
         selected = box;
       }
       rand -= box.available;
@@ -330,7 +330,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
       }))
     ]);
     // Distribute accounts to connect users
-    const { Item: connect_account } = await docClient.send(new GetCommand({
+    const {Item: connect_account} = await docClient.send(new GetCommand({
       TableName: "abandon",
       Key: {
         PK: owner,
@@ -401,7 +401,7 @@ export const openBox = async (amount: number, customer: string, series: string, 
   }
 }
 
-export const getS3SignedUrl= async (key: string, contentType: string) => {
+export const getS3SignedUrl = async (key: string, contentType: string) => {
   const
     command = new PutObjectCommand({
       Bucket: "abandon.ai",
@@ -418,30 +418,124 @@ export const getS3SignedUrl= async (key: string, contentType: string) => {
   }
 }
 
-export const getBalance = async () => {
-  return {
-    ok: true,
-    balance: 0,
+export const getBalance = async (sub: string) => {
+  try {
+    const {Item} = await docClient.send(new GetCommand({
+      TableName: "abandon",
+      Key: {
+        PK: sub,
+        SK: "customer",
+      },
+      ProjectionExpression: "balance",
+    }));
+    return {
+      ok: true,
+      balance: Item ? Item.balance * -1 / 100 : 0,
+    }
+  } catch (e) {
+    console.log(e);
+    return {
+      ok: false,
+      error: e,
+    }
   }
 }
 
-export const getMyItems = async () => {
+export const getMyItems = async (series: string, sub: string) => {
+  const {Items} = await docClient.send(new QueryCommand({
+    TableName: "abandon",
+    KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+    ExpressionAttributeValues: {
+      ":pk": sub,
+      ":sk": `items#${series}#`,
+    },
+    ScanIndexForward: false,
+    Limit: 20,
+  }));
   return {
     ok: true,
-    items: [],
+    items: Items,
   }
 }
 
-export const getSeriesLogs = async () => {
+export const getSeriesLogs = async (series: string) => {
+  const {Items} = await docClient.send(new QueryCommand({
+    TableName: "abandon",
+    IndexName: "GPK-GSK-index",
+    KeyConditionExpression: "GPK = :gpk",
+    ExpressionAttributeValues: {
+      ":gpk": `items#${series}`,
+    },
+    ScanIndexForward: false,
+    Limit: 20,
+  }));
+
   return {
     ok: true,
-    logs: [],
+    logs: Items,
   }
 }
 
-export const getSeriesInfo = async () => {
+export const getSeriesInfo = async (series: string) => {
+  const {Items} = await docClient.send(new QueryCommand({
+    TableName: "abandon",
+    IndexName: "GPK-GSK-index",
+    // GPK = "series", GSK = id
+    KeyConditionExpression: "GPK = :gpk AND GSK = :gsk",
+    ExpressionAttributeValues: {
+      ":gpk": "series",
+      ":gsk": series,
+    },
+  }));
+  if (!Items?.length) {
+    return Response.json({
+      ok: false,
+      error: "Series not found",
+    }, {
+      status: 404,
+    });
+  }
+  const _series = Items[0];
+  const totalAvailable = _series?.boxes?.reduce((acc: number, item: any) => {
+    return acc + item.available;
+  }, 0) || 0;
+  // Iterate through the series?.boxes array, sum up each item.supply, and obtain the totalSupply.
+  const totalSupply = _series?.boxes?.reduce((acc: number, item: any) => {
+    return acc + item.supply;
+  }, 0) || 0;
+
   return {
     ok: true,
-    series: {},
+    series: {
+      id: _series.id,
+      name: _series.name,
+      description: _series.description,
+      image: _series.image,
+      totalAvailable,
+      totalSupply,
+    },
   }
+}
+
+export const getMySeries = async (sub?: string) => {
+  const {Items, LastEvaluatedKey, Count,} = await docClient.send(new QueryCommand({
+    TableName: "abandon",
+    KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+    FilterExpression: "attribute_not_exists(active) OR active = :active",
+    ExpressionAttributeValues: {
+      ":pk": sub,
+      ":sk": "series#",
+      ":active": true,
+    },
+    Limit: 10,
+    ScanIndexForward: false,
+    // ExclusiveStartKey: "",
+  }));
+
+  return {
+    ok: true,
+    Items,
+    LastEvaluatedKey,
+    Count,
+  };
 }

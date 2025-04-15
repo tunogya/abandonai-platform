@@ -3,21 +3,17 @@
 import {FC, useEffect, useState} from "react";
 import {User} from "@auth0/nextjs-auth0/types";
 import useSWR from "swr";
-import {getAccessToken} from "@auth0/nextjs-auth0";
 import {Dialog, DialogBackdrop, DialogPanel} from "@headlessui/react";
 import {Item} from "@/app/_lib/types";
+import {getMyItems} from "@/app/_lib/actions";
 
 const MyItems: FC<{
-  user?: User,
+  user: User,
   series: string,
 }> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [myItems, setMyItems] = useState([]);
-  const { data } = useSWR(`/api/items/${props.series}`, async (url) => fetch(url, {
-    headers: {
-      Authorization: `Bearer ${await getAccessToken()}`
-    }
-  }).then(res => res.json()), {
+  const [myItems, setMyItems] = useState<Item[]>([]);
+  const { data } = useSWR(`/api/items/${props.series}`, () => getMyItems(props.series, props.user.sub), {
     refreshInterval: 5_000,
     dedupingInterval: 1_000,
   });
@@ -31,8 +27,9 @@ const MyItems: FC<{
   })
 
   useEffect(() => {
-    if (data) {
-      setMyItems(data);
+    if (data?.items) {
+      // @ts-ignore
+      setMyItems(data.items);
     }
   }, [data]);
 

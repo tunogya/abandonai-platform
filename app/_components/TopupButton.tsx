@@ -1,10 +1,9 @@
 "use client";
 
 import {FC, useEffect, useState} from "react";
-import {createTopupLink} from "@/app/_lib/actions";
+import {createTopupLink, getBalance} from "@/app/_lib/actions";
 import Image from "next/image";
 import {User} from "@auth0/nextjs-auth0/types";
-import {getAccessToken} from "@auth0/nextjs-auth0";
 import useSWR from "swr";
 
 const TopupButton: FC<{
@@ -15,17 +14,13 @@ const TopupButton: FC<{
 }> = ({user, customer, balance, success_url}) => {
   const [status, setStatus] = useState("idle");
   const [myBalance, setMyBalance] = useState(balance);
-  const {data} = useSWR("/api/balance", async (url) => fetch(url, {
-    headers: {
-      Authorization: `Bearer ${await getAccessToken()}`,
-    }
-  }).then((res) => res.json()), {
+  const {data} = useSWR("/api/balance", async () => getBalance(user.sub), {
     refreshInterval: 5_000,
     dedupingInterval: 1_000,
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && data?.balance) {
       setMyBalance(data?.balance);
     }
   }, [data]);

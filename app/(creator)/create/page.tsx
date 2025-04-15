@@ -1,10 +1,10 @@
 "use client";
 
 import {ChangeEvent, DragEvent, useEffect, useRef, useState} from "react";
-import {createBox, getS3SignedUrl} from "@/app/_lib/actions";
+import {createBox, getMySeries, getS3SignedUrl} from "@/app/_lib/actions";
 import Link from "next/link";
 import useSWR from "swr";
-import {getAccessToken, useUser} from "@auth0/nextjs-auth0";
+import {useUser} from "@auth0/nextjs-auth0";
 import {v4 as uuidv4} from "uuid";
 
 const Page = () => {
@@ -16,11 +16,7 @@ const Page = () => {
     image: "",
     name: "",
   });
-  const {data, isLoading} = useSWR("/api/series", async (url) => fetch(url, {
-    headers: {
-      "Authorization": `Bearer ${await getAccessToken()}`
-    }
-  }).then((res) => res.json()), {
+  const {data, isLoading} = useSWR(user?.sub ? "/api/series" : null, () => getMySeries(user?.sub), {
     refreshInterval: 5_000,
     dedupingInterval: 1_000,
   });
@@ -275,7 +271,7 @@ const Page = () => {
                 {isLoading ? "Loading..." : "Select a series"}
               </option>
               {
-                !isLoading && data?.Count > 0 && data?.Items?.map((item: any) => {
+                !isLoading && data && (data?.Count || 0) > 0 && data?.Items?.map((item: any) => {
                   return (
                     <option key={item?.id} value={item?.id}>
                       {item?.name}

@@ -3,17 +3,20 @@
 import {FC, useEffect, useState} from "react";
 import useSWR from "swr";
 import {SeriesPublic} from "@/app/_lib/types";
+import {getSeriesInfo} from "@/app/_lib/actions";
 
 const BlindBox: FC<{ series: SeriesPublic }> = (props) => {
   const [series, setSeries] = useState(props.series);
-  const {data} = useSWR(`/api/series/${props.series.id}`, (url) => fetch(url).then((res) => res.json()), {
+  const {data} = useSWR(`/api/series/${props.series.id}`, () => getSeriesInfo(props.series.id), {
     refreshInterval: 5_000,
     dedupingInterval: 1_000,
   });
 
   useEffect(() => {
-    if (data) {
-      setSeries(data);
+    // @ts-ignore
+    if (data && data?.ok && data?.series) {
+      // @ts-ignore
+      setSeries(data.series);
     }
   }, [data]);
 
