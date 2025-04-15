@@ -3,8 +3,9 @@
 import {FC, useState} from "react";
 import {openBox} from "@/app/_lib/actions";
 import {User} from "@auth0/nextjs-auth0/types";
-import {Dialog, DialogPanel} from "@headlessui/react";
+import {Dialog, DialogBackdrop, DialogPanel} from "@headlessui/react";
 import {mutate} from "swr";
+import {Item} from "@/app/_lib/types";
 
 const OpenBoxButton: FC<{
   disabled: boolean,
@@ -16,12 +17,13 @@ const OpenBoxButton: FC<{
 }> = (props) => {
   const [status, setStatus] = useState("idle");
   const [isOpen, setIsOpen] = useState(false);
-  const [item, setItem] = useState<{
-    name: string,
-    description: string,
-  }>({
+  const [item, setItem] = useState<Item>({
+    id: "",
     name: "",
     description: "",
+    image: "",
+    createdAt: "",
+    shared: false,
   });
 
   return (
@@ -56,20 +58,33 @@ const OpenBoxButton: FC<{
       </span>
       </button>
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+        <DialogBackdrop className="fixed inset-0 bg-black/30" />
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-          <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
+          <DialogPanel className="max-w-lg w-full bg-white rounded-xl overflow-hidden">
             {
               status === "loading" ? (
-                <div>
-                  loading...
+                <div className={"min-h-32 w-full px-3 py-4"}>
+                  Open the box...
                 </div>
               ) : (
-                <div>
+                <div className={"w-full h-full"}>
                   <div>
-                    {item.name}
+                    {
+                      item?.image && (
+                        <img src={item.image} alt={item.name} className={"w-full h-full"} />
+                      )
+                    }
                   </div>
-                  <div>
-                    {item.description}
+                  <div className={"px-3 py-4 min-h-32"}>
+                    <div className={"font-bold leading-5"}>
+                      {item.name}
+                    </div>
+                    <div className={"leading-5"}>
+                      {item.description}
+                    </div>
+                    <div className={"text-xs pt-3 text-[#DBDBDB]"}>
+                      {new Date(item.createdAt).toLocaleString()}
+                    </div>
                   </div>
                 </div>
               )

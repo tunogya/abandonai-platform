@@ -8,7 +8,6 @@ import TopupButton from "@/app/_components/TopupButton";
 import stripe from "@/app/_lib/stripe";
 import OpenBoxButton from "@/app/_components/OpenBoxButton";
 import BlindBox from "@/app/_components/BlindBox";
-import RecentLogs from "@/app/_components/RecentLogs";
 import MyItems from "@/app/_components/MyItems";
 import {Series} from "@/app/_lib/types";
 
@@ -137,7 +136,6 @@ const Page = async ({params}: {
           <div className={"text-sm mt-1"}>{series.description}</div>
         </div>
         <MyItems user={session?.user} series={series.id}/>
-        <RecentLogs series={series.id}/>
         <div className={"p-3 flex justify-start items-center flex-col text-xs text-[#737373] mt-10"}>
           <div className={"flex gap-3 mt-4 w-screen md:overflow-scroll px-4 md:w-fit justify-center"}>
             <Link href={"/about.md"} target={"_blank"} className={"hover:underline whitespace-nowrap"}>
