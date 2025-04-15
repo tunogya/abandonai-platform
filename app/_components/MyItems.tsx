@@ -8,12 +8,12 @@ import {Item} from "@/app/_lib/types";
 import {getMyItems} from "@/app/_lib/actions";
 
 const MyItems: FC<{
-  user: User,
+  user?: User,
   series: string,
 }> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [myItems, setMyItems] = useState<Item[]>([]);
-  const { data } = useSWR(`/api/items/${props.series}`, () => getMyItems(props.series, props.user.sub), {
+  const { data } = useSWR(props?.user?.sub ? `/api/items/${props.series}` : null, () => getMyItems(props.series, props?.user?.sub), {
     refreshInterval: 5_000,
     dedupingInterval: 1_000,
   });

@@ -441,7 +441,7 @@ export const getBalance = async (sub: string) => {
   }
 }
 
-export const getMyItems = async (series: string, sub: string) => {
+export const getMyItems = async (series: string, sub?: string) => {
   const {Items} = await docClient.send(new QueryCommand({
     TableName: "abandon",
     KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
