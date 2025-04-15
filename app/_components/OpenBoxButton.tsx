@@ -32,7 +32,7 @@ const OpenBoxButton: FC<{
         disabled={props.disabled}
         className={"h-11 w-full text-white font-bold flex items-center justify-center mx-auto"}
         style={{
-          background: "linear-gradient(90deg, #7638FA 0%, #D300C5 25%, #FF0069 50%, #FF7A00 75%, #FFD600 100%)"
+          background: props.disabled ? "gray" : "linear-gradient(90deg, #7638FA 0%, #D300C5 25%, #FF0069 50%, #FF7A00 75%, #FFD600 100%)"
         }}
         onClick={async () => {
           if (!props.customer || !props.user?.sub) {
@@ -53,25 +53,33 @@ const OpenBoxButton: FC<{
           setStatus("idle");
         }}
       >
-      <span className={status === "loading" ? "animate-pulse" : ""}>
-         Open the box
-      </span>
+        {
+          props.disabled ? (
+            <div>
+              No box available now
+            </div>
+          ) : (
+            <div className={status === "loading" ? "animate-pulse" : ""}>
+              {status === "loading" ? "Opening..." : "Open the box"}
+            </div>
+          )
+        }
       </button>
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-        <DialogBackdrop className="fixed inset-0 bg-black/30" />
+        <DialogBackdrop className="fixed inset-0 bg-black/30"/>
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
           <DialogPanel className="max-w-lg w-full bg-white rounded-xl overflow-hidden">
             {
               status === "loading" ? (
                 <div className={"min-h-32 w-full px-3 py-4"}>
-                  Open the box...
+                  Opening the box...
                 </div>
               ) : (
                 <div className={"w-full h-full"}>
                   <div>
                     {
                       item?.image && (
-                        <img src={item.image} alt={item.name} className={"w-full h-full"} />
+                        <img src={item.image} alt={item.name} className={"w-full h-full"}/>
                       )
                     }
                   </div>
