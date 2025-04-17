@@ -344,7 +344,7 @@ const Page = () => {
           </div>
           <div className={"flex flex-row-reverse my-4"}>
             <button
-              disabled={status === "loading" || !user || !user?.sub || !box.series || !box.supply || !box.name}
+              disabled={status === "loading" || !user || !user?.sub || !box.series || !box.supply || !box.name || uploadProgress !== 0}
               onClick={async () => {
                 if (!user || !user?.sub || !box.series || !box.supply || !box.name) {
                   return;
