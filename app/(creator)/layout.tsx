@@ -43,50 +43,51 @@ const Layout = async ({
           }));
           const connectedAccountId = Item?.id;
           if (connectedAccountId) {
-            await stripe.accountLinks.create({
+            const accountLink = await stripe.accountLinks.create({
               account: connectedAccountId,
               refresh_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
               return_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
               type: "account_onboarding",
             })
-            return;
+            redirect(accountLink.url);
+          } else {
+            const account = await stripe.accounts.create({
+              controller: {
+                stripe_dashboard: {
+                  type: "express",
+                },
+                fees: {
+                  payer: "application"
+                },
+                losses: {
+                  payments: "application"
+                },
+              },
+            });
+            // save connect id to dynamodb
+            const [, accountLink] = await Promise.all([
+              docClient.send(new PutCommand({
+                TableName: "abandon",
+                Item: {
+                  PK: session.user.sub,
+                  SK: "connect.account",
+                  id: account.id,
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                  object: "connect.account",
+                  GPK: "connect.account",
+                  GSK: session.user.sub,
+                },
+              })),
+              await stripe.accountLinks.create({
+                account: account.id,
+                refresh_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
+                return_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
+                type: "account_onboarding",
+              })
+            ]);
+            redirect(accountLink.url);
           }
-          const account = await stripe.accounts.create({
-            controller: {
-              stripe_dashboard: {
-                type: "express",
-              },
-              fees: {
-                payer: "application"
-              },
-              losses: {
-                payments: "application"
-              },
-            },
-          });
-          // save connect id to dynamodb
-          const [, accountLink] = await Promise.all([
-            docClient.send(new PutCommand({
-              TableName: "abandon",
-              Item: {
-                PK: session.user.sub,
-                SK: "connect.account",
-                id: account.id,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                object: "connect.account",
-                GPK: "connect.account",
-                GSK: session.user.sub,
-              },
-            })),
-            await stripe.accountLinks.create({
-              account: account.id,
-              refresh_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
-              return_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
-              type: "account_onboarding",
-            })
-          ]);
-          redirect(accountLink.url);
         }}>
           <button
             className={"px-4 text-[15px] rounded-full h-11 font-semibold flex items-center border border-[#DBDBDB]"}
