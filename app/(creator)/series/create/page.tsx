@@ -291,7 +291,7 @@ const Page = () => {
               Back
             </Link>
             <button
-              disabled={status === "loading" || !series.name || !user || !series.image || !series.price}
+              disabled={status === "loading" || !series.name || !user || !series.image || !series.price || uploadProgress !== 0}
               onClick={async () => {
                 if (!user) return;
                 setStatus("loading");
