@@ -53,17 +53,9 @@ const OpenBoxButton: FC<{
           setStatus("idle");
         }}
       >
-        {
-          props.disabled ? (
-            <div>
-              No box available now
-            </div>
-          ) : (
-            <div className={status === "loading" ? "animate-pulse" : ""}>
-              {status === "loading" ? "Opening..." : "Open the box"}
-            </div>
-          )
-        }
+        <div className={status === "loading" ? "animate-pulse" : ""}>
+          {status === "loading" ? "Opening..." : "Open the box"}
+        </div>
       </button>
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black/30"/>
