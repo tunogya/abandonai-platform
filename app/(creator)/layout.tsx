@@ -33,6 +33,24 @@ const Layout = async ({
         </div>
         <form action={async () => {
           "use server";
+          const { Item } = await docClient.send(new GetCommand({
+            TableName: "abandon",
+            Key: {
+              PK: session.user.sub,
+              SK: "connect.account",
+            },
+            ProjectionExpression: "id",
+          }));
+          const connectedAccountId = Item?.id;
+          if (connectedAccountId) {
+            await stripe.accountLinks.create({
+              account: connectedAccountId,
+              refresh_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
+              return_url: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/home`,
+              type: "account_onboarding",
+            })
+            return;
+          }
           const account = await stripe.accounts.create({
             controller: {
               stripe_dashboard: {
