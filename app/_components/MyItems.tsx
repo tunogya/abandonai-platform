@@ -38,6 +38,11 @@ const MyItems: FC<{
       <div className={"font-semibold leading-5"}>My items</div>
       <div className={"flex flex-col mt-1 gap-1.5"}>
         {
+          myItems && myItems.length === 0 && (
+            <div className={"text-sm text-[#DBDBDB]"}>No items found</div>
+          )
+        }
+        {
           myItems && myItems?.map((item: Item) => (
             <button
               key={item.id}
