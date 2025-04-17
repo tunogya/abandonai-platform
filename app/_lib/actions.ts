@@ -500,6 +500,7 @@ export const getSeriesInfo = async (series: string) => {
       name: _series.name,
       description: _series.description,
       image: _series.image,
+      unit_amount: _series.unit_amount,
       totalAvailable,
       totalSupply,
     },
