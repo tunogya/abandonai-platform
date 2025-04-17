@@ -118,7 +118,7 @@ export const deleteSeries = async (series: {
       TableName: "abandon",
       Key: {
         PK: series.owner,
-        SK: series.id,
+        SK: `series#${series.id}`,
       },
       UpdateExpression: "set #active = :active",
       ExpressionAttributeNames: {
