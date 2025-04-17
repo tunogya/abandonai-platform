@@ -416,11 +416,10 @@ export const getBalance = async (sub: string) => {
         PK: sub,
         SK: "customer",
       },
-      ProjectionExpression: "balance",
     }));
     return {
       ok: true,
-      balance: Item ? Item.balance * -1 / 100 : 0,
+      balance: Item ? ((Item?.balance ?? 0) * -1) / 100 : 0,
     }
   } catch (e) {
     console.log(e);

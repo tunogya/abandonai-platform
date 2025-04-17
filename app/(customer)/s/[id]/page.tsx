@@ -90,7 +90,7 @@ const Page = async ({params}: {
         SK: "customer",
       },
     }));
-    if (Item) {
+    if (Item && Item?.balance) {
       myBalance = Item.balance * -1 / 100;
     }
   }
