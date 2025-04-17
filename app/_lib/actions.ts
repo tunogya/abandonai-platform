@@ -103,16 +103,6 @@ export const deleteSeries = async (series: {
   owner: string,
   id: string,
 }) => {
-  const {Item} = await docClient.send(new GetCommand({
-    TableName: "abandon",
-    Key: {
-      PK: series.owner,
-      SK: "connect.account",
-    },
-  }))
-  if (!Item) {
-    return {ok: false, error: "Connect account not found"}
-  }
   try {
     await docClient.send(new UpdateCommand({
       TableName: "abandon",
