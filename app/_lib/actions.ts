@@ -186,7 +186,7 @@ export const createTopupLink = async (customer: string, success_url: string) => 
   try {
     const session = await stripe.checkout.sessions.create({
       line_items: [{
-        price: "price_1RCnbLFPRjptKGEx89Iuqlxr", // TODO: check for prod price
+        price: "price_1RCo4WFPRjptKGExvuO0s63y",
         quantity: 1,
         adjustable_quantity: {
           enabled: true,
