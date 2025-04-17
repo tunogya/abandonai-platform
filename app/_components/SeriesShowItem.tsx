@@ -68,13 +68,13 @@ const SeriesShowItem: FC<{ series: Series }> = ({series}) => {
           </div>
         </Dialog>
       </div>
-      <div className={"border border-[#DBDBDB] w-full rounded aspect-auto"}>
-        {
-          series?.image && (
+      {
+        series?.image && (
+          <div className={"border border-[#DBDBDB] w-full rounded aspect-auto"}>
             <img src={series.image} alt={""} className={"w-full h-full"}/>
-          )
-        }
-      </div>
+          </div>
+        )
+      }
     </div>
   )
 }
