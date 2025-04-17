@@ -104,7 +104,7 @@ const Page = async ({params}: {
           totalSupply: totalSupply,
         }}/>
         <OpenBoxButton
-          disabled={totalAvailable === 0}
+          disabled={totalAvailable === 0 || myBalance <= 0 || (myBalance * 100) < series.unit_amount}
           amount={series.unit_amount}
           customer={customer}
           series={series.id}
