@@ -37,7 +37,7 @@ const TopupButton: FC<{
       <div className={"flex-1 ml-1.5 overflow-hidden"}>
         <div className={"text-sm font-medium truncate leading-4"}>{user.email}</div>
         <div className={"text-xs font-medium leading-4 text-[#0095F6]"}>
-          {myBalance} tokens
+          {(myBalance * -1 / 100).toFixed(2)} tokens
         </div>
       </div>
       {

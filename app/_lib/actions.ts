@@ -419,7 +419,7 @@ export const getBalance = async (sub: string) => {
     }));
     return {
       ok: true,
-      balance: Item ? ((Item?.balance ?? 0) * -1) / 100 : 0,
+      balance: Item?.balance ?? 0,
     }
   } catch (e) {
     console.log(e);

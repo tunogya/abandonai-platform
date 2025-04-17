@@ -91,7 +91,7 @@ const Page = async ({params}: {
       },
     }));
     if (Item && Item?.balance) {
-      myBalance = Item.balance * -1 / 100;
+      myBalance = Item.balance;
     }
   }
 
@@ -104,7 +104,7 @@ const Page = async ({params}: {
           totalSupply: totalSupply,
         }}/>
         <OpenBoxButton
-          disabled={totalAvailable === 0 || myBalance <= 0 || (myBalance * 100) < series.unit_amount}
+          disabled={totalAvailable === 0 || myBalance >= 0 || myBalance < series.unit_amount}
           amount={series.unit_amount}
           customer={customer}
           series={series.id}
